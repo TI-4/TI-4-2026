@@ -1,4 +1,6 @@
 using IdentityService.Domain.Entities;
+using IdentityService.Application.Authentication;
+using IdentityService.Infrastructure.Authentication;
 using IdentityService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,9 @@ public static class DependencyInjection
         services.AddIdentityCore<User>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<IdentityDbContext>();
+
+        services.AddScoped<IUserAuthenticator, IdentityUserAuthenticator>();
+        services.AddScoped<LoginUseCase>();
 
         return services;
     }
