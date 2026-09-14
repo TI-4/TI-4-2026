@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 
 interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> {
   label?: string;
+  labelColor?: string;
   options: { value: string; label: string }[];
   error?: string;
   value?: string;
@@ -10,7 +11,7 @@ interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>
 }
 
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, options, error, className = '', value, onChange, icon, ...props }, ref) => {
+  ({ label, labelColor = 'text-white', options, error, className = '', value, onChange, icon, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedValue, setSelectedValue] = useState(value || '');
     const containerRef = useRef<HTMLDivElement>(null);
@@ -44,7 +45,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="flex flex-col gap-1 w-full relative" ref={containerRef}>
         {label && (
-          <label className="text-sm font-semibold text-gray-700">
+          <label className={`text-sm font-semibold ${labelColor}`}>
             {label}
           </label>
         )}
@@ -59,9 +60,9 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               ${className}
             `}
           >
-            <span className={`font-medium flex items-center gap-2 ${selectedValue ? 'text-gray-900' : 'text-gray-500'}`}>
-              {icon && <span className="text-page-dark flex items-center">{icon}</span>}
-              {selectedLabel}
+            <span className={`font-medium flex items-center gap-2 whitespace-nowrap ${selectedValue ? 'text-gray-900' : 'text-gray-500'}`}>
+              {icon && <span className="text-page-dark flex items-center flex-shrink-0">{icon}</span>}
+              <span className="whitespace-nowrap">{selectedLabel}</span>
             </span>
 
             <svg
