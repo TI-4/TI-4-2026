@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Select } from '../components/Select';
@@ -14,10 +15,63 @@ import { FileUpload } from '../components/FileUpload';
 import { SquareButton } from '../components/SquareButton';
 import { SectionButton } from '../components/SectionButton';
 import { UserActionInfo } from '../components/UserActionInfo';
+import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
+import type { FilterSection } from '../interfaces/FilterSection';
+
+const BuildingIcon = () => (
+  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 2L2 7v15h20V7L12 2zm0 2.5l7 3.5v12h-4v-5H9v5H5v-12l7-3.5zm-5 5v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z" />
+  </svg>
+);
 
 export const ShowcaseView = () => {
+  // Estado mock para los filtros del showcase
+  const [filters, setFilters] = useState<FilterSection[]>([
+    {
+      id: 'academico',
+      title: 'ACADÉMICO',
+      items: [
+        { id: 'edificios', label: 'Edificios', icon: <BuildingIcon />, checked: true },
+        { id: 'accesos', label: 'Accesos', icon: <BuildingIcon />, checked: true },
+        { id: 'biblioteca', label: 'Biblioteca', icon: <BuildingIcon />, checked: false },
+      ]
+    },
+    {
+      id: 'servicios',
+      title: 'SERVICIOS',
+      items: [
+        { id: 'primeros-auxilios', label: 'Primeros Auxilios', icon: <BuildingIcon />, checked: true },
+        { id: 'cajeros', label: 'Cajeros', icon: <BuildingIcon />, checked: true },
+      ]
+    },
+    {
+      id: 'vida-universitaria',
+      title: 'VIDA UNIVERSITARIA',
+      items: [
+        { id: 'casino', label: 'Casino', icon: <BuildingIcon />, checked: true },
+        { id: 'canchas', label: 'Canchas', icon: <BuildingIcon />, checked: false },
+        { id: 'kioskos', label: 'Kioskos', icon: <BuildingIcon />, checked: false },
+        { id: 'areas-verdes', label: 'Áreas Verdes', icon: <BuildingIcon />, checked: true },
+      ]
+    }
+  ]);
+
+  const handleToggleFilter = (sectionId: string, itemId: string) => {
+    setFilters(prev => prev.map(sec => 
+      sec.id === sectionId 
+        ? { ...sec, items: sec.items.map(item => item.id === itemId ? { ...item, checked: !item.checked } : item) }
+        : sec
+    ));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-12 flex flex-col gap-8 items-center font-sans">
+
+      <MapFiltersPanel 
+        title="Filtros (2)" 
+        sections={filters} 
+        onToggleItem={handleToggleFilter} 
+      />
 
       <Panel color="white" innerClassName="p-6 flex flex-wrap gap-4 items-center">
         <Button variant="solid">Guardar</Button>

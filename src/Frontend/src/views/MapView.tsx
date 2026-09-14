@@ -42,24 +42,30 @@ export const MapView = () => {
   return (
     <div className="w-full h-full absolute inset-0 overflow-hidden">
 
-      <div className={`absolute top-9 z-10 flex flex-row items-center gap-4 transition-all duration-300 ease-in-out ${isExpanded ? 'left-6' : 'left-24'}`}>
 
-        <div className="w-80 -mt-5">
-          <Input
-            label="Buscar Edificio..."
-            icon={<SearchIcon />}
-          />
-        </div>
+      <div className={`absolute top-9 z-10 flex flex-col gap-4 transition-all duration-300 ease-in-out ${isExpanded ? 'left-5' : 'left-24'}`}>
 
-        <div className="w-72">
-          <Select
-            options={[
-              { value: 'campus1', label: 'Campus San Juan Pablo II' },
-              { value: 'campus2', label: 'Campus Norte' }
-            ]}
-            value="campus1"
-            icon={<BuildingIcon />}
-          />
+
+        <div className="flex flex-row items-center gap-4">
+
+          <div className="w-80 -mt-5">
+            <Input
+              label="Buscar Edificio..."
+              icon={<SearchIcon />}
+            />
+          </div>
+
+
+          <div className="w-72">
+            <Select
+              options={[
+                { value: 'campus1', label: 'Campus San Juan Pablo II' },
+                { value: 'campus2', label: 'Campus Norte' }
+              ]}
+              value="campus1"
+              icon={<BuildingIcon />}
+            />
+          </div>
         </div>
       </div>
 

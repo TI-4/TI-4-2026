@@ -24,3 +24,20 @@
 | `SquareButton` | Botón interactivo cuadrado. | `children` | - |
 | `Tag` | Etiqueta pequeña (pill) para categorías o estados. | `label`, `icon`, `color` | - |
 | `UserActionInfo` | Muestra detalles rápidos de un usuario o acción. | `title`, `subtitle`, `avatarSrc` | - |
+
+## Módulos
+
+Para mantener la arquitectura escalable, las piezas de interfaz más complejas (que agrupan múltiples componentes genéricos) se organizan en **módulos** dentro de la carpeta `src/modules`.
+
+| Módulo | Componente | Descripción del componente | Parámetros |
+|---|---|---|---|
+| `map` | `MapFiltersPanel` | Panel interactivo para filtrar categorías y ubicaciones dentro del mapa. | `title`, `sections`, `onToggleItem`, `className` |
+
+## Interfaces Globales
+
+Las interfaces y tipos compartidos en el proyecto están ubicados de manera centralizada en la carpeta `src/interfaces` para evitar redundancias y facilitar la organización del código.
+
+| Archivo | Contenido / Uso |
+|---|---|
+| `FilterItem.ts` | Define la estructura individual de cada opción de filtrado (id, label, icon, checked). |
+| `FilterSection.ts` | Define la estructura de cada agrupación de filtros (id, title, items). |
