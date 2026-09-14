@@ -19,6 +19,7 @@
 | `NavButton` | Enlace de navegación para rutas del React Router. | `to`, `icon`, `label`, `size`, `width` | - |
 | `Panel` | Contenedor reutilizable con estilos estandarizados de tarjeta. | `children`, `color`, `withUctBorder`, `onClose` | - |
 | `PhotoFrame` | Contenedor con borde para mostrar imágenes o miniaturas. | `src`, `alt`, `className` | `useState` |
+| `RoomInfoCard` | Tarjeta/Banner informativo de sala con título, tipo de sala y capacidad aproximada de estudiantes. | `title`, `type`, `capacity`, `icon`, `className` | - |
 | `SectionButton` | Botón especializado para el menú de navegación lateral. | `to`, `icon`, `label`, `isExpanded`, `expandedWidth` | - |
 | `Select` | Menú desplegable de selección de opciones. | `label`, `labelColor` (opcional, blanco por defecto), `options` (value, label), `icon`, `error` | `useState`, `useRef`, `useEffect` |
 | `SquareButton` | Botón interactivo cuadrado. | `children` | - |

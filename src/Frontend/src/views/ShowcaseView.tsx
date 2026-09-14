@@ -15,6 +15,7 @@ import { FileUpload } from '../components/FileUpload';
 import { SquareButton } from '../components/SquareButton';
 import { SectionButton } from '../components/SectionButton';
 import { UserActionInfo } from '../components/UserActionInfo';
+import { RoomInfoCard } from '../components/RoomInfoCard';
 import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
 import { PublishReportCard } from '../modules/objects/PublishReportCard';
 import type { FilterSection } from '../interfaces/FilterSection';
@@ -149,6 +150,8 @@ export const ShowcaseView = () => {
       <Panel color="white" innerClassName="p-6">
         <UserActionInfo title="Recuperado por Usuario" subtitle="Hace 12 minutos" avatarSrc="https://i.pravatar.cc/150?img=11" />
       </Panel>
+
+      <RoomInfoCard title="SALA 11-101" type="Sala de clases" capacity={60} />
 
       <Panel color="white" innerClassName="p-6">
         <FileUpload />
