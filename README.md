@@ -72,3 +72,4 @@ De acuerdo con la división de trabajo y roles definidos:
 * **Desarrollo Móvil:** Flutter (Dart)
 * **Frontend Móvil:** Diseño e implementación de Interfaz Móvil.
 * **Mapeo Frontend:** Tecnologías de Frontend para visualización e interacción con mapas en plataforma móvil.
+
