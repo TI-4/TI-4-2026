@@ -32,6 +32,7 @@ Para mantener la arquitectura escalable, las piezas de interfaz más complejas (
 | Módulo | Componente | Descripción del componente | Parámetros |
 |---|---|---|---|
 | `map` | `MapFiltersPanel` | Panel interactivo para filtrar categorías y ubicaciones dentro del mapa. | `title`, `sections`, `onToggleItem`, `className` |
+| `objects` | `PublishReportCard` | Card/Modal interactivo para publicar nuevos reportes de objetos perdidos con título, descripción, subida de imágenes, selección de ubicación y botones de acción. | `onPublish`, `onDiscard` |
 
 ## Vistas (Views)
 

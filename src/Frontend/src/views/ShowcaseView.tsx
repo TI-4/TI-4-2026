@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Select } from '../components/Select';
@@ -16,6 +16,7 @@ import { SquareButton } from '../components/SquareButton';
 import { SectionButton } from '../components/SectionButton';
 import { UserActionInfo } from '../components/UserActionInfo';
 import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
+import { PublishReportCard } from '../modules/objects/PublishReportCard';
 import type { FilterSection } from '../interfaces/FilterSection';
 
 const BuildingIcon = () => (
@@ -162,6 +163,8 @@ export const ShowcaseView = () => {
           ]}
         />
       </Panel>
+
+      <PublishReportCard />
 
     </div>
   );
