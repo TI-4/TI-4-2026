@@ -4,29 +4,27 @@ namespace Campus.Domain.Entities;
 
 public class Room
 {
-    public Guid Id { get; set; }
-    public Guid CampusId { get; set; }
-    public Guid? BuildingId { get; set; }
-    public Guid CategoryId { get; set; }
+    public Guid Id { get; private set; }
+    public Guid CampusId { get; private set; }
+    public Guid? BuildingId { get; private set; }
+    public Guid CategoryId { get; private set; }
     
-    public string Name { get; set; } = string.Empty;
-    public int Floor { get; set; }
-    public string Type { get; set; } = string.Empty;
-    public string? Number { get; set; }
+    public string Name { get; private set; } = string.Empty;
+    public int Floor { get; private set; }
+    public string? Number { get; private set; }
     
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
-    public Campus Campus { get; set; } = null!;
+    public double Latitude { get; private set; }
+    public double Longitude { get; private set; }
+    public Campus Campus { get; private set; } = null!;
 
-    public Building? Building { get; set; }
-    public Category Category { get; set; } = null!;
+    public Building? Building { get; private set; }
+    public Category Category { get; private set; } = null!;
 
-    public Room(string name, int floor, string type, string number, double latitude, double longitude, Campus campus, Building building, Category category)
+    public Room(string name, int floor, string? number, double latitude, double longitude, Campus campus, Building? building, Category category)
     {
         this.Id = Guid.NewGuid();
         this.Name = name;
         this.Floor = floor;
-        this.Type = type;
         this.Number = number;
         this.Latitude = latitude;
         this.Longitude = longitude;
