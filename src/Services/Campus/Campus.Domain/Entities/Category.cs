@@ -11,6 +11,7 @@ public class Category
     public string Description { get; private set; } = string.Empty;
 
     public ICollection<Room> Rooms { get; private set; } = new List<Room>();
+    public ICollection<Structure> Structures { get; private set; } = new List<Structure>();
 
     public Category(string name, string icon, string description)
     {

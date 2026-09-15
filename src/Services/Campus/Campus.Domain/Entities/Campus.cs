@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Campus.Domain.ValueObjects;
 
 namespace Campus.Domain.Entities;
 
@@ -9,19 +10,17 @@ public class Campus
     public string Name { get; private set; } = string.Empty;
     public string Address { get; private set; } = string.Empty;
 
-    public double Latitude { get; private set; }
-    public double Longitude { get; private set; }
+    public Coordinate Coordinates { get; private set; } = null!;
 
     public ICollection<Building> Buildings { get; private set; } = new List<Building>();
-    public ICollection<Room> StandAloneRooms { get; private set; } = new List<Room>();
+    public ICollection<Structure> Structures { get; private set; } = new List<Structure>();
 
-    public Campus(string name, string address, double latitude, double longitude)
+    public Campus(string name, string address, Coordinate coordinates)
     {
         this.Id = Guid.NewGuid();
         this.Name = name;
         this.Address = address;
-        this.Latitude = latitude;
-        this.Longitude = longitude;
+        this.Coordinates = coordinates;
     }
 
     protected Campus() { }
