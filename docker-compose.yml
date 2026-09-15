@@ -39,22 +39,19 @@ services:
       dockerfile: src/Services/Campus/Dockerfile
     ports:
       - "5001:80"
+      
+  # ---- Schedule ----
+  schedule-api:
+    build:
+      context: .
+      dockerfile: src/Services/Schedule/Dockerfile
+    ports:
+      - "5004:80"
     depends_on:
       - postgres
     networks:
       - uct_network
 
-  # Example:
-  # identity-api:
-  #   build:
-  #     context: .
-  #     dockerfile: src/Services/Identity/Dockerfile
-  #   ports:
-  #     - "5001:80"
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - uct_network
 
 networks:
   uct_network:
