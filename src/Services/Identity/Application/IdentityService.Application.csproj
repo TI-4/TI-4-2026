@@ -8,4 +8,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Domain\IdentityService.Domain.csproj" />
   </ItemGroup>
+
 </Project>
