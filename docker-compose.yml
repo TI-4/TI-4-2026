@@ -33,9 +33,9 @@ services:
   # The team will add their Dockerfile builds here as they progress
 
   # ---- Campus ----
-  campus.api:
+  campus-api:
     build:
-      context: . 
+      context: .
       dockerfile: src/Services/Campus/Dockerfile
     ports:
       - "5001:80"
@@ -45,7 +45,7 @@ services:
       - uct_network
 
   # Example:
-  # identity.api:
+  # identity-api:
   #   build:
   #     context: .
   #     dockerfile: src/Services/Identity/Dockerfile
