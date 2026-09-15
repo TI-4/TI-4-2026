@@ -1,3 +1,4 @@
+using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ public static class DependencyInjection
         services.AddDbContext<IdentityDbContext>(options =>
             options.UseNpgsql(connectionString));
 
-        services.AddIdentityCore<IdentityUser>()
+        services.AddIdentityCore<User>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<IdentityDbContext>();
 
