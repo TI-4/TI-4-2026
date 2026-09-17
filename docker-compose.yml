@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # --- Databases ---
   postgres:
@@ -30,7 +28,17 @@ services:
       - uct_network
 
   # --- Microservices ---
-  # The team will add their Dockerfile builds here as they progress
+  
+  # ---- Identity ---- #
+  identity-api:
+    build:
+      context: .
+      dockerfile: src/Services/Identity/Dockerfile
+    ports:
+      - "5001:8080"
+    environment:
+      ConnectionStrings__IdentityDb: Host=postgres;Port=5432;Database=uct_map_db;Username=root;Password=rootpassword
+      JwtConfig__Key: 7d82f3a9b4e1c60d5f27a8b9c0d1e2f3a4b5c6d7e8f90a1b2c3d4e5f6a7b8c9d
 
   # ---- Campus ----
   campus-api:

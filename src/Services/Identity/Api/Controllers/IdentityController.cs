@@ -19,6 +19,9 @@ public class IdentityController(LoginUseCase loginUseCase) : ControllerBase
 
         var result = await loginUseCase.ExecuteAsync(request, cancellationToken);
 
-        return result is null ? Unauthorized() : Ok(result);
+        return result.Match(
+            loginResult => Ok(loginResult),
+            errors => Problem(statusCode: StatusCodes.Status401Unauthorized, title: errors.First().Description)
+        );
     }
 }

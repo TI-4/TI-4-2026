@@ -21,11 +21,14 @@ public static class DependencyInjection
         services.AddDbContext<IdentityDbContext>(options =>
             options.UseNpgsql(connectionString));
 
+        services.Configure<JwtSettings>(configuration.GetSection("JwtConfig"));
+
         services.AddIdentityCore<User>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<IdentityDbContext>();
 
         services.AddScoped<IUserAuthenticator, IdentityUserAuthenticator>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<LoginUseCase>();
 
         return services;
