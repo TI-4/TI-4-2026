@@ -16,6 +16,7 @@ import { SquareButton } from '../components/SquareButton';
 import { SectionButton } from '../components/SectionButton';
 import { UserActionInfo } from '../components/UserActionInfo';
 import { ContactProfilePanel } from '../modules/contacts/ContactProfilePanel';
+import { ContactCard } from '../modules/contacts/ContactCard';
 import { RoomInfoCard } from '../components/RoomInfoCard';
 import { ScheduleCard } from '../components/ScheduleCard';
 import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
@@ -86,6 +87,12 @@ export const ShowcaseView = () => {
         office="Oficina Física"
         email="Correo@uct.cl"
         phone="Número contacto"
+      />
+
+      <ContactCard
+        name="NOMBRE CONTACTO"
+        role="Cargo Principal"
+        department="Facultad y Departamento"
       />
 
       <Panel color="white" innerClassName="p-6 flex flex-wrap gap-4 items-center">

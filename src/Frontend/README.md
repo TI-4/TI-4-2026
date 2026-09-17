@@ -34,7 +34,7 @@ Para mantener la arquitectura escalable, las piezas de interfaz más complejas (
 | Módulo | Componente | Descripción del componente | Parámetros |
 |---|---|---|---|
 | `map` | `MapFiltersPanel` | Panel interactivo para filtrar categorías y ubicaciones dentro del mapa. | `title`, `sections`, `onToggleItem`, `className` |
-| `contacts` | `ContactProfilePanel` | Perfiles de profesores, personal e información de contacto. | `title`, `contact`, `onClose`, `className` |
+| `contacts` | `ContactProfilePanel`, `ContactCard` | Perfiles de profesores, personal e información de contacto. | `title`, `contact`, `onClose`, `className` |
 | `map` | `BuildingDetailCard` | Tarjeta/Modal detallado de edificio con carrusel de imágenes, horario de atención, cantidad de pisos, servicios, listado de salas (`RoomInfoCard`), reporte de problemas y botones de llegada y vista 360°. | `title`, `subtitle`, `images`, `schedule`, `floors`, `services`, `rooms`, `onClose`, `onNavigate`, `onView360`, `onReportProblem` |
 | `objects` | `PublishReportCard` | Card/Modal interactivo para publicar nuevos reportes de objetos perdidos con título, descripción, subida de imágenes, selección de ubicación y botones de acción. | `onPublish`, `onDiscard` |
 
