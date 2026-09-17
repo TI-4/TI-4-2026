@@ -1,0 +1,35 @@
+{
+  "incident_queja":{
+    "_id_queja" : {"type": "UUID"},
+    "_id_ticket": {"type": "UUID"},
+    "titulo": {"type" : "string"},
+    "descripcion": {"type": "string"}
+  },
+
+
+  "incident_objeto":{
+    "_id_objeto" : {"type": "UUID"},
+    "_id_ticket": {"type": "UUID"},
+    "titulo": {"type" : "string"},
+    "descripcion": {"type": "string"},
+    "estado": {
+          "type": "string",
+          "enum": ["pendiente", "en_proceso", "resuelto", "cancelado"]
+        },
+    "foto_url": {"type": "string", "format": "uri"}
+  },
+
+
+"incident_ticket":{
+  "_id_ticket": {"type": "UUID"},
+  "_id_usuario_ref": {"type": "UUID"},
+  "_id_estructura_ref" : {"type": "UUID"},
+  "tipo_ticket": {
+      "type": "string",
+      "enum": ["Claim", "Found", "Match", "Pickup"]
+  },
+  "activo": {"type": "bool"},
+  "fecha": {"type": "string", "format":"date-time"},
+  "coordenadas": {"type": "tuple"}
+  }
+}
