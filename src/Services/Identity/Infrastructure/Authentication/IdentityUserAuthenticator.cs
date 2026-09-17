@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace IdentityService.Infrastructure.Authentication;
 
-public sealed class IdentityUserAuthenticator(UserManager<User> userManager) : IUserAuthenticator
+public sealed class IdentityUserAuthenticator(UserManager<User> userManager, IJwtTokenGenerator jwtTokenGenerator) : IUserAuthenticator
 {
     public async Task<LoginResult?> AuthenticateAsync(
         string email,
@@ -18,6 +18,9 @@ public sealed class IdentityUserAuthenticator(UserManager<User> userManager) : I
             return null;
         }
 
-        return new LoginResult(user.Id, user.Email ?? email);
+        var resultWithoutToken = new LoginResult(user.Id, user.Email ?? email);
+        var token = await jwtTokenGenerator.GenerateAsync(resultWithoutToken, cancellationToken);
+
+        return resultWithoutToken with { Token = token };
     }
 }

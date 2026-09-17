@@ -9,13 +9,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.Infrastructure.Authentication;
 
-public sealed class JwtTokenGenerator(
-    UserManager<User> userManager,
-    IOptions<JwtSettings> options) : IJwtTokenGenerator
+public sealed class JwtTokenGenerator(UserManager<User> userManager,IOptions<JwtSettings> options) : IJwtTokenGenerator
 {
-    public async Task<string> GenerateAsync(
-        LoginResult user,
-        CancellationToken cancellationToken = default)
+
+    public async Task<string> GenerateAsync(LoginResult user, CancellationToken cancellationToken = default)
     {
         var settings = options.Value;
         var identityUser = await userManager.FindByIdAsync(user.UserId)
@@ -35,6 +32,7 @@ public sealed class JwtTokenGenerator(
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Key)),
             SecurityAlgorithms.HmacSha256);
+
         var token = new JwtSecurityToken(
             issuer: settings.Issuer,
             audience: settings.Audience,
