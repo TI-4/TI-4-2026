@@ -30,6 +30,17 @@ services:
       - uct_network
 
   # --- Microservices ---
+  # The team will add their Dockerfile builds here as they progress
+
+  # ---- Campus ----
+  campus-api:
+    build:
+      context: .
+      dockerfile: src/Services/Campus/Dockerfile
+    ports:
+      - "5001:80"
+      
+  # ---- Schedule ----
   schedule-api:
     build:
       context: .
@@ -40,6 +51,7 @@ services:
       - postgres
     networks:
       - uct_network
+
 
 networks:
   uct_network:
