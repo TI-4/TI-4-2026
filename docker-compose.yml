@@ -8,7 +8,6 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: rootpassword
-      POSTGRES_DB: uct_map_db
     ports:
       - "5432:5432"
     volumes:
