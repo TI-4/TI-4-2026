@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IdentityService.Application\IdentityService.Application.csproj" />
-    <ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
+    <ProjectReference Include="..\Domain\IdentityService.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="ErrorOr" Version="2.1.1" />
   </ItemGroup>
+
 </Project>

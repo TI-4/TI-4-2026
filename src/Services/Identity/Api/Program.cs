@@ -1,17 +1,15 @@
 using IdentityService.Infrastructure;
+using IdentityService.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.MapGet("/health", () => Results.Ok(new
-{
-    service = "identity-service",
-    status = "healthy"
-}));
+app.MapControllers();
 
 app.Run();
 
