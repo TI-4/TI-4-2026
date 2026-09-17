@@ -71,7 +71,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       ),
       _protected(2, const LostFoundScreen(), 'Objetos perdidos'),
       _protected(3, const ReportsScreen(), 'Reportes de incidencias'),
-      const ProfileScreen(),
+      ProfileScreen(
+        session: _session,
+        onNavigateToTab: _onTabTapped,
+        onLogout: () {
+          _session.signOut();
+          setState(() {});
+        },
+      ),
     ];
 
     return Scaffold(
