@@ -30,6 +30,36 @@ services:
       - uct_network
 
   # --- Microservices ---
+  # The team will add their Dockerfile builds here as they progress
+  # Example:
+  # identity.api:
+  #   build:
+  #     context: .
+  #     dockerfile: src/Services/Identity/Dockerfile
+  #   ports:
+  #     - "5001:80"
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - uct_network
+  #
+  incident.api:
+    build:
+      context: .
+      dockerfile: src/Services/Incident/Incident.API/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - MongoDB__ConnectionString=mongodb://root:rootpassword@mongodb:27017
+      - MongoDB__DatabaseName=uct_incident_db
+    depends_on:
+      - mongodb
+    networks:
+      - uct_network
+
+
 
   # -- Identity -- #
   identity-api:
