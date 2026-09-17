@@ -4,20 +4,30 @@ namespace Campus.Domain.Entities;
 
 public class Room
 {
-    public Guid Id { get; set; }
-    public Guid CampusId { get; set; }
-    public Guid? BuildingId { get; set; }
-    public Guid CategoryId { get; set; }
+    public Guid Id { get; private set; }
+    public Guid BuildingId { get; private set; }
+    public Guid CategoryId { get; private set; }
     
-    public string Name { get; set; } = string.Empty;
-    public int Floor { get; set; }
-    public string Type { get; set; } = string.Empty;
-    public string Number { get; set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
+    public int Floor { get; private set; }
+    public string? Number { get; private set; }
     
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
-    public Campus Campus { get; set; } = null!;
+    public Building Building { get; private set; } = null!;
+    public Category Category { get; private set; } = null!;
 
-    public Building? Building { get; set; }
-    public Category Category { get; set; } = null!;
+    public Room(string name, int floor, string? number, Building building, Category category)
+    {
+        this.Id = Guid.NewGuid();
+        this.Name = name;
+        this.Floor = floor;
+        this.Number = number;
+        
+        this.Building = building;
+        this.BuildingId = building.Id;
+        
+        this.Category = category;
+        this.CategoryId = category.Id;
+    }
+
+    protected Room() { }
 }
