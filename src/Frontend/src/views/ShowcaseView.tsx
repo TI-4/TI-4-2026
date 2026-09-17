@@ -19,6 +19,8 @@ import { ContactProfilePanel } from '../modules/contacts/ContactProfilePanel';
 import { ContactCard } from '../modules/contacts/ContactCard';
 import { ObjectReportCard } from '../modules/objects/ObjectReportCard';
 import { IncidentCard } from '../modules/incidents/IncidentCard';
+import { LoadingSpinner } from '../components/LoadingSpinner';
+import { UCT_LOADING_PHRASES } from '../constants/loadingPhrases';
 import { RoomInfoCard } from '../components/RoomInfoCard';
 import { ScheduleCard } from '../components/ScheduleCard';
 import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
@@ -120,6 +122,13 @@ export const ShowcaseView = () => {
         reporterAvatar="https://i.pravatar.cc/150?img=11"
         description="Estudiantes destruyeron un baño hace unos minutos en el edificio 8..."
       />
+
+      <Panel color="white" innerClassName="p-6 flex flex-col gap-4 items-center justify-center min-w-[350px] min-h-[300px]">
+        <LoadingSpinner 
+          size="lg" 
+          texts={UCT_LOADING_PHRASES} 
+        />
+      </Panel>
 
       <Panel color="white" innerClassName="p-6 flex flex-wrap gap-4 items-center">
         <Button variant="solid">Guardar</Button>

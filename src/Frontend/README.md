@@ -15,6 +15,7 @@
 | `ImageGallery` | Carrusel automático de imágenes. | `images`, `autoPlayInterval`, `width`, `height` | `useImageControls` |
 | `ImagePagination` | Indicadores de posición (puntos) para la galería. | `total`, `currentIndex`, `onSelect` | - |
 | `Input` | Campo estándar para ingreso de texto con etiqueta opcional superior. | `label`, `labelColor` (opcional, blanco por defecto), `error`, `multiline`, `icon`, *Props HTML* | - |
+| `LoadingSpinner` | Componente visual animado para indicar que un proceso o dato se está cargando. Puede usarse como placeholder. | `size` (sm/md/lg/xl), `color`, `text`, `className` | - |
 | `MapMarker` | Botón interactivo usado como pin en el mapa. | `icon`, `color` | - |
 | `NavButton` | Enlace de navegación para rutas del React Router. | `to`, `icon`, `label`, `size`, `width` | - |
 | `Panel` | Contenedor reutilizable con estilos estandarizados de tarjeta. | `children`, `color`, `withUctBorder`, `onClose` | - |
