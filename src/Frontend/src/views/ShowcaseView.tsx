@@ -15,8 +15,11 @@ import { FileUpload } from '../components/FileUpload';
 import { SquareButton } from '../components/SquareButton';
 import { SectionButton } from '../components/SectionButton';
 import { UserActionInfo } from '../components/UserActionInfo';
+import { ContactProfilePanel } from '../modules/contacts/ContactProfilePanel';
 import { RoomInfoCard } from '../components/RoomInfoCard';
+import { ScheduleCard } from '../components/ScheduleCard';
 import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
+import { BuildingDetailCard } from '../modules/map/BuildingDetailCard';
 import { PublishReportCard } from '../modules/objects/PublishReportCard';
 import type { FilterSection } from '../interfaces/FilterSection';
 
@@ -73,6 +76,16 @@ export const ShowcaseView = () => {
         title="Filtros (2)" 
         sections={filters} 
         onToggleItem={handleToggleFilter} 
+      />
+
+      <ContactProfilePanel
+        name="NOMBRE PROFESOR"
+        degree="Grado Académico"
+        role="Cargo Principal"
+        department="Facultad y Departamento"
+        office="Oficina Física"
+        email="Correo@uct.cl"
+        phone="Número contacto"
       />
 
       <Panel color="white" innerClassName="p-6 flex flex-wrap gap-4 items-center">
@@ -153,6 +166,8 @@ export const ShowcaseView = () => {
 
       <RoomInfoCard title="SALA 11-101" type="Sala de clases" capacity={60} />
 
+      <ScheduleCard schedule="08:00 - 22:00 hrs" className="max-w-xs" />
+
       <Panel color="white" innerClassName="p-6">
         <FileUpload />
       </Panel>
@@ -168,6 +183,8 @@ export const ShowcaseView = () => {
       </Panel>
 
       <PublishReportCard />
+
+      <BuildingDetailCard />
 
     </div>
   );
