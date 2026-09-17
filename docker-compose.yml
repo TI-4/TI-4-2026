@@ -42,6 +42,24 @@ services:
   #     - postgres
   #   networks:
   #     - uct_network
+  #
+  incident.api:
+    build:
+      context: .
+      dockerfile: src/Services/Incident/Incident.API/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - MongoDB__ConnectionString=mongodb://root:rootpassword@mongodb:27017
+      - MongoDB__DatabaseName=uct_incident_db
+    depends_on:
+      - mongodb
+    networks:
+      - uct_network
+
+
 
 networks:
   uct_network:
