@@ -1,3 +1,6 @@
+using IdentityService.Domain.Entities;
+using IdentityService.Application.Authentication;
+using IdentityService.Infrastructure.Authentication;
 using IdentityService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +21,15 @@ public static class DependencyInjection
         services.AddDbContext<IdentityDbContext>(options =>
             options.UseNpgsql(connectionString));
 
-        services.AddIdentityCore<IdentityUser>()
+        services.Configure<JwtSettings>(configuration.GetSection("JwtConfig"));
+
+        services.AddIdentityCore<User>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<IdentityDbContext>();
+
+        services.AddScoped<IUserAuthenticator, IdentityUserAuthenticator>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<LoginUseCase>();
 
         return services;
     }
