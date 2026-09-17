@@ -17,6 +17,7 @@ import { SectionButton } from '../components/SectionButton';
 import { UserActionInfo } from '../components/UserActionInfo';
 import { ContactProfilePanel } from '../modules/contacts/ContactProfilePanel';
 import { ContactCard } from '../modules/contacts/ContactCard';
+import { ObjectReportCard } from '../modules/objects/ObjectReportCard';
 import { RoomInfoCard } from '../components/RoomInfoCard';
 import { ScheduleCard } from '../components/ScheduleCard';
 import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
@@ -93,6 +94,18 @@ export const ShowcaseView = () => {
         name="NOMBRE CONTACTO"
         role="Cargo Principal"
         department="Facultad y Departamento"
+      />
+
+      <ObjectReportCard
+        title="OBJETO"
+        status="Publicado"
+        statusColor="blue"
+        building="EDIFICIO 11"
+        code="OP-2026-0001"
+        actions={[
+          { title: "Reportado por Usuario", subtitle: "Hace 24 minutos", avatarSrc: "https://i.pravatar.cc/150?img=11" },
+          { title: "Recuperado por Usuario", subtitle: "Hace 12 minutos", avatarSrc: "https://i.pravatar.cc/150?img=11" }
+        ]}
       />
 
       <Panel color="white" innerClassName="p-6 flex flex-wrap gap-4 items-center">
