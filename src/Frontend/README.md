@@ -37,6 +37,7 @@ Para mantener la arquitectura escalable, las piezas de interfaz más complejas (
 | `contacts` | `ContactProfilePanel`, `ContactCard` | Perfiles de profesores, personal e información de contacto. | `title`, `contact`, `onClose`, `className` |
 | `map` | `BuildingDetailCard` | Tarjeta/Modal detallado de edificio con carrusel de imágenes, horario de atención, cantidad de pisos, servicios, listado de salas (`RoomInfoCard`), reporte de problemas y botones de llegada y vista 360°. | `title`, `subtitle`, `images`, `schedule`, `floors`, `services`, `rooms`, `onClose`, `onNavigate`, `onView360`, `onReportProblem` |
 | `objects` | `PublishReportCard`, `ObjectReportCard` | Card/Modal interactivo para publicar nuevos reportes de objetos perdidos con título, descripción, subida de imágenes, selección de ubicación y botones de acción. Reportes existentes usan `ObjectReportCard`. | `title`, `status`, `photoUrl`, `building`, `code`, `actions` |
+| `incidents` | `IncidentCard` | Tarjeta para visualizar un reporte de incidente con ubicación, estado, fotografía, título, autor del reporte y descripción detallada. | `location`, `status`, `photoUrl`, `title`, `reporterName`, `reportTime`, `reporterAvatar`, `description` |
 
 ## Vistas (Views)
 

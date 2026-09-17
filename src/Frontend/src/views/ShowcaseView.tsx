@@ -18,6 +18,7 @@ import { UserActionInfo } from '../components/UserActionInfo';
 import { ContactProfilePanel } from '../modules/contacts/ContactProfilePanel';
 import { ContactCard } from '../modules/contacts/ContactCard';
 import { ObjectReportCard } from '../modules/objects/ObjectReportCard';
+import { IncidentCard } from '../modules/incidents/IncidentCard';
 import { RoomInfoCard } from '../components/RoomInfoCard';
 import { ScheduleCard } from '../components/ScheduleCard';
 import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
@@ -106,6 +107,18 @@ export const ShowcaseView = () => {
           { title: "Reportado por Usuario", subtitle: "Hace 24 minutos", avatarSrc: "https://i.pravatar.cc/150?img=11" },
           { title: "Recuperado por Usuario", subtitle: "Hace 12 minutos", avatarSrc: "https://i.pravatar.cc/150?img=11" }
         ]}
+      />
+
+      <IncidentCard
+        location="EDIFICIO 11"
+        status="SIN REVISAR"
+        statusColor="red"
+        photoUrl="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        title="Baño roto"
+        reporterName="Juan Pérez"
+        reportTime="Hace 24 minutos"
+        reporterAvatar="https://i.pravatar.cc/150?img=11"
+        description="Estudiantes destruyeron un baño hace unos minutos en el edificio 8..."
       />
 
       <Panel color="white" innerClassName="p-6 flex flex-wrap gap-4 items-center">
