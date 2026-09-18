@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'domain/repositories/auth_repository.dart';
 import 'presentation/navigation/main_navigation_screen.dart';
 import 'presentation/screens/professors/professors_screen.dart';
 import 'presentation/screens/reports/reports_screen.dart';
@@ -10,7 +11,11 @@ void main() {
 }
 
 class UctMapApp extends StatelessWidget {
-  const UctMapApp({super.key});
+  const UctMapApp({super.key, this.authRepository});
+
+  /// Repositorio de auth para el login. Si no se entrega se consume el
+  /// backend real (útil para inyectar fakes en tests).
+  final AuthRepository? authRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +40,7 @@ class UctMapApp extends StatelessWidget {
         '/professors': (context) => const ProfessorsScreen(),
         '/reports': (context) => const ReportsScreen(),
         '/lost-found': (context) => const LostFoundScreen(),
-        '/login': (context) => const LoginPage(),
+        '/login': (context) => LoginPage(authRepository: authRepository),
       },
     );
   }
