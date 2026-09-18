@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../data/datasources/auth_remote_ds.dart';
+import '../../../domain/repositories/auth_repository.dart';
 
-// Pantalla de login (réplica de login_uct_map.png). Sin backend: valida y
-// devuelve true a quien la abrió (la sesión real llega en tarea 3/6).
+// Pantalla de login: valida el formulario y autentica contra el backend.
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({super.key, this.authRepository});
+
+  /// Auth a usar; por defecto, el backend real.
+  final AuthRepository? authRepository;
 
   static final uctEmail =
       RegExp(r'^[^@\s]+@([a-z0-9-]+\.)*uct\.cl$', caseSensitive: false);
@@ -19,6 +23,15 @@ class _LoginPageState extends State<LoginPage> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   bool _obscure = true;
+  bool _loading = false;
+  String? _error;
+  late final AuthRepository _repo;
+
+  @override
+  void initState() {
+    super.initState();
+    _repo = widget.authRepository ?? AuthRemoteDataSource();
+  }
 
   @override
   void dispose() {
@@ -27,9 +40,35 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
+    if (_loading) return;
     if (!_formKey.currentState!.validate()) return;
-    Navigator.pop(context, {'ok': true, 'email': _emailCtrl.text.trim()});
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final result = await _repo.login(
+        email: _emailCtrl.text,
+        password: _passCtrl.text,
+      );
+      if (!mounted) return;
+      Navigator.pop(context, {
+        'ok': true,
+        'email': result.email,
+        'userId': result.userId,
+        'token': result.token,
+      });
+    } on AuthFailure catch (e) {
+      if (!mounted) return;
+      setState(() => _error = e.message);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _error = 'Ocurrió un error inesperado. Intenta de nuevo.');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
@@ -197,10 +236,23 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
+                if (_error != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      _error!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
                 SizedBox(
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _submit,
+                    onPressed: _loading ? null : _submit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.uctBlue,
                       foregroundColor: Colors.white,
@@ -208,17 +260,27 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Iniciar Sesión',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w700)),
-                        SizedBox(width: 8),
-                        Icon(Icons.arrow_forward, size: 20),
-                      ],
-                    ),
+                    child: _loading
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Iniciar Sesión',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700)),
+                              SizedBox(width: 8),
+                              Icon(Icons.arrow_forward, size: 20),
+                            ],
+                          ),
                   ),
                 ),
                 const SizedBox(height: 24),
