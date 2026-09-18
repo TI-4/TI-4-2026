@@ -123,11 +123,33 @@ export const ShowcaseView = () => {
         description="Estudiantes destruyeron un baño hace unos minutos en el edificio 8..."
       />
 
-      <Panel color="white" innerClassName="p-6 flex flex-col gap-4 items-center justify-center min-w-[350px] min-h-[300px]">
-        <LoadingSpinner 
-          size="lg" 
-          texts={UCT_LOADING_PHRASES} 
-        />
+      {/* Sección Showcase de Variantes del LoadingSpinner */}
+      <Panel color="white" innerClassName="p-8 flex flex-col gap-6 items-center w-full max-w-4xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 items-center justify-items-center w-full">
+          {/* Classic Variant */}
+          <div className="flex flex-col items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 w-full min-h-[220px] justify-center">
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Classic</span>
+            <LoadingSpinner size="lg" texts={UCT_LOADING_PHRASES} variant="classic" />
+          </div>
+
+          {/* Dark Variant */}
+          <div className="flex flex-col items-center gap-3 p-4 bg-gray-100 rounded-xl border border-gray-200 w-full min-h-[220px] justify-center">
+            <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">Dark / Black</span>
+            <LoadingSpinner size="lg" texts={UCT_LOADING_PHRASES} variant="dark" />
+          </div>
+
+          {/* Light Variant (on dark background container) */}
+          <div className="flex flex-col items-center gap-3 p-4 bg-gray-900 rounded-xl border border-gray-800 w-full min-h-[220px] justify-center">
+            <span className="text-xs font-bold text-gray-300 uppercase tracking-wider">Light / White</span>
+            <LoadingSpinner size="lg" texts={UCT_LOADING_PHRASES} variant="light" />
+          </div>
+
+          {/* Sin Texto (hideText) */}
+          <div className="flex flex-col items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 w-full min-h-[220px] justify-center">
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Sin Texto</span>
+            <LoadingSpinner size="lg" variant="classic" hideText />
+          </div>
+        </div>
       </Panel>
 
       <Panel color="white" innerClassName="p-6 flex flex-wrap gap-4 items-center">
