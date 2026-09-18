@@ -4,13 +4,11 @@ import '../../../core/theme/app_colors.dart';
 import '../../../data/datasources/auth_remote_ds.dart';
 import '../../../domain/repositories/auth_repository.dart';
 
-// Pantalla de login (réplica de login_uct_map.png). Consume el endpoint de
-// autenticación vía [AuthRepository] (tarea 3). La persistencia del token
-// llega en tarea 4 y la sesión real en tarea 6.
+// Pantalla de login: valida el formulario y autentica contra el backend.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, this.authRepository});
 
-  /// Repositorio a usar. Si no se entrega se consume el backend real.
+  /// Auth a usar; por defecto, el backend real.
   final AuthRepository? authRepository;
 
   static final uctEmail =
@@ -66,7 +64,6 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
       setState(() => _error = e.message);
     } catch (_) {
-      // Nunca filtrar detalles internos a la UI.
       if (!mounted) return;
       setState(() => _error = 'Ocurrió un error inesperado. Intenta de nuevo.');
     } finally {

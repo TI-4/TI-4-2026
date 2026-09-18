@@ -7,12 +7,8 @@ import 'package:http/http.dart' as http;
 import '../../core/network/api_config.dart';
 import '../../domain/repositories/auth_repository.dart';
 
-/// Consume el endpoint de autenticación del backend vía API Gateway.
-///
-/// Envía exactamente `{Email, Password}` y acepta exactamente
-/// `{UserId, Email, Token}`. Cualquier otra forma es error, no se adivina.
-/// La contraseña viaja solo en el body del POST y nunca se guarda ni se
-/// registra en logs.
+/// Llama a POST /api/identity/login y valida la respuesta exacta
+/// {UserId, Email, Token}. La contraseña solo viaja en el body del POST.
 class AuthRemoteDataSource implements AuthRepository {
   AuthRemoteDataSource({http.Client? client, ApiConfig? config})
       : _client = client ?? http.Client(),
@@ -74,7 +70,7 @@ class AuthRemoteDataSource implements AuthRepository {
           }
         }
       } on FormatException {
-        // Cae al failure de respuesta inesperada.
+        // Respuesta con JSON inválido: se reporta abajo como inesperada.
       }
       throw const AuthFailure(
           'Respuesta inesperada del servidor. Intenta de nuevo.');

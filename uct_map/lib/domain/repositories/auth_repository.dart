@@ -1,9 +1,4 @@
-// Contrato de autenticación. Refleja al backend (IdentityService) al pie de
-// la letra, sin tolerancias: lo que el backend no entrega no se inventa.
-//
-// POST /api/identity/login {Email, Password}
-//   200 -> {UserId, Email, Token}
-//   400 -> faltan datos | 401 -> credenciales inválidas
+// POST /api/identity/login {Email, Password} -> {UserId, Email, Token}.
 class AuthLoginResult {
   const AuthLoginResult({
     required this.userId,
@@ -16,8 +11,7 @@ class AuthLoginResult {
   final String token;
 }
 
-/// Error de login con mensaje ya en español para mostrar en UI.
-/// No expone cuerpos crudos del servidor.
+/// Error de login con mensaje listo para mostrar en UI.
 class AuthFailure implements Exception {
   const AuthFailure(this.message);
 

@@ -13,8 +13,7 @@ void main() {
 class UctMapApp extends StatelessWidget {
   const UctMapApp({super.key, this.authRepository});
 
-  /// Repositorio de auth para el login. Si no se entrega se consume el
-  /// backend real (útil para inyectar fakes en tests).
+  /// Auth del login; por defecto usa el backend real.
   final AuthRepository? authRepository;
 
   @override
