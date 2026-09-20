@@ -10,6 +10,9 @@ import MapIcon from '../assets/svg/icons/icon_section_map.svg?react';
 import ReportsIcon from '../assets/svg/icons/icon_section_incidents.svg?react';
 import ObjectsIcon from '../assets/svg/icons/icon_section_objects.svg?react';
 import ContactsIcon from '../assets/svg/icons/icon_section_contacts.svg?react';
+import AdminIcon from '../assets/svg/icons/icon_admin.svg?react';
+import UsersIcon from '../assets/svg/icons/icon_users.svg?react';
+import { IconText } from './IconText';
 
 export const AppLayout = () => {
   const { isExpanded, setIsExpanded } = useNavStore();
@@ -20,6 +23,7 @@ export const AppLayout = () => {
     if (path.includes('/reports')) return 'Reportes';
     if (path.includes('/objects')) return 'Objetos';
     if (path.includes('/contacts')) return 'Contactos';
+    if (path.includes('/admin/users')) return 'Gestión Usuarios';
     if (path.includes('/showcase')) return 'Showcase';
     return '';
   };
@@ -108,6 +112,32 @@ export const AppLayout = () => {
           isExpanded={isExpanded}
           expandedWidth="288px"
           icon={<ObjectsIcon className="w-8 h-8" />}
+        />
+
+        {/* ADMIN SECTION DIVIDER */}
+        <div className="mt-2 mb-1 flex items-center text-white">
+          <div className="flex-shrink-0 flex items-center justify-center w-14 h-14">
+            <AdminIcon className="w-11 h-11" />
+          </div>
+          <div
+            className={`transition-all duration-300 ease-in-out overflow-hidden flex items-center whitespace-nowrap ${
+              isExpanded
+                ? 'max-w-[200px] opacity-100 ml-3'
+                : 'max-w-0 opacity-0 ml-0 pointer-events-none'
+            }`}
+          >
+            <span className="text-sm tracking-[0.2em] font-black uppercase">
+              Administración
+            </span>
+          </div>
+        </div>
+
+        <SectionButton
+          to="/admin/users"
+          label="Usuarios"
+          isExpanded={isExpanded}
+          expandedWidth="288px"
+          icon={<UsersIcon className="w-8 h-8" />}
         />
 
         {/* User Info Container (At the bottom) */}

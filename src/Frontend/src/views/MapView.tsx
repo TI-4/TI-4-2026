@@ -4,6 +4,7 @@ import WorldMap from '../assets/svg/maps/world.svg?react';
 import { Select } from '../components/Select';
 import { SearchInput } from '../components/SearchInput';
 import { SquareButton } from '../components/SquareButton';
+import { HeatmapSpot } from '../modules/map/HeatmapSpot';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
@@ -71,7 +72,7 @@ export const MapView = () => {
 
             <TransformComponent
               wrapperStyle={{ width: '100%', height: '100%' }}
-              contentStyle={{ width: '100%', height: '100%' }}
+              contentStyle={{ width: '100%', height: '100%', position: 'relative' }}
               wrapperClass="cursor-grab active:cursor-grabbing"
             >
               <WorldMap
@@ -79,6 +80,12 @@ export const MapView = () => {
                 style={{ width: '100%', height: '100%' }}
                 className="pointer-events-auto"
               />
+              
+              {/* Mock Heatmap Spots */}
+              <HeatmapSpot x="30%" y="40%" intensity={20} />
+              <HeatmapSpot x="45%" y="60%" intensity={55} />
+              <HeatmapSpot x="60%" y="30%" intensity={85} />
+              <HeatmapSpot x="75%" y="70%" intensity={100} />
             </TransformComponent>
           </React.Fragment>
         )}

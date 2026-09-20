@@ -6,6 +6,7 @@ import { ObjectsView } from '../views/ObjectsView';
 import { ContactsView } from '../views/ContactsView';
 import { ShowcaseView } from '../views/ShowcaseView';
 import { LoginView } from '../views/LoginView';
+import { UsersAdminView } from '../views/UsersAdminView';
 
 export const AppRouter = () => {
   return (
@@ -15,6 +16,7 @@ export const AppRouter = () => {
         <Route path="/reports" element={<IncidentsView />} />
         <Route path="/objects" element={<ObjectsView />} />
         <Route path="/contacts" element={<ContactsView />} />
+        <Route path="/admin/users" element={<UsersAdminView />} />
         <Route path="/showcase" element={<ShowcaseView />} />
         <Route path="/login" element={<LoginView />} />
       </Route>
