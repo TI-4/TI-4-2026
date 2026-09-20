@@ -7,6 +7,7 @@ import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
 import SortIcon from '../assets/svg/icons/icon_sort.svg?react';
 import CategoryIcon from '../assets/svg/icons/icon_category_cube.svg?react';
+import PlusIcon from '../assets/svg/icons/icon_plus.svg?react';
 
 export const ObjectsView = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -69,9 +70,9 @@ export const ObjectsView = () => {
               color="blue"
               size="md"
               onClick={handleCreateReport}
-              className="font-bold tracking-wide shadow-md hover:scale-105 transition-transform whitespace-nowrap !w-auto px-6 h-[50px] flex items-center justify-center"
+              className="font-bold tracking-wide shadow-md hover:scale-105 transition-transform whitespace-nowrap !w-auto px-6 h-[50px] flex items-center justify-center gap-2"
             >
-              + CREAR REPORTE
+              <PlusIcon className="w-5 h-5 stroke-[3]" /> CREAR REPORTE
             </Button>
           </div>
         </div>

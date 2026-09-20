@@ -26,6 +26,7 @@ import { ScheduleCard } from '../components/ScheduleCard';
 import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
 import { BuildingDetailCard } from '../modules/map/BuildingDetailCard';
 import { PublishReportCard } from '../modules/objects/PublishReportCard';
+import { SearchInput } from '../components/SearchInput';
 import type { FilterSection } from '../interfaces/FilterSection';
 
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
@@ -40,6 +41,7 @@ import MailAltIcon from '../assets/svg/icons/icon_mail_alt.svg?react';
 
 export const ShowcaseView = () => {
   // Estado mock para los filtros del showcase
+  const [searchInputValue, setSearchInputValue] = useState('');
   const [filters, setFilters] = useState<FilterSection[]>([
     {
       id: 'academico',
@@ -165,6 +167,23 @@ export const ShowcaseView = () => {
       <Panel color="white" innerClassName="p-6 flex flex-col gap-4 min-w-[350px]">
         <Input label="Normal" placeholder="Placeholder" />
         <Input label="Con Error" placeholder="Placeholder" error="Mensaje de error" />
+      </Panel>
+
+      <Panel color="white" innerClassName="p-6 flex flex-col gap-4 min-w-[350px] relative z-20">
+        <h3 className="text-gray-700 font-bold -mb-2">Search Input (Autocomplete)</h3>
+        <SearchInput
+          label="Buscador con sugerencias"
+          placeholder="Escribe 'patata', 'manzana', etc..."
+          value={searchInputValue}
+          onChange={setSearchInputValue}
+          icon={<MapPinIcon className="w-5 h-5 text-gray-500" />}
+          options={[
+            { value: 'patata', label: 'Patata Frita' },
+            { value: 'manzana', label: 'Manzana Roja' },
+            { value: 'pera', label: 'Pera Verde' },
+            { value: 'platano', label: 'Plátano' }
+          ]}
+        />
       </Panel>
 
       <Panel color="white" innerClassName="p-6 flex flex-col gap-4 min-w-[350px]">

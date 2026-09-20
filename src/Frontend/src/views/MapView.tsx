@@ -9,7 +9,7 @@ import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
 import PlusIcon from '../assets/svg/icons/icon_plus.svg?react';
 import MinusIcon from '../assets/svg/icons/icon_minus.svg?react';
-import CenterIcon from '../assets/svg/icons/icon_center.svg?react';
+import TargetIcon from '../assets/svg/icons/icon_target.svg?react';
 
 export const MapView = () => {
   return (
@@ -53,7 +53,7 @@ export const MapView = () => {
                 <MinusIcon className="w-8 h-8" />
               </SquareButton>
               <SquareButton onClick={() => resetTransform()} title="Centrar mapa">
-                <CenterIcon className="w-7 h-7" />
+                <TargetIcon className="w-7 h-7" />
               </SquareButton>
             </div>
 
