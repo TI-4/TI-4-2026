@@ -100,3 +100,34 @@
 .animate-spin-expo {
   animation: uct-spin-expo 2.8s infinite;
 }
+
+@keyframes slide-stretch-right {
+  0% { transform: translateX(0) scaleX(1); }
+  40% { transform: translateX(40%) scaleX(1.4); }
+  80% { transform: translateX(108%) scaleX(0.95); }
+  100% { transform: translateX(100%) scaleX(1); }
+}
+
+@keyframes slide-stretch-left {
+  0% { transform: translateX(100%) scaleX(1); }
+  40% { transform: translateX(60%) scaleX(1.4); }
+  80% { transform: translateX(-8%) scaleX(0.95); }
+  100% { transform: translateX(0) scaleX(1); }
+}
+
+.animate-slide-stretch-right {
+  animation: slide-stretch-right 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.animate-slide-stretch-left {
+  animation: slide-stretch-left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes float-up-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.animate-float-up-down {
+  animation: float-up-down 3s ease-in-out infinite;
+}

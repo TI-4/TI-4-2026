@@ -56,9 +56,9 @@ export const ContactProfilePanel = ({
           </div>
 
           <div className="flex flex-col gap-3 mb-6">
-            <IconText icon={<BuildingIcon />} text={office} className="!text-lg" />
-            <IconText icon={<MailIcon />} text={email} className="!text-lg" />
-            <IconText icon={<PhoneIcon />} text={phone} className="!text-lg" />
+            <IconText icon={<BuildingIcon className="w-[1em] h-[1em]" />} text={office} className="!text-lg" />
+            <IconText icon={<MailIcon className="w-[1em] h-[1em]" />} text={email} className="!text-lg" />
+            <IconText icon={<PhoneIcon className="w-[1em] h-[1em]" />} text={phone} className="!text-lg" />
           </div>
 
           <Button variant="solid" onClick={onViewOffice} className="w-max px-8">

@@ -5,6 +5,7 @@ import { Select } from '../components/Select';
 import { NavButton } from '../components/NavButton';
 import { CheckboxItem } from '../components/CheckboxItem';
 import { Tag } from '../components/Tag';
+import { EmptyState } from '../components/EmptyState';
 import { Panel } from '../components/Panel';
 import { MapMarker } from '../components/MapMarker';
 import { IconText } from '../components/IconText';
@@ -26,6 +27,8 @@ import { ScheduleCard } from '../components/ScheduleCard';
 import { MapFiltersPanel } from '../modules/map/MapFiltersPanel';
 import { BuildingDetailCard } from '../modules/map/BuildingDetailCard';
 import { PublishReportCard } from '../modules/objects/PublishReportCard';
+import { ReportLostObjectCard } from '../modules/objects/ReportLostObjectCard';
+import { UserProfilePanel } from '../modules/global/UserProfilePanel';
 import { SearchInput } from '../components/SearchInput';
 import type { FilterSection } from '../interfaces/FilterSection';
 
@@ -87,6 +90,39 @@ export const ShowcaseView = () => {
         title="Filtros (2)" 
         sections={filters} 
         onToggleItem={handleToggleFilter} 
+      />
+
+      <UserProfilePanel
+        name="María González Pérez"
+        admissionYear="2022"
+        career="Ingeniería Civil en Informática"
+        email="maria.gonzalez@alu.uct.cl"
+        photoUrl="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+        objectReports={[
+          {
+            title: 'LENTES DE SOL',
+            status: 'En proceso',
+            statusColor: 'yellow',
+            building: 'EDIFICIO A',
+            code: 'OP-2026-0005',
+            actions: [
+              { title: 'Reportado por María', subtitle: 'Hace 2 días', avatarSrc: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80' }
+            ]
+          }
+        ]}
+        incidentReports={[
+          {
+            location: 'BIBLIOTECA CENTRAL',
+            status: 'RESUELTO',
+            statusColor: 'green',
+            title: 'Luz intermitente en sala de estudio',
+            reporterName: 'María González Pérez',
+            reportTime: 'Hace 1 semana',
+            reporterAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+            description: 'El tubo fluorescente de la mesa 4 está parpadeando constantemente.',
+            photoUrl: 'https://images.unsplash.com/photo-1497215848943-4710166a9089?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+          }
+        ]}
       />
 
       <ContactProfilePanel
@@ -170,7 +206,6 @@ export const ShowcaseView = () => {
       </Panel>
 
       <Panel color="white" innerClassName="p-6 flex flex-col gap-4 min-w-[350px] relative z-20">
-        <h3 className="text-gray-700 font-bold -mb-2">Search Input (Autocomplete)</h3>
         <SearchInput
           label="Buscador con sugerencias"
           placeholder="Escribe 'patata', 'manzana', etc..."
@@ -270,6 +305,8 @@ export const ShowcaseView = () => {
       </Panel>
 
       <PublishReportCard />
+
+      <ReportLostObjectCard />
 
       <BuildingDetailCard />
 

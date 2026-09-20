@@ -5,6 +5,7 @@ import { Button } from '../components/Button';
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
 import SortIcon from '../assets/svg/icons/icon_sort.svg?react';
 import PlusIcon from '../assets/svg/icons/icon_plus.svg?react';
+import { EmptyState } from '../components/EmptyState';
 
 export const IncidentsView = () => {
   const [sortOrder, setSortOrder] = useState('reciente');
@@ -61,8 +62,8 @@ export const IncidentsView = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-12 text-gray-400">
-        <p className="text-lg">Selecciona los filtros arriba para visualizar los reportes e incidentes.</p>
+      <div className="flex-1 flex items-center justify-center p-12">
+        <EmptyState message="Selecciona los filtros arriba para visualizar los reportes e incidentes." />
       </div>
     </div>
   );

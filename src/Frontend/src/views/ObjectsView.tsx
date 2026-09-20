@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Select } from '../components/Select';
 import { Button } from '../components/Button';
-import { Input } from '../components/Input';
+import { SearchInput } from '../components/SearchInput';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
 import SortIcon from '../assets/svg/icons/icon_sort.svg?react';
 import CategoryIcon from '../assets/svg/icons/icon_category_cube.svg?react';
 import PlusIcon from '../assets/svg/icons/icon_plus.svg?react';
+import { EmptyState } from '../components/EmptyState';
 
 export const ObjectsView = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,6 +37,14 @@ export const ObjectsView = () => {
     { value: 'otros', label: 'Otros' },
   ];
 
+  const objectSearchOptions = [
+    { value: 'llaves', label: 'Llaves' },
+    { value: 'mochila', label: 'Mochila' },
+    { value: 'notebook', label: 'Notebook' },
+    { value: 'billetera', label: 'Billetera' },
+    { value: 'auriculares', label: 'Auriculares' },
+  ];
+
   const handleCreateReport = () => {
     console.log('Crear reporte de objeto cliqueado');
   };
@@ -45,12 +54,13 @@ export const ObjectsView = () => {
       <div className="bg-page-dark py-2 px-4 flex flex-col gap-4">
         <div className="flex flex-wrap items-end justify-end gap-4">
           <div className="w-80">
-            <Input
+            <SearchInput
               label="Búsqueda"
               placeholder="Buscar Pérdida..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(val) => setSearchQuery(val)}
               icon={<SearchIcon className="w-5 h-5 text-gray-500" />}
+              options={objectSearchOptions}
             />
           </div>
 
@@ -100,8 +110,8 @@ export const ObjectsView = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-12 text-gray-400">
-        <p className="text-lg">Explora o busca objetos perdidos utilizando los filtros superiores.</p>
+      <div className="flex-1 flex items-center justify-center p-12">
+        <EmptyState message="Explora o busca objetos perdidos utilizando los filtros superiores." />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import WorldMap from '../assets/svg/maps/world.svg?react';
 import { Select } from '../components/Select';
-import { Input } from '../components/Input';
+import { SearchInput } from '../components/SearchInput';
 import { SquareButton } from '../components/SquareButton';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
@@ -12,14 +12,26 @@ import MinusIcon from '../assets/svg/icons/icon_minus.svg?react';
 import TargetIcon from '../assets/svg/icons/icon_target.svg?react';
 
 export const MapView = () => {
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const mapSearchOptions = [
+    { value: 'biblioteca', label: 'Biblioteca Central' },
+    { value: 'casino', label: 'Casino' },
+    { value: 'edificio-c', label: 'Edificio C' },
+    { value: 'gimnasio', label: 'Gimnasio' },
+    { value: 'auditorio', label: 'Auditorio Principal' }
+  ];
   return (
     <div className="w-full h-full absolute inset-0 overflow-hidden">
       <div className="absolute top-6 right-6 z-10 flex flex-col gap-3 items-end">
         <div className="w-80">
-          <Input
+          <SearchInput
             label="Búsqueda"
             placeholder="Buscar Edificio..."
+            value={searchQuery}
+            onChange={(val) => setSearchQuery(val)}
             icon={<SearchIcon className="w-6 h-6 text-gray-500" />}
+            options={mapSearchOptions}
           />
         </div>
 
