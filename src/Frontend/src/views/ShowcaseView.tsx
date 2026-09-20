@@ -28,11 +28,15 @@ import { BuildingDetailCard } from '../modules/map/BuildingDetailCard';
 import { PublishReportCard } from '../modules/objects/PublishReportCard';
 import type { FilterSection } from '../interfaces/FilterSection';
 
-const BuildingIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 2L2 7v15h20V7L12 2zm0 2.5l7 3.5v12h-4v-5H9v5H5v-12l7-3.5zm-5 5v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z" />
-  </svg>
-);
+import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
+import MapPinIcon from '../assets/svg/icons/icon_map_pin.svg?react';
+import InfoIcon from '../assets/svg/icons/icon_info.svg?react';
+import MarkerRectIcon from '../assets/svg/icons/icon_marker_rect.svg?react';
+import CrossIcon from '../assets/svg/icons/icon_cross.svg?react';
+import CheckIcon from '../assets/svg/icons/icon_check.svg?react';
+import WarningAltIcon from '../assets/svg/icons/icon_warning_alt.svg?react';
+import PhoneAltIcon from '../assets/svg/icons/icon_phone_alt.svg?react';
+import MailAltIcon from '../assets/svg/icons/icon_mail_alt.svg?react';
 
 export const ShowcaseView = () => {
   // Estado mock para los filtros del showcase
@@ -41,27 +45,27 @@ export const ShowcaseView = () => {
       id: 'academico',
       title: 'ACADÉMICO',
       items: [
-        { id: 'edificios', label: 'Edificios', icon: <BuildingIcon />, checked: true },
-        { id: 'accesos', label: 'Accesos', icon: <BuildingIcon />, checked: true },
-        { id: 'biblioteca', label: 'Biblioteca', icon: <BuildingIcon />, checked: false },
+        { id: 'edificios', label: 'Edificios', icon: <BuildingIcon className="w-6 h-6 text-gray-700" />, checked: true },
+        { id: 'accesos', label: 'Accesos', icon: <BuildingIcon className="w-6 h-6 text-gray-700" />, checked: true },
+        { id: 'biblioteca', label: 'Biblioteca', icon: <BuildingIcon className="w-6 h-6 text-gray-700" />, checked: false },
       ]
     },
     {
       id: 'servicios',
       title: 'SERVICIOS',
       items: [
-        { id: 'primeros-auxilios', label: 'Primeros Auxilios', icon: <BuildingIcon />, checked: true },
-        { id: 'cajeros', label: 'Cajeros', icon: <BuildingIcon />, checked: true },
+        { id: 'primeros-auxilios', label: 'Primeros Auxilios', icon: <BuildingIcon className="w-6 h-6 text-gray-700" />, checked: true },
+        { id: 'cajeros', label: 'Cajeros', icon: <BuildingIcon className="w-6 h-6 text-gray-700" />, checked: true },
       ]
     },
     {
       id: 'vida-universitaria',
       title: 'VIDA UNIVERSITARIA',
       items: [
-        { id: 'casino', label: 'Casino', icon: <BuildingIcon />, checked: true },
-        { id: 'canchas', label: 'Canchas', icon: <BuildingIcon />, checked: false },
-        { id: 'kioskos', label: 'Kioskos', icon: <BuildingIcon />, checked: false },
-        { id: 'areas-verdes', label: 'Áreas Verdes', icon: <BuildingIcon />, checked: true },
+        { id: 'casino', label: 'Casino', icon: <BuildingIcon className="w-6 h-6 text-gray-700" />, checked: true },
+        { id: 'canchas', label: 'Canchas', icon: <BuildingIcon className="w-6 h-6 text-gray-700" />, checked: false },
+        { id: 'kioskos', label: 'Kioskos', icon: <BuildingIcon className="w-6 h-6 text-gray-700" />, checked: false },
+        { id: 'areas-verdes', label: 'Áreas Verdes', icon: <BuildingIcon className="w-6 h-6 text-gray-700" />, checked: true },
       ]
     }
   ]);
@@ -174,13 +178,13 @@ export const ShowcaseView = () => {
       </Panel>
 
       <Panel color="white" innerClassName="p-6 flex gap-4 items-center">
-        <SectionButton to="/" label="Mapa" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M14 6l-3.75 5 2.85 3.8-1.6 1.2C9.81 13.75 7 10 7 10l-6 8h22L14 6z"/></svg>} />
-        <SectionButton to="/reportes" label="Reportes" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>} />
+        <SectionButton to="/" label="Mapa" icon={<MapPinIcon className="w-6 h-6" />} />
+        <SectionButton to="/reportes" label="Reportes" icon={<InfoIcon className="w-6 h-6" />} />
       </Panel>
 
       <Panel color="white" innerClassName="p-6 flex gap-4 items-center">
         <SquareButton>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M14 6l-3.75 5 2.85 3.8-1.6 1.2C9.81 13.75 7 10 7 10l-6 8h22L14 6z"/></svg>
+          <MapPinIcon className="w-6 h-6" />
         </SquareButton>
       </Panel>
 
@@ -203,15 +207,15 @@ export const ShowcaseView = () => {
       </Panel>
 
       <Panel color="white" innerClassName="p-6 flex gap-8 bg-gray-200 justify-center">
-        <MapMarker color="blue" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path></svg>} />
-        <MapMarker color="red" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>} />
-        <MapMarker color="yellow" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>} />
-        <MapMarker color="green" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>} />
+        <MapMarker color="blue" icon={<MarkerRectIcon className="w-6 h-6" />} />
+        <MapMarker color="red" icon={<CrossIcon className="w-6 h-6" />} />
+        <MapMarker color="yellow" icon={<WarningAltIcon className="w-6 h-6" />} />
+        <MapMarker color="green" icon={<CheckIcon className="w-6 h-6" />} />
       </Panel>
 
       <Panel color="white" innerClassName="p-6 flex flex-col gap-4">
-        <IconText text="Contacto" icon={<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>} />
-        <IconText text="Correo" icon={<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>} />
+        <IconText text="Contacto" icon={<PhoneAltIcon className="w-[1em] h-[1em]" />} />
+        <IconText text="Correo" icon={<MailAltIcon className="w-[1em] h-[1em]" />} />
       </Panel>
 
       <Panel color="white" innerClassName="p-6 flex gap-8 items-center">

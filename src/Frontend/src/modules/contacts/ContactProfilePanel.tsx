@@ -3,31 +3,11 @@ import { Panel } from '../../components/Panel';
 import { PhotoFrame } from '../../components/PhotoFrame';
 import { IconText } from '../../components/IconText';
 import { Button } from '../../components/Button';
+import BuildingIcon from '../../assets/svg/icons/icon_building.svg?react';
+import PhoneIcon from '../../assets/svg/icons/icon_phone.svg?react';
+import MailIcon from '../../assets/svg/icons/icon_mail.svg?react';
 
-const BuildingIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 2L2 7v15h20V7L12 2zm0 2.5l7 3.5v12h-4v-5H9v5H5v-12l7-3.5zm-5 5v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z" />
-  </svg>
-);
-
-const MailIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-  </svg>
-);
-
-const PhoneIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-  </svg>
-);
-
-export interface ScheduleItem {
-  id: string;
-  course: string;
-  time: string;
-  assistant?: string;
-}
+import type { ScheduleItem } from '../../interfaces/ScheduleItem';
 
 export interface ContactProfilePanelProps {
   name: string;

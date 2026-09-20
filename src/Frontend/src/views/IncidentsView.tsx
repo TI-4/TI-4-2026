@@ -2,17 +2,8 @@ import { useState } from 'react';
 import { Select } from '../components/Select';
 import { Button } from '../components/Button';
 
-const BuildingIcon = () => (
-  <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 2L2 7v15h20V7L12 2zm0 2.5l7 3.5v12h-4v-5H9v5H5v-12l7-3.5zm-5 5v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z" />
-  </svg>
-);
-
-const SortIcon = () => (
-  <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-  </svg>
-);
+import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
+import SortIcon from '../assets/svg/icons/icon_sort.svg?react';
 
 export const IncidentsView = () => {
   const [sortOrder, setSortOrder] = useState('reciente');
@@ -42,7 +33,7 @@ export const IncidentsView = () => {
             options={sortOptions}
             value={sortOrder}
             onChange={(val) => setSortOrder(val)}
-            icon={<SortIcon />}
+            icon={<SortIcon className="w-5 h-5 text-gray-700" />}
           />
         </div>
 
@@ -52,7 +43,7 @@ export const IncidentsView = () => {
             options={campusOptions}
             value={selectedCampus}
             onChange={(val) => setSelectedCampus(val)}
-            icon={<BuildingIcon />}
+            icon={<BuildingIcon className="w-5 h-5 text-gray-700" />}
           />
         </div>
 

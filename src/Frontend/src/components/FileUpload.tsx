@@ -4,7 +4,7 @@ import { useImageControls } from '../hooks/useImageControls';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { ImageControls } from './ImageControls';
 import { ImagePagination } from './ImagePagination';
-import PhotoIcon from '../assets/svg/icon_photo.svg?react';
+import PhotoIcon from '../assets/svg/icons/icon_photo.svg?react';
 
 interface FileUploadProps {
   label?: string;

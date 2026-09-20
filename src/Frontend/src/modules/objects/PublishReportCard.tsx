@@ -5,12 +5,8 @@ import { Select } from '../../components/Select';
 import { FileUpload } from '../../components/FileUpload';
 import { Button } from '../../components/Button';
 import { CloseButton } from '../../components/ExitButton';
+import BuildingIcon from '../../assets/svg/icons/icon_building.svg?react';
 
-const BuildingIcon = () => (
-  <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 2L2 7v15h20V7L12 2zm0 2.5l7 3.5v12h-4v-5H9v5H5v-12l7-3.5zm-5 5v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z" />
-  </svg>
-);
 
 interface PublishReportCardProps {
   onPublish?: (data: { title: string; description: string; campus: string; building: string; files: File[] }) => void;
@@ -80,7 +76,7 @@ export const PublishReportCard = ({ onPublish, onDiscard }: PublishReportCardPro
             options={campusOptions}
             value={campus}
             onChange={setCampus}
-            icon={<BuildingIcon />}
+            icon={<BuildingIcon className="w-5 h-5 text-gray-700" />}
           />
         </div>
 
@@ -90,7 +86,7 @@ export const PublishReportCard = ({ onPublish, onDiscard }: PublishReportCardPro
             options={buildingOptions}
             value={building}
             onChange={setBuilding}
-            icon={<BuildingIcon />}
+            icon={<BuildingIcon className="w-5 h-5 text-gray-700" />}
           />
         </div>
       </div>

@@ -5,35 +5,11 @@ import { Select } from '../components/Select';
 import { Input } from '../components/Input';
 import { SquareButton } from '../components/SquareButton';
 
-const SearchIcon = () => (
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1116.65 1.65a7.5 7.5 0 010 15z" />
-  </svg>
-);
-
-const BuildingIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 2L2 7v15h20V7L12 2zm0 2.5l7 3.5v12h-4v-5H9v5H5v-12l7-3.5zm-5 5v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z" />
-  </svg>
-);
-
-const PlusIcon = () => (
-  <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-  </svg>
-);
-
-const MinusIcon = () => (
-  <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
-  </svg>
-);
-
-const CenterIcon = () => (
-  <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12h4m10 0h4M12 3v4m0 10v4m0-11a3 3 0 100 6 3 3 0 000-6z" />
-  </svg>
-);
+import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
+import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
+import PlusIcon from '../assets/svg/icons/icon_plus.svg?react';
+import MinusIcon from '../assets/svg/icons/icon_minus.svg?react';
+import CenterIcon from '../assets/svg/icons/icon_center.svg?react';
 
 export const MapView = () => {
   return (
@@ -43,7 +19,7 @@ export const MapView = () => {
           <Input
             label="Búsqueda"
             placeholder="Buscar Edificio..."
-            icon={<SearchIcon />}
+            icon={<SearchIcon className="w-6 h-6 text-gray-500" />}
           />
         </div>
 
@@ -55,7 +31,7 @@ export const MapView = () => {
               { value: 'campus2', label: 'Campus Norte' }
             ]}
             value="campus1"
-            icon={<BuildingIcon />}
+            icon={<BuildingIcon className="w-6 h-6 text-gray-700" />}
           />
         </div>
       </div>
@@ -71,13 +47,13 @@ export const MapView = () => {
           <React.Fragment>
             <div className="absolute bottom-6 right-6 z-10 flex flex-col gap-2">
               <SquareButton onClick={() => zoomIn()} title="Acercar mapa">
-                <PlusIcon />
+                <PlusIcon className="w-8 h-8" />
               </SquareButton>
               <SquareButton onClick={() => zoomOut()} title="Alejar mapa">
-                <MinusIcon />
+                <MinusIcon className="w-8 h-8" />
               </SquareButton>
               <SquareButton onClick={() => resetTransform()} title="Centrar mapa">
-                <CenterIcon />
+                <CenterIcon className="w-7 h-7" />
               </SquareButton>
             </div>
 

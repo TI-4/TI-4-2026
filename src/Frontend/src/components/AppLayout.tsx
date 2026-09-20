@@ -6,10 +6,10 @@ import React from 'react';
 import { useNavStore } from '../states/navStore';
 
 import logoUrl from '../assets/svg/logo.svg';
-import MapIcon from '../assets/svg/icon_section_map.svg?react';
-import ReportsIcon from '../assets/svg/icon_section_incidents.svg?react';
-import ObjectsIcon from '../assets/svg/icon_section_objects.svg?react';
-import ContactsIcon from '../assets/svg/icon_section_contacts.svg?react';
+import MapIcon from '../assets/svg/icons/icon_section_map.svg?react';
+import ReportsIcon from '../assets/svg/icons/icon_section_incidents.svg?react';
+import ObjectsIcon from '../assets/svg/icons/icon_section_objects.svg?react';
+import ContactsIcon from '../assets/svg/icons/icon_section_contacts.svg?react';
 
 export const AppLayout = () => {
   const { isExpanded, setIsExpanded } = useNavStore();

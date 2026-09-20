@@ -4,13 +4,8 @@ import { PhotoFrame } from '../../components/PhotoFrame';
 import { UserActionInfo } from '../../components/UserActionInfo';
 import { IconText } from '../../components/IconText';
 import { Tag } from '../../components/Tag';
+import MapPinIcon from '../../assets/svg/icons/icon_location.svg?react';
 
-const MapPinIcon = () => (
-  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-  </svg>
-);
 
 export interface IncidentCardProps {
   location: string;
@@ -41,7 +36,7 @@ export const IncidentCard = ({
     <Panel color="white" outerClassName={`w-full max-w-2xl ${className}`} innerClassName="p-6 flex flex-col gap-4">
       {/* Ubication and state */}
       <div className="flex justify-between items-center mb-2">
-        <IconText icon={<MapPinIcon />} text={location} className="!text-[26px]" />
+        <IconText icon={<MapPinIcon className="w-8 h-8" />} text={location} className="!text-[26px]" />
         <Tag label={status} color={statusColor as any} className="!text-lg !px-4 !py-1.5 uppercase" />
       </div>
 
