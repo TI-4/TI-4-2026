@@ -1,0 +1,67 @@
+{
+  "campus": [
+    {
+      "id_campus": "campus-san-juan-pablo-ii",
+      "nombre": "Campus San Juan Pablo II",
+      "direccion": "Temuco",
+      "coordenadas": {
+        "latitud": -38.7420,
+        "longitud": -72.6000
+      },
+      "edificios": [
+        {
+          "id_edificio": "edificio-sjp2-01",
+          "id_campus": "campus-san-juan-pablo-ii",
+          "nombre": "Edificio de Prueba",
+          "cant_pisos": 3,
+          "coordenadas": {
+            "latitud": -38.7420,
+            "longitud": -72.6000
+          }
+        }
+      ]
+    },
+    {
+      "id_campus": "campus-san-francisco",
+      "nombre": "Campus San Francisco",
+      "direccion": "Temuco",
+      "coordenadas": {
+        "latitud": -38.7359,
+        "longitud": -72.5904
+      },
+      "edificios": [
+        {
+          "id_edificio": "edificio-sf-01",
+          "id_campus": "campus-san-francisco",
+          "nombre": "Edificio de Prueba",
+          "cant_pisos": 3,
+          "coordenadas": {
+            "latitud": -38.7359,
+            "longitud": -72.5904
+          }
+        }
+      ]
+    },
+    {
+      "id_campus": "campus-dr-luis-rivas-del-canto",
+      "nombre": "Campus Dr. Luis Rivas del Canto",
+      "direccion": "Temuco",
+      "coordenadas": {
+        "latitud": -38.7300,
+        "longitud": -72.6100
+      },
+      "edificios": [
+        {
+          "id_edificio": "edificio-lrc-01",
+          "id_campus": "campus-dr-luis-rivas-del-canto",
+          "nombre": "Edificio de Prueba",
+          "cant_pisos": 2,
+          "coordenadas": {
+            "latitud": -38.7300,
+            "longitud": -72.6100
+          }
+        }
+      ]
+    }
+  ]
+}
