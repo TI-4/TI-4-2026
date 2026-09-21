@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Input } from './Input';
 import type { SearchOption } from '../interfaces/SearchOption';
 

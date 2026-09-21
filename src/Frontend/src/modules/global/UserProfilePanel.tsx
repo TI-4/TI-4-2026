@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Panel } from '../../components/Panel';
-import { PhotoFrame } from '../../components/PhotoFrame';
 import { Avatar } from '../../components/Avatar';
 import { IconText } from '../../components/IconText';
 import { CloseButton } from '../../components/ExitButton';

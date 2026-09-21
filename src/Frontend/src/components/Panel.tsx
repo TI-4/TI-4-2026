@@ -1,4 +1,3 @@
-import React from 'react';
 import { type PageColor, bgPageColors } from '../constants/colors';
 import { CloseButton } from './ExitButton'; // <-- Asegúrate de que la ruta coincida con tu archivo
 

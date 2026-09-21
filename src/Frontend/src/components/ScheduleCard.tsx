@@ -1,4 +1,3 @@
-import React from 'react';
 import { type PageColor, bgPageColors } from '../constants/colors';
 import DoorIcon from '../assets/svg/icons/icon_door.svg?react';
 

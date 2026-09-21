@@ -2,7 +2,6 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { SectionButton } from './SectionButton';
 import { Avatar } from './Avatar';
 import { Tag } from './Tag';
-import React from 'react';
 import { useNavStore } from '../states/navStore';
 
 import logoUrl from '../assets/svg/logo.svg';
@@ -10,9 +9,6 @@ import MapIcon from '../assets/svg/icons/icon_section_map.svg?react';
 import ReportsIcon from '../assets/svg/icons/icon_section_incidents.svg?react';
 import ObjectsIcon from '../assets/svg/icons/icon_section_objects.svg?react';
 import ContactsIcon from '../assets/svg/icons/icon_section_contacts.svg?react';
-import AdminIcon from '../assets/svg/icons/icon_admin.svg?react';
-import UsersIcon from '../assets/svg/icons/icon_users.svg?react';
-import { IconText } from './IconText';
 
 export const AppLayout = () => {
   const { isExpanded, setIsExpanded } = useNavStore();
@@ -23,7 +19,6 @@ export const AppLayout = () => {
     if (path.includes('/reports')) return 'Reportes';
     if (path.includes('/objects')) return 'Objetos';
     if (path.includes('/contacts')) return 'Contactos';
-    if (path.includes('/admin/users')) return 'Gestión Usuarios';
     if (path.includes('/showcase')) return 'Showcase';
     return '';
   };
@@ -31,10 +26,12 @@ export const AppLayout = () => {
   const pageTitle = getPageTitle(location.pathname);
 
   return (
-    <div className="flex h-screen bg-page-dark overflow-hidden font-sans">
-      {/* NAVEGATOR */}
+    <div className="flex h-screen bg-page-dark overflow-hidden font-sans relative">
+
+      <div className="w-[88px] flex-shrink-0 h-full bg-page-blue z-0" />
+
       <nav
-        className={`bg-page-blue flex flex-col gap-4 py-8 px-4 h-full shadow-xl transition-all duration-300 z-50 ${
+        className={`absolute left-0 top-0 bottom-0 bg-page-blue flex flex-col gap-4 py-8 px-4 h-full shadow-xl transition-all duration-300 z-50 ${
           isExpanded ? 'w-[320px]' : 'w-[88px]'
         }`}
         onMouseEnter={() => setIsExpanded(true)}
@@ -114,45 +111,19 @@ export const AppLayout = () => {
           icon={<ObjectsIcon className="w-8 h-8" />}
         />
 
-        {/* ADMIN SECTION DIVIDER */}
-        <div className="mt-2 mb-1 flex items-center text-white">
-          <div className="flex-shrink-0 flex items-center justify-center w-14 h-14">
-            <AdminIcon className="w-11 h-11" />
-          </div>
-          <div
-            className={`transition-all duration-300 ease-in-out overflow-hidden flex items-center whitespace-nowrap ${
-              isExpanded
-                ? 'max-w-[200px] opacity-100 ml-3'
-                : 'max-w-0 opacity-0 ml-0 pointer-events-none'
-            }`}
-          >
-            <span className="text-sm tracking-[0.2em] font-black uppercase">
-              Administración
-            </span>
-          </div>
-        </div>
-
-        <SectionButton
-          to="/admin/users"
-          label="Usuarios"
-          isExpanded={isExpanded}
-          expandedWidth="288px"
-          icon={<UsersIcon className="w-8 h-8" />}
-        />
-
-        {/* User Info Container (At the bottom) */}
+        {/* User Info Container*/}
         <div className="mt-auto">
           <div
             className={`flex items-center rounded-2xl relative transition-all duration-300 ease-in-out flex-shrink-0 z-50 overflow-hidden ${
               isExpanded ? 'bg-white shadow-md h-24 w-[288px] p-2 pr-4' : 'bg-transparent h-14 w-14 p-0'
             }`}
           >
-            {/* Avatar (crece/achica según isExpanded) */}
+            {/* Avatar*/}
             <div className={`flex-shrink-0 flex items-center justify-center z-10 transition-all duration-300 ease-in-out ${isExpanded ? 'w-20 h-20' : 'w-14 h-14'}`}>
               <Avatar className="w-full h-full" />
             </div>
 
-            {/* Textos de usuario */}
+            {/* User texts */}
             <div
               className={`flex flex-col justify-center transition-all duration-300 ease-in-out overflow-hidden whitespace-normal break-words ${
                 isExpanded
@@ -167,7 +138,16 @@ export const AppLayout = () => {
         </div>
       </nav>
 
-      <main className="flex-1 relative overflow-auto bg-page-dark">
+      {/* BACKDROP
+        */}
+      <div
+        className={`absolute inset-0 bg-black transition-opacity duration-300 z-40 pointer-events-none ${
+          isExpanded ? 'opacity-50' : 'opacity-0'
+        }`}
+        style={{ left: '88px' }}
+      />
+
+      <main className="flex-1 relative overflow-auto bg-page-dark z-10">
         <Outlet />
       </main>
     </div>

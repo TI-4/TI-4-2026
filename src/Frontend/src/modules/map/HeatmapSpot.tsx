@@ -1,21 +1,17 @@
-import React from 'react';
 
 export interface HeatmapSpotProps {
   x: string | number;
   y: string | number;
-  intensity: number; // 0 to 100
+  intensity: number;
   baseSize?: number;
 }
 
 export const HeatmapSpot = ({ x, y, intensity, baseSize = 120 }: HeatmapSpotProps) => {
   // Normalize intensity between 0 and 100
   const normalizedIntensity = Math.min(Math.max(intensity, 0), 100);
-  
-  // Determine color:
-  // 0-33: Yellow
-  // 34-66: Orange
-  // 67-100: Red
-  let rgb = '255, 204, 0'; 
+
+  // Determine color
+  let rgb = '255, 204, 0';
   if (normalizedIntensity > 66) {
     rgb = '255, 59, 48';
   } else if (normalizedIntensity > 33) {

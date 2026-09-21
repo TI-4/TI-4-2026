@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { CloseButton } from './ExitButton';
 import { useImageControls } from '../hooks/useImageControls';
 import { useFileUpload } from '../hooks/useFileUpload';

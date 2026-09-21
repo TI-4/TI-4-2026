@@ -1,4 +1,3 @@
-import React from 'react';
 import { Panel } from '../../components/Panel';
 import { CloseButton } from '../../components/ExitButton';
 import { ImageGallery } from '../../components/ImageGallery';
@@ -10,9 +9,6 @@ import BuildingIcon from '../../assets/svg/icons/icon_building.svg?react';
 import WarningIcon from '../../assets/svg/icons/icon_warning.svg?react';
 import NavigationIcon from '../../assets/svg/icons/icon_navigation.svg?react';
 import Rotate360Icon from '../../assets/svg/icons/icon_repeat.svg?react';
-
-
-
 
 import type { RoomData } from '../../interfaces/RoomData';
 
@@ -30,19 +26,14 @@ export interface BuildingDetailCardProps {
   onReportProblem?: () => void;
 }
 
-const defaultImages = [
-  "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-];
-
 export const BuildingDetailCard = ({
-  title = "NOMBRE EDIFICIO",
-  subtitle = "EDIFICIO 11",
-  images = defaultImages,
-  schedule = "08:00 - 22:00 hrs",
-  floors = "2 PISOS",
-  services = ["Punto de Reciclaje"],
-  rooms = [{ title: "SALA 11-101", type: "Sala de clases", capacity: 60 }],
+  title = "",
+  subtitle = "",
+  images = [],
+  schedule = "",
+  floors = "",
+  services = [],
+  rooms = [],
   onClose,
   onNavigate,
   onView360,

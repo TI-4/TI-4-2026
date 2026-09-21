@@ -1,4 +1,3 @@
-import React from 'react';
 import { Panel } from '../../components/Panel';
 import { CheckboxItem } from '../../components/CheckboxItem';
 import type { FilterSection } from '../../interfaces/FilterSection';

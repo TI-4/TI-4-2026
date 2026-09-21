@@ -1,4 +1,3 @@
-import React from 'react';
 
 interface ImageControlsProps {
   onPrev: (e: React.MouseEvent) => void;

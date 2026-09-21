@@ -1,4 +1,3 @@
-import React from 'react';
 import { Panel } from '../../components/Panel';
 import { PhotoFrame } from '../../components/PhotoFrame';
 import { Button } from '../../components/Button';

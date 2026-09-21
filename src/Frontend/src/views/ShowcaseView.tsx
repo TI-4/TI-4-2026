@@ -5,7 +5,6 @@ import { Select } from '../components/Select';
 import { NavButton } from '../components/NavButton';
 import { CheckboxItem } from '../components/CheckboxItem';
 import { Tag } from '../components/Tag';
-import { EmptyState } from '../components/EmptyState';
 import { Panel } from '../components/Panel';
 import { MapMarker } from '../components/MapMarker';
 import { IconText } from '../components/IconText';
@@ -43,7 +42,6 @@ import PhoneAltIcon from '../assets/svg/icons/icon_phone_alt.svg?react';
 import MailAltIcon from '../assets/svg/icons/icon_mail_alt.svg?react';
 
 export const ShowcaseView = () => {
-  // Estado mock para los filtros del showcase
   const [searchInputValue, setSearchInputValue] = useState('');
   const [filters, setFilters] = useState<FilterSection[]>([
     {
@@ -76,8 +74,8 @@ export const ShowcaseView = () => {
   ]);
 
   const handleToggleFilter = (sectionId: string, itemId: string) => {
-    setFilters(prev => prev.map(sec => 
-      sec.id === sectionId 
+    setFilters(prev => prev.map(sec =>
+      sec.id === sectionId
         ? { ...sec, items: sec.items.map(item => item.id === itemId ? { ...item, checked: !item.checked } : item) }
         : sec
     ));
@@ -86,10 +84,10 @@ export const ShowcaseView = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-12 flex flex-col gap-8 items-center font-sans">
 
-      <MapFiltersPanel 
-        title="Filtros (2)" 
-        sections={filters} 
-        onToggleItem={handleToggleFilter} 
+      <MapFiltersPanel
+        title="Filtros (2)"
+        sections={filters}
+        onToggleItem={handleToggleFilter}
       />
 
       <UserProfilePanel
@@ -308,7 +306,18 @@ export const ShowcaseView = () => {
 
       <ReportLostObjectCard />
 
-      <BuildingDetailCard />
+      <BuildingDetailCard
+        title="NOMBRE EDIFICIO"
+        subtitle="EDIFICIO 11"
+        images={[
+          "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        ]}
+        schedule="08:00 - 22:00 hrs"
+        floors="2 PISOS"
+        services={["Punto de Reciclaje"]}
+        rooms={[{ title: "SALA 11-101", type: "Sala de clases", capacity: 60 }]}
+      />
 
     </div>
   );

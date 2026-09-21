@@ -1,4 +1,3 @@
-import React from 'react';
 import GhostIcon from '../assets/svg/icons/icon_ghost.svg?react';
 
 export interface EmptyStateProps {
