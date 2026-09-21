@@ -11,6 +11,11 @@ public sealed class IdentityUserAuthenticator(UserManager<User> userManager) : I
         string password,
         CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            return null;
+        }
+
         var user = await userManager.FindByEmailAsync(email);
 
         if (user is null || !await userManager.CheckPasswordAsync(user, password))
