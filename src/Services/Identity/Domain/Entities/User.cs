@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace IdentityService.Domain.Entities;
 
 public class User : IdentityUser
 {
-    public string Nombre { get; set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
 
-    public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
+    public DateTime RegistrationDate { get; private set; } = DateTime.UtcNow;
 }
