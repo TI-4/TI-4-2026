@@ -29,7 +29,6 @@ services:
     networks:
       - uct_network
 
-
   # ---- Microservices ---- #
   # -- Identity -- #
   identity-api:
