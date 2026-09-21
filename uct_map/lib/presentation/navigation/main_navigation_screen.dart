@@ -4,6 +4,8 @@ import '../screens/search/search_screen.dart';
 import '../screens/lost_found/lost_found_screen.dart';
 import '../screens/reports/reports_screen.dart';
 import '../screens/profile/profile_screen.dart';
+import '../screens/login/auth_required_view.dart';
+import '../../application/session/session_controller.dart';
 import '../widgets/uct_logo.dart';
 import '../widgets/custom_drawer.dart';
 
@@ -16,6 +18,9 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
+  final _session = SessionController();
+
+  static const _protectedTabs = [2, 3];
 
   final List<String> _titles = const [
     'Mapa del Campus',
@@ -32,6 +37,29 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   @override
+  void dispose() {
+    _session.dispose();
+    super.dispose();
+  }
+
+  Future<void> _openLogin(String section) async {
+    final result =
+        await Navigator.pushNamed(context, '/login', arguments: section);
+    if (result is Map && result['ok'] == true && mounted) {
+      // TODO(tarea 3): sesión real desde el endpoint de auth.
+      _session.signInDemo((result['email'] ?? '').toString());
+      setState(() {});
+    }
+  }
+
+  Widget _protected(int index, Widget real, String section) {
+    if (_session.isAuthenticated || !_protectedTabs.contains(index)) {
+      return real;
+    }
+    return AuthRequiredView(onLogin: () => _openLogin(section));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isSearchTab = _currentIndex == 1;
@@ -41,9 +69,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       SearchScreen(
         onExploreMap: () => _onTabTapped(0),
       ),
-      const LostFoundScreen(),
-      const ReportsScreen(),
-      const ProfileScreen(),
+      _protected(2, const LostFoundScreen(), 'Objetos perdidos'),
+      _protected(3, const ReportsScreen(), 'Reportes de incidencias'),
+      ProfileScreen(
+        session: _session,
+        onNavigateToTab: _onTabTapped,
+        onLogout: () {
+          _session.signOut();
+          setState(() {});
+        },
+      ),
     ];
 
     return Scaffold(

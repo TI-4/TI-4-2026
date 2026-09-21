@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Tecnologías — Módulo Mapa y Campus
 
 ## 1. Objetivo
@@ -175,3 +176,6 @@ La tarea `map-setup` debe finalizar con:
 ### Nota
 
 La implementación inicial utilizará datos mock para permitir el desarrollo independiente del módulo móvil. La integración con el Campus Service se realizará una vez que el endpoint correspondiente esté disponible y su contrato haya sido definido.
+=======
+# TI-4-2026 poto
+>>>>>>> 91d8ab4588d646cc9f7e6b738ec58ea49b33f1bd
