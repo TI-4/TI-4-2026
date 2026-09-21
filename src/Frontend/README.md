@@ -22,6 +22,7 @@
 | `PhotoFrame` | Contenedor con borde para mostrar imágenes o miniaturas. | `src`, `alt`, `className` | `useState` |
 | `RoomInfoCard` | Tarjeta/Banner informativo de sala con título, tipo de sala y capacidad aproximada de estudiantes. | `title`, `type`, `capacity`, `icon`, `className` | - |
 | `ScheduleCard` | Banner/Tarjeta informativa de horario de atención con icono, título e intervalo de horas. | `title`, `schedule`, `icon`, `color`, `className` | - |
+| `SearchInput` | Campo de texto avanzado con ícono y menú desplegable de sugerencias predictivas. | `label`, `placeholder`, `value`, `onChange`, `icon`, `options`, `className` | `useState`, `useRef`, `useEffect` |
 | `SectionButton` | Botón especializado para el menú de navegación lateral. | `to`, `icon`, `label`, `isExpanded`, `expandedWidth` | - |
 | `Select` | Menú desplegable de selección de opciones. | `label`, `labelColor` (opcional, blanco por defecto), `options` (value, label), `icon`, `error` | `useState`, `useRef`, `useEffect` |
 | `SquareButton` | Botón interactivo cuadrado. | `children` | - |
@@ -34,10 +35,12 @@ Para mantener la arquitectura escalable, las piezas de interfaz más complejas (
 
 | Módulo | Componente | Descripción del componente | Parámetros |
 |---|---|---|---|
+| `global` | `UserProfilePanel` | Panel lateral con la información del usuario logueado, foto de perfil, datos académicos y listas de sus reportes activos (objetos e incidentes). | `name`, `admissionYear`, `career`, `email`, `photoUrl`, `objectReports`, `incidentReports`, `onClose` |
 | `map` | `MapFiltersPanel` | Panel interactivo para filtrar categorías y ubicaciones dentro del mapa. | `title`, `sections`, `onToggleItem`, `className` |
-| `contacts` | `ContactProfilePanel`, `ContactCard` | Perfiles de profesores, personal e información de contacto. | `title`, `contact`, `onClose`, `className` |
 | `map` | `BuildingDetailCard` | Tarjeta/Modal detallado de edificio con carrusel de imágenes, horario de atención, cantidad de pisos, servicios, listado de salas (`RoomInfoCard`), reporte de problemas y botones de llegada y vista 360°. | `title`, `subtitle`, `images`, `schedule`, `floors`, `services`, `rooms`, `onClose`, `onNavigate`, `onView360`, `onReportProblem` |
-| `objects` | `PublishReportCard`, `ObjectReportCard` | Card/Modal interactivo para publicar nuevos reportes de objetos perdidos con título, descripción, subida de imágenes, selección de ubicación y botones de acción. Reportes existentes usan `ObjectReportCard`. | `title`, `status`, `photoUrl`, `building`, `code`, `actions` |
+| `map` | `HeatmapSpot` | Elemento visual superpuesto en el mapa que representa zonas de alta afluencia o concentración mediante intensidad térmica. | `intensity` (low/medium/high), `size`, `className` |
+| `contacts` | `ContactProfilePanel`, `ContactCard` | Perfiles de profesores, personal e información de contacto. | `title`, `contact`, `onClose`, `className` |
+| `objects` | `PublishReportCard`, `ObjectReportCard`, `ReportLostObjectCard` | Modales/Cards para publicar reportes de objetos perdidos (`ReportLostObjectCard` y `PublishReportCard`) y visualizar objetos reportados (`ObjectReportCard`). | Múltiples props según tarjeta. |
 | `incidents` | `IncidentCard` | Tarjeta para visualizar un reporte de incidente con ubicación, estado, fotografía, título, autor del reporte y descripción detallada. | `location`, `status`, `photoUrl`, `title`, `reporterName`, `reportTime`, `reporterAvatar`, `description` |
 
 ## Vistas (Views)
@@ -60,4 +63,8 @@ Las interfaces y tipos compartidos en el proyecto están ubicados de manera cent
 |---|---|
 | `FilterItem.ts` | Define la estructura individual de cada opción de filtrado (id, label, icon, checked). |
 | `FilterSection.ts` | Define la estructura de cada agrupación de filtros (id, title, items). |
+| `ContactData.ts` | Contrato de datos para perfiles de contacto institucionales (nombre, rol, facultad, oficina, etc.). |
+| `IncidentReport.ts` | Contrato para los reportes de incidentes de infraestructura. |
+| `LostObjectReport.ts` | Contrato de datos para objetos perdidos. |
+| `RoomData.ts` | Estructura para los datos de salas y aulas (título, tipo, capacidad). |
 
