@@ -29,8 +29,8 @@ services:
     networks:
       - uct_network
 
-  # --- Microservices ---
 
+  # ---- Microservices ---- #
   # -- Identity -- #
   identity-api:
     build:
@@ -50,7 +50,7 @@ services:
     networks:
       - uct_network
 
-  # -- Campus -- #
+  # ---- Campus ---- #
   campus-api:
     build:
       context: .
@@ -65,7 +65,23 @@ services:
     networks:
       - uct_network
 
-  # -- Schedule -- #
+  # ---- Incident ---- #
+  incident-api:
+    build:
+      context: .
+      dockerfile: src/Services/Incident/Incident.API/Dockerfile
+    container_name: uct_incident_api
+    ports:
+      - "5003:80"
+    environment:
+      MongoDB__ConnectionString: mongodb://root:rootpassword@mongodb:27017
+      MongoDB__DatabaseName: uct_incident_db
+    depends_on:
+      - mongodb
+    networks:
+      - uct_network
+
+  # ---- Schedule ---- #
   schedule-api:
     build:
       context: .
