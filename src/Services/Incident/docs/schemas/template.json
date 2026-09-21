@@ -1,35 +1,48 @@
 {
-  "incident_queja":{
-    "_id_queja" : {"type": "UUID"},
-    "_id_ticket": {"type": "UUID"},
-    "titulo": {"type" : "string"},
-    "descripcion": {"type": "string"}
-  },
+  "incident_ticket": {
+    "_id": {"type": "ObjectId"},
 
+    "user_id": {"type": "UUID", "description": "Reference to Identity DB"},
+    "structure_id": {"type": "UUID", "description": "Reference to Campus DB"},
 
-  "incident_objeto":{
-    "_id_objeto" : {"type": "UUID"},
-    "_id_ticket": {"type": "UUID"},
-    "titulo": {"type" : "string"},
-    "descripcion": {"type": "string"},
-    "estado": {
-          "type": "string",
-          "enum": ["pendiente", "en_proceso", "resuelto", "cancelado"]
-        },
-    "foto_url": {"type": "string", "format": "uri"}
-  },
-
-
-"incident_ticket":{
-  "_id_ticket": {"type": "UUID"},
-  "_id_usuario_ref": {"type": "UUID"},
-  "_id_estructura_ref" : {"type": "UUID"},
-  "tipo_ticket": {
+    "ticket_type": {
       "type": "string",
       "enum": ["Claim", "Found", "Match", "Pickup"]
-  },
-  "activo": {"type": "bool"},
-  "fecha": {"type": "string", "format":"date-time"},
-  "coordenadas": {"type": "tuple"}
+    },
+    "is_active": {"type": "bool"},
+    "date": {"type": "string", "format": "date-time"},
+
+    "coordinates": {
+      "type": "object",
+      "properties": {
+        "latitude": {"type": "number"},
+        "longitude": {"type": "number"}
+      }
+    },
+
+    "complaint_details": {
+      "type": "object",
+      "optional": true,
+      "description": "Embedded document. Only populated if ticket is a complaint.",
+      "properties": {
+        "title": {"type": "string"},
+        "description": {"type": "string"}
+      }
+    },
+
+    "object_details": {
+      "type": "object",
+      "optional": true,
+      "description": "Embedded document. Only populated if ticket involves a lost/found object.",
+      "properties": {
+        "title": {"type": "string"},
+        "description": {"type": "string"},
+        "status": {
+          "type": "string",
+          "enum": ["Pending", "In_Process", "Resolved", "Canceled"]
+        },
+        "photo_url": {"type": "string", "format": "uri"}
+      }
+    }
   }
 }
