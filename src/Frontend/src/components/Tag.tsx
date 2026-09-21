@@ -1,4 +1,3 @@
-import React from 'react';
 import { type PageColor, bgPageColors, solidButtonConfig } from '../constants/colors';
 
 interface TagProps {

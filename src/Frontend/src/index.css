@@ -50,3 +50,84 @@
 .animate-error-pulse {
   animation: double-pulse-error 3s ease-in-out infinite;
 }
+
+@keyframes uct-group-fade {
+  0%, 88% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes uct-draw-line {
+  0% { stroke-dashoffset: 21.6; }
+  20%, 100% { stroke-dashoffset: 0; }
+}
+
+@keyframes uct-sprout-1 {
+  0%, 20% { stroke-dashoffset: var(--len); }
+  35%, 100% { stroke-dashoffset: 0; }
+}
+
+@keyframes uct-sprout-2 {
+  0%, 25% { stroke-dashoffset: var(--len); }
+  40%, 100% { stroke-dashoffset: 0; }
+}
+
+@keyframes uct-sprout-3 {
+  0%, 30% { stroke-dashoffset: var(--len); }
+  45%, 100% { stroke-dashoffset: 0; }
+}
+
+@keyframes uct-sprout-4 {
+  0%, 35% { stroke-dashoffset: var(--len); opacity: 0; }
+  36% { stroke-dashoffset: var(--len); opacity: 1; }
+  50% { stroke-dashoffset: 0; opacity: 1; }
+  90% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes uct-spin-expo {
+  0% { 
+    transform: rotate(0deg); 
+    animation-timing-function: cubic-bezier(0.8, 0, 0.2, 1); 
+  }
+  60% { 
+    transform: rotate(360deg); 
+  }
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+
+.animate-spin-expo {
+  animation: uct-spin-expo 2.8s infinite;
+}
+
+@keyframes slide-stretch-right {
+  0% { transform: translateX(0) scaleX(1); }
+  40% { transform: translateX(40%) scaleX(1.4); }
+  80% { transform: translateX(108%) scaleX(0.95); }
+  100% { transform: translateX(100%) scaleX(1); }
+}
+
+@keyframes slide-stretch-left {
+  0% { transform: translateX(100%) scaleX(1); }
+  40% { transform: translateX(60%) scaleX(1.4); }
+  80% { transform: translateX(-8%) scaleX(0.95); }
+  100% { transform: translateX(0) scaleX(1); }
+}
+
+.animate-slide-stretch-right {
+  animation: slide-stretch-right 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.animate-slide-stretch-left {
+  animation: slide-stretch-left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes float-up-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.animate-float-up-down {
+  animation: float-up-down 3s ease-in-out infinite;
+}

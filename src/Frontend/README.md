@@ -1,75 +1,70 @@
-# React + TypeScript + Vite
+# UCT Map Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## UI Components
 
-Currently, two official plugins are available:
+| Componente | Descripción | Parámetros principales (Props) | Hooks utilizados |
+|---|---|---|---|
+| `AppLayout` | Layout principal persistente (barra lateral y área de contenido). | N/A | `useState`, `useLocation` |
+| `Avatar` | Muestra una imagen de perfil circular. | `src`, `alt`, `className` | `useState` |
+| `Button` | Botón interactivo principal. | `variant` (solid/outline/ghost), `color`, `size`, `width` | - |
+| `CheckboxItem` | Elemento de selección (checkbox) con título y descripción. | `label`, `desc`, `icon` | - |
+| `ExitButton` | Botón estándar de cierre (X). | `variant` (solid/ghost), `size` | - |
+| `FileUpload` | Área interactiva para arrastrar y soltar archivos. | `label`, `maxFiles`, `onFilesChange` | `useFileUpload`, `useImageControls`, `useEffect` |
+| `IconText` | Bloque pequeño de texto acompañado de un ícono. | `icon`, `text`, `className` | - |
+| `ImageControls` | Botones de navegación (anterior/siguiente) para galería. | `onPrev`, `onNext` | - |
+| `ImageGallery` | Carrusel automático de imágenes. | `images`, `autoPlayInterval`, `width`, `height` | `useImageControls` |
+| `ImagePagination` | Indicadores de posición (puntos) para la galería. | `total`, `currentIndex`, `onSelect` | - |
+| `Input` | Campo estándar para ingreso de texto con etiqueta opcional superior. | `label`, `labelColor` (opcional, blanco por defecto), `error`, `multiline`, `icon`, *Props HTML* | - |
+| `LoadingSpinner` | Componente visual animado para indicar que un proceso o dato se está cargando. Puede usarse como placeholder. | `size` (sm/md/lg/xl), `color`, `text`, `className` | - |
+| `MapMarker` | Botón interactivo usado como pin en el mapa. | `icon`, `color` | - |
+| `NavButton` | Enlace de navegación para rutas del React Router. | `to`, `icon`, `label`, `size`, `width` | - |
+| `Panel` | Contenedor reutilizable con estilos estandarizados de tarjeta. | `children`, `color`, `withUctBorder`, `onClose` | - |
+| `PhotoFrame` | Contenedor con borde para mostrar imágenes o miniaturas. | `src`, `alt`, `className` | `useState` |
+| `RoomInfoCard` | Tarjeta/Banner informativo de sala con título, tipo de sala y capacidad aproximada de estudiantes. | `title`, `type`, `capacity`, `icon`, `className` | - |
+| `ScheduleCard` | Banner/Tarjeta informativa de horario de atención con icono, título e intervalo de horas. | `title`, `schedule`, `icon`, `color`, `className` | - |
+| `SearchInput` | Campo de texto avanzado con ícono y menú desplegable de sugerencias predictivas. | `label`, `placeholder`, `value`, `onChange`, `icon`, `options`, `className` | `useState`, `useRef`, `useEffect` |
+| `SectionButton` | Botón especializado para el menú de navegación lateral. | `to`, `icon`, `label`, `isExpanded`, `expandedWidth` | - |
+| `Select` | Menú desplegable de selección de opciones. | `label`, `labelColor` (opcional, blanco por defecto), `options` (value, label), `icon`, `error` | `useState`, `useRef`, `useEffect` |
+| `SquareButton` | Botón interactivo cuadrado. | `children` | - |
+| `Tag` | Etiqueta pequeña (pill) para categorías o estados. | `label`, `icon`, `color` | - |
+| `UserActionInfo` | Muestra detalles rápidos de un usuario o acción. | `title`, `subtitle`, `avatarSrc` | - |
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Módulos
 
-## React Compiler
+Para mantener la arquitectura escalable, las piezas de interfaz más complejas (que agrupan múltiples componentes genéricos) se organizan en **módulos** dentro de la carpeta `src/modules`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Módulo | Componente | Descripción del componente | Parámetros |
+|---|---|---|---|
+| `global` | `UserProfilePanel` | Panel lateral con la información del usuario logueado, foto de perfil, datos académicos y listas de sus reportes activos (objetos e incidentes). | `name`, `admissionYear`, `career`, `email`, `photoUrl`, `objectReports`, `incidentReports`, `onClose` |
+| `map` | `MapFiltersPanel` | Panel interactivo para filtrar categorías y ubicaciones dentro del mapa. | `title`, `sections`, `onToggleItem`, `className` |
+| `map` | `BuildingDetailCard` | Tarjeta/Modal detallado de edificio con carrusel de imágenes, horario de atención, cantidad de pisos, servicios, listado de salas (`RoomInfoCard`), reporte de problemas y botones de llegada y vista 360°. | `title`, `subtitle`, `images`, `schedule`, `floors`, `services`, `rooms`, `onClose`, `onNavigate`, `onView360`, `onReportProblem` |
+| `map` | `HeatmapSpot` | Elemento visual superpuesto en el mapa que representa zonas de alta afluencia o concentración mediante intensidad térmica. | `intensity` (low/medium/high), `size`, `className` |
+| `contacts` | `ContactProfilePanel`, `ContactCard` | Perfiles de profesores, personal e información de contacto. | `title`, `contact`, `onClose`, `className` |
+| `objects` | `PublishReportCard`, `ObjectReportCard`, `ReportLostObjectCard` | Modales/Cards para publicar reportes de objetos perdidos (`ReportLostObjectCard` y `PublishReportCard`) y visualizar objetos reportados (`ObjectReportCard`). | Múltiples props según tarjeta. |
+| `incidents` | `IncidentCard` | Tarjeta para visualizar un reporte de incidente con ubicación, estado, fotografía, título, autor del reporte y descripción detallada. | `location`, `status`, `photoUrl`, `title`, `reporterName`, `reportTime`, `reporterAvatar`, `description` |
 
-## Expanding the ESLint configuration
+## Vistas (Views)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Las vistas principales de la aplicación corresponden a las páginas renderizadas por cada ruta (`src/views`).
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Vista | Ruta | Descripción |
+|---|---|---|
+| `MapView` | `/map` | Vista interactiva del mapa del campus y filtros. |
+| `IncidentsView` | `/reports` | Vista de reportes de incidentes con filtro por antigüedad, campus y creación de reportes. |
+| `ObjectsView` | `/objects` | Vista de búsqueda y gestión de objetos perdidos con filtros por campus, antigüedad y categorías de objetos. |
+| `ContactsView` | `/contacts` | Vista de búsqueda y lista de contactos institucionales filtrables por rol. |
+| `ShowcaseView` | `/showcase` | Galería interactiva para pruebas y prototipado de la biblioteca de componentes. |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Interfaces Globales
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Las interfaces y tipos compartidos en el proyecto están ubicados de manera centralizada en la carpeta `src/interfaces` para evitar redundancias y facilitar la organización del código.
 
-```
+| Archivo | Contenido / Uso |
+|---|---|
+| `FilterItem.ts` | Define la estructura individual de cada opción de filtrado (id, label, icon, checked). |
+| `FilterSection.ts` | Define la estructura de cada agrupación de filtros (id, title, items). |
+| `ContactData.ts` | Contrato de datos para perfiles de contacto institucionales (nombre, rol, facultad, oficina, etc.). |
+| `IncidentReport.ts` | Contrato para los reportes de incidentes de infraestructura. |
+| `LostObjectReport.ts` | Contrato de datos para objetos perdidos. |
+| `RoomData.ts` | Estructura para los datos de salas y aulas (título, tipo, capacidad). |
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
