@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom';
-import React from 'react';
 
 type NavButtonSize = 'sm' | 'md' | 'lg';
 type NavButtonWidth = 'auto' | 'sm' | 'md' | 'lg' | 'full';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { type PageColor, bgPageColors, textPageColors, borderPageColors, hoverBgPageColors, solidButtonConfig } from '../constants/colors';
 
 type ButtonSize = 'sm' | 'md' | 'lg';
