@@ -3,5 +3,5 @@ export type Role =
   | 'TEACHER'
   | 'OFFICIAL'
   | 'ADMIN'
-  | 'COMPLAINTS_OFFICER'
-  | 'ITEMS_OFFICER';
+  | 'INCIDENTS_OFFICER'
+  | 'OBJECTS_OFFICER';
