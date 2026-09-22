@@ -15,6 +15,7 @@ export const Button = ({
   color = 'blue',
   size = 'md',
   width = "sm",
+  disabled = false,
   className = '',
   children,
   ...props
@@ -33,7 +34,8 @@ export const Button = ({
   };
 
   const resolvedWidth = width ? widthClasses[width] : '';
-  const baseClasses = `${sizeClasses[size]} ${resolvedWidth} rounded-full font-medium transition-all duration-200 active:scale-95`;
+  const disabledClasses = disabled ? "opacity-50 pointer-events-none cursor-not-allowed" : "";
+  const baseClasses = `${sizeClasses[size]} ${resolvedWidth} rounded-full font-medium transition-all duration-200 active:scale-95 ${disabledClasses}`;
 
   let variantClasses = "";
   if (variant === 'solid') {
@@ -47,6 +49,7 @@ export const Button = ({
 
   return (
     <button
+      disabled={disabled}
       className={`${baseClasses} ${variantClasses} ${className}`.trim()}
       {...props}
     >

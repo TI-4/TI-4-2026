@@ -1,7 +1,6 @@
 import { Panel } from '../../components/Panel';
 import { PhotoFrame } from '../../components/PhotoFrame';
 import { Button } from '../../components/Button';
-
 import EyeIcon from '../../assets/svg/icons/icon_eye.svg?react';
 
 export interface ContactCardProps {
@@ -12,7 +11,6 @@ export interface ContactCardProps {
   onInfoClick?: () => void;
   className?: string;
 }
-
 export const ContactCard = ({
   name,
   role,
@@ -26,7 +24,7 @@ export const ContactCard = ({
       {/* Photo */}
       <PhotoFrame src={photoUrl} className="w-40 h-40 rounded-2xl" />
 
-      {/* Main */}
+      {/* Variants */}
       <div className="flex flex-col flex-1 justify-between">
         <div className="flex flex-col pt-2">
           <h3 className="text-3xl font-medium text-gray-800 mb-1 uppercase leading-tight">

@@ -2,17 +2,40 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { SectionButton } from './SectionButton';
 import { Avatar } from './Avatar';
 import { Tag } from './Tag';
-import { useNavStore } from '../states/navStore';
+import { useNavStore } from '../states/navState';
+import { useAuthState } from '../states/authState';
+import type { PageColor } from '../constants/colors';
+import type { Role } from '../constants/role';
 
 import logoUrl from '../assets/svg/logo.svg';
 import MapIcon from '../assets/svg/icons/icon_section_map.svg?react';
 import ReportsIcon from '../assets/svg/icons/icon_section_incidents.svg?react';
 import ObjectsIcon from '../assets/svg/icons/icon_section_objects.svg?react';
 import ContactsIcon from '../assets/svg/icons/icon_section_contacts.svg?react';
+import AdminIcon from '../assets/svg/icons/icon_admin.svg?react';
+import UserIcon from '../assets/svg/icons/icon_user.svg?react';
+import { RoleGuard } from '../router/RoleGuard';
 
 export const AppLayout = () => {
   const { isExpanded, setIsExpanded } = useNavStore();
   const location = useLocation();
+  const user = useAuthState((state) => state.user);
+
+  const getRoleConfig = (role?: Role): { label: string; color: PageColor } => {
+    if (!role) return { label: 'INVITADO', color: 'gray' };
+
+    switch (role) {
+      case 'ADMIN': return { label: 'ADMINISTRADOR', color: 'purple' };
+      case 'INCIDENTS_OFFICER': return { label: 'ENC. INCIDENTES', color: 'blue' };
+      case 'OBJECTS_OFFICER': return { label: 'ENC. OBJETOS', color: 'blue' };
+      case 'TEACHER': return { label: 'PROFESOR', color: 'dark' };
+      case 'OFFICIAL': return { label: 'FUNCIONARIO', color: 'green' };
+      case 'MEMBER': return { label: 'ESTUDIANTE', color: 'blue' };
+      default: return { label: 'USUARIO', color: 'gray' };
+    }
+  };
+
+  const roleConfig = getRoleConfig(user?.role);
 
   const getPageTitle = (path: string) => {
     if (path.includes('/map')) return 'Mapa';
@@ -20,6 +43,7 @@ export const AppLayout = () => {
     if (path.includes('/objects')) return 'Objetos';
     if (path.includes('/contacts')) return 'Contactos';
     if (path.includes('/showcase')) return 'Showcase';
+    if (path.includes('/administration')) return 'Administración';
     return '';
   };
 
@@ -111,30 +135,56 @@ export const AppLayout = () => {
           icon={<ObjectsIcon className="w-8 h-8" />}
         />
 
-        {/* User Info Container*/}
-        <div className="mt-auto">
-          <div
-            className={`flex items-center rounded-2xl relative transition-all duration-300 ease-in-out flex-shrink-0 z-50 overflow-hidden ${
-              isExpanded ? 'bg-white shadow-md h-24 w-[288px] p-2 pr-4' : 'bg-transparent h-14 w-14 p-0'
-            }`}
-          >
-            {/* Avatar*/}
-            <div className={`flex-shrink-0 flex items-center justify-center z-10 transition-all duration-300 ease-in-out ${isExpanded ? 'w-20 h-20' : 'w-14 h-14'}`}>
-              <Avatar className="w-full h-full" />
-            </div>
+        <RoleGuard allowedRoles={['ADMIN']}>
+          <SectionButton
+            to="/administration"
+            label="Administración"
+            isExpanded={isExpanded}
+            expandedWidth="288px"
+            icon={<AdminIcon className="w-12 h-12" />}
+          />
+        </RoleGuard>
 
-            {/* User texts */}
+        {/* User Info Container or Login Button */}
+        <div className="mt-auto">
+          {user ? (
             <div
-              className={`flex flex-col justify-center transition-all duration-300 ease-in-out overflow-hidden whitespace-normal break-words ${
-                isExpanded
-                  ? 'max-w-[190px] opacity-100 ml-3'
-                  : 'max-w-0 opacity-0 ml-0'
+              className={`flex items-center rounded-2xl relative transition-all duration-300 ease-in-out flex-shrink-0 z-50 overflow-hidden ${
+                isExpanded ? 'bg-white shadow-md h-24 w-[288px] p-2 pr-4' : 'bg-transparent h-14 w-14 p-0'
               }`}
             >
-              <span className="text-gray-800 font-bold text-lg leading-tight line-clamp-2">NOMBRE APELLIDO</span>
-              <Tag label="ESTUDIANTE" color="blue" className="mt-1 w-max scale-90 origin-left" />
+              {/* Avatar*/}
+              <div className={`flex-shrink-0 flex items-center justify-center z-10 transition-all duration-300 ease-in-out ${isExpanded ? 'w-20 h-20' : 'w-14 h-14'}`}>
+                <Avatar className="w-full h-full" src={user.avatar} />
+              </div>
+
+              {/* User texts */}
+              <div
+                className={`flex flex-col justify-center transition-all duration-300 ease-in-out overflow-hidden whitespace-normal break-words ${
+                  isExpanded
+                    ? 'max-w-[190px] opacity-100 ml-3'
+                    : 'max-w-0 opacity-0 ml-0'
+                }`}
+              >
+                <span className="text-gray-800 font-bold text-lg leading-tight line-clamp-2">
+                  {user.name}
+                </span>
+                <Tag
+                  label={roleConfig.label}
+                  color={roleConfig.color}
+                  className="mt-1 w-max scale-90 origin-left"
+                />
+              </div>
             </div>
-          </div>
+          ) : (
+            <SectionButton
+              to="/login"
+              label="Iniciar Sesión"
+              isExpanded={isExpanded}
+              expandedWidth="288px"
+              icon={<UserIcon className="w-8 h-8" />}
+            />
+          )}
         </div>
       </nav>
 
