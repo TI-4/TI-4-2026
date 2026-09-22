@@ -28,11 +28,6 @@ public class MeetingConfiguration : IEntityTypeConfiguration<Meeting>
             .HasMaxLength(50)
             .IsRequired();
 
-        builder.HasOne(m => m.OfficeHour)
-            .WithMany()
-            .HasForeignKey(m => m.OfficeHourId)
-            .OnDelete(DeleteBehavior.Restrict);
-
         builder.HasIndex(m => new { m.TeacherRefId, m.ScheduledAt });
         builder.HasIndex(m => new { m.StudentRefId, m.ScheduledAt });
         builder.HasIndex(m => new { m.StructureRefId, m.ScheduledAt });

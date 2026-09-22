@@ -11,9 +11,6 @@ public class Meeting
     public Guid StudentRefId { get; private set; }
     public Guid StructureRefId { get; private set; }
 
-    public Guid? OfficeHourId { get; private set; }
-    public OfficeHour? OfficeHour { get; private set; }
-
     public DateTime ScheduledAt { get; private set; }
     public MeetingStatus Status { get; private set; }
 
