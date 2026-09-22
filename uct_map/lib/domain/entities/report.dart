@@ -20,6 +20,24 @@ extension ReportStatusExt on ReportStatus {
         return 'Resuelto';
     }
   }
+
+  static ReportStatus fromString(String? val) {
+    switch (val?.toLowerCase()) {
+      case 'enrevision':
+      case 'en_revision':
+      case 'en revision':
+        return ReportStatus.enRevision;
+      case 'enproceso':
+      case 'en_proceso':
+      case 'en proceso':
+        return ReportStatus.enProceso;
+      case 'resuelto':
+        return ReportStatus.resuelto;
+      case 'reportado':
+      default:
+        return ReportStatus.reportado;
+    }
+  }
 }
 
 class ReportStatusEvent {
@@ -32,6 +50,25 @@ class ReportStatusEvent {
     required this.at,
     required this.by,
   });
+
+  factory ReportStatusEvent.fromJson(Map<String, dynamic> json) {
+    final rawAt = json['at'] ?? json['At'];
+    final parsedAt = rawAt is String
+        ? (DateTime.tryParse(rawAt) ?? DateTime.now())
+        : DateTime.now();
+
+    return ReportStatusEvent(
+      status: ReportStatusExt.fromString((json['status'] ?? json['Status'])?.toString()),
+      at: parsedAt,
+      by: (json['by'] ?? json['By'] ?? '').toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'status': status.name,
+        'at': at.toIso8601String(),
+        'by': by,
+      };
 }
 
 class Report {
@@ -58,6 +95,45 @@ class Report {
     required this.statusHistory,
     this.imageUrl,
   });
+
+  factory Report.fromJson(Map<String, dynamic> json) {
+    final rawAt = json['reportedAt'] ?? json['ReportedAt'] ?? json['dateReport'] ?? json['createdAt'];
+    final parsedAt = rawAt is String
+        ? (DateTime.tryParse(rawAt) ?? DateTime.now())
+        : DateTime.now();
+
+    final rawHistory = json['statusHistory'] ?? json['StatusHistory'] as List<dynamic>? ?? [];
+    final historyList = rawHistory
+        .whereType<Map<String, dynamic>>()
+        .map((e) => ReportStatusEvent.fromJson(e))
+        .toList();
+
+    return Report(
+      id: (json['id'] ?? json['Id'] ?? json['idTicket'] ?? '').toString(),
+      title: (json['title'] ?? json['Title'] ?? '').toString(),
+      description: (json['description'] ?? json['Description'] ?? '').toString(),
+      location: (json['location'] ?? json['Location'] ?? json['idStructure'] ?? '').toString(),
+      campus: (json['campus'] ?? json['Campus'] ?? 'Campus San Francisco').toString(),
+      reportedBy: (json['reportedBy'] ?? json['ReportedBy'] ?? json['idUsuario'] ?? '').toString(),
+      reportedAt: parsedAt,
+      currentStatus: ReportStatusExt.fromString((json['currentStatus'] ?? json['CurrentStatus'] ?? json['status'])?.toString()),
+      statusHistory: historyList,
+      imageUrl: json['imageUrl']?.toString() ?? json['pictureUri']?.toString() ?? json['PictureUri']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'description': description,
+        'location': location,
+        'campus': campus,
+        'reportedBy': reportedBy,
+        'reportedAt': reportedAt.toIso8601String(),
+        'currentStatus': currentStatus.name,
+        'statusHistory': statusHistory.map((e) => e.toJson()).toList(),
+        if (imageUrl != null) 'imageUrl': imageUrl,
+      };
 }
 
 final List<Report> mockReports = [

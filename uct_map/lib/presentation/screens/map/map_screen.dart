@@ -1,13 +1,69 @@
 import 'package:flutter/material.dart';
 
-class MapScreen extends StatelessWidget {
-  const MapScreen({super.key});
+import '../../../data/datasources/campus_remote_ds.dart';
+import '../../../domain/entities/building.dart';
+import '../../../domain/entities/campus.dart';
+import '../../../domain/repositories/campus_repository.dart';
+
+/// Visor interactivo del mapa conectado a Campus Service (ms.svg - /api/campus).
+class MapScreen extends StatefulWidget {
+  const MapScreen({super.key, this.campusRepository});
+
+  final CampusRepository? campusRepository;
+
+  @override
+  State<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  late final CampusRepository _repository;
+  List<Campus> _campuses = [];
+  Campus? _selectedCampus;
+  List<Building> _buildings = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _repository = widget.campusRepository ?? CampusRemoteDataSource();
+    _loadCampuses();
+  }
+
+  Future<void> _loadCampuses() async {
+    setState(() => _loading = true);
+    try {
+      final list = await _repository.getCampuses();
+      if (mounted) {
+        setState(() {
+          _campuses = list;
+          if (list.isNotEmpty) {
+            _selectedCampus = list.first;
+          }
+          _loading = false;
+        });
+        if (_selectedCampus != null) {
+          _loadBuildings(_selectedCampus!.id);
+        }
+      }
+    } catch (_) {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _loadBuildings(String campusId) async {
+    try {
+      final bList = await _repository.getBuildings(campusId);
+      if (mounted) {
+        setState(() => _buildings = bList);
+      }
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Visor interactivo del mapa (Canvas / WebView / MapLibre / OpenStreetMap)
+        // Visor interactivo del mapa (Canvas / MapLibre / OpenStreetMap)
         Container(
           color: Colors.blueGrey.shade50,
           child: Center(
@@ -28,13 +84,26 @@ class MapScreen extends StatelessWidget {
                     color: Colors.blueGrey,
                   ),
                 ),
+                if (_selectedCampus != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    _selectedCampus!.name,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF003865),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 8),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 32.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: Text(
-                    'Visualización de edificios, salas, pisos y rutas peatonales.',
+                    _selectedCampus != null
+                        ? '${_selectedCampus!.address}\n(${_buildings.length} edificios registrados)'
+                        : 'Visualización de edificios, salas, pisos y rutas peatonales.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey, fontSize: 13),
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
                   ),
                 ),
               ],
@@ -56,18 +125,16 @@ class MapScreen extends StatelessWidget {
                 children: [
                   const Icon(Icons.location_city, color: Color(0xFF003865)),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Campus San Juan Pablo II',
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      _selectedCampus?.name ?? 'Cargando campus...',
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.keyboard_arrow_down),
                     tooltip: 'Cambiar Campus',
-                    onPressed: () {
-                      _showCampusSelector(context);
-                    },
+                    onPressed: _campuses.isEmpty ? null : () => _showCampusSelector(context),
                   ),
                 ],
               ),
@@ -120,7 +187,7 @@ class MapScreen extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) {
+      builder: (modalCtx) {
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -132,25 +199,28 @@ class MapScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              ListTile(
-                leading: const Icon(Icons.location_on, color: Color(0xFF003865)),
-                title: const Text('Campus San Juan Pablo II'),
-                subtitle: const Text('Ruta 5 Sur Km 670, Temuco'),
-                trailing: const Icon(Icons.check, color: Colors.green),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.location_on_outlined),
-                title: const Text('Campus San Francisco'),
-                subtitle: const Text('Manuel Montt 56, Temuco'),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.location_on_outlined),
-                title: const Text('Campus Dr. Luis Rivas del Canto'),
-                subtitle: const Text('Av. Prieto Norte 371, Temuco'),
-                onTap: () => Navigator.pop(context),
-              ),
+              ..._campuses.map((campus) {
+                final isSelected = campus.id == _selectedCampus?.id;
+                return ListTile(
+                  leading: Icon(
+                    isSelected ? Icons.location_on : Icons.location_on_outlined,
+                    color: isSelected ? const Color(0xFF003865) : null,
+                  ),
+                  title: Text(
+                    campus.name,
+                    style: TextStyle(
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+                  subtitle: Text(campus.address),
+                  trailing: isSelected ? const Icon(Icons.check, color: Colors.green) : null,
+                  onTap: () {
+                    Navigator.pop(modalCtx);
+                    setState(() => _selectedCampus = campus);
+                    _loadBuildings(campus.id);
+                  },
+                );
+              }),
             ],
           ),
         );

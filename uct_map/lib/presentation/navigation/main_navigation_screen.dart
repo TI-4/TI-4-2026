@@ -46,8 +46,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final result =
         await Navigator.pushNamed(context, '/login', arguments: section);
     if (result is Map && result['ok'] == true && mounted) {
-      // TODO(tarea 3): sesión real desde el endpoint de auth.
-      _session.signInDemo((result['email'] ?? '').toString());
+      final token = (result['token'] ?? '').toString();
+      final userId = (result['userId'] ?? '').toString();
+      final email = (result['email'] ?? '').toString();
+      if (token.isNotEmpty && userId.isNotEmpty) {
+        _session.signIn(userId: userId, email: email, token: token);
+      } else {
+        _session.signInDemo(email);
+      }
       setState(() {});
     }
   }

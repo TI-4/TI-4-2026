@@ -1,4 +1,4 @@
-﻿// Entidad LostItem: modelo de datos de objetos perdidos/encontrados UCT.
+// Entidad LostItem: modelo de datos de objetos perdidos/encontrados UCT.
 
 enum LostItemStatus {
   publicado,
@@ -20,6 +20,22 @@ extension LostItemStatusExt on LostItemStatus {
         return 'Cerrado';
     }
   }
+
+  static LostItemStatus fromString(String? val) {
+    switch (val?.toLowerCase()) {
+      case 'encustodia':
+      case 'en_custodia':
+      case 'en custodia':
+        return LostItemStatus.enCustodia;
+      case 'entregado':
+        return LostItemStatus.entregado;
+      case 'cerrado':
+        return LostItemStatus.cerrado;
+      case 'publicado':
+      default:
+        return LostItemStatus.publicado;
+    }
+  }
 }
 
 class LostItemStatusEvent {
@@ -34,6 +50,27 @@ class LostItemStatusEvent {
     required this.by,
     this.note,
   });
+
+  factory LostItemStatusEvent.fromJson(Map<String, dynamic> json) {
+    final rawAt = json['at'] ?? json['At'];
+    final parsedAt = rawAt is String
+        ? (DateTime.tryParse(rawAt) ?? DateTime.now())
+        : DateTime.now();
+
+    return LostItemStatusEvent(
+      status: LostItemStatusExt.fromString((json['status'] ?? json['Status'])?.toString()),
+      at: parsedAt,
+      by: (json['by'] ?? json['By'] ?? '').toString(),
+      note: json['note']?.toString() ?? json['Note']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'status': status.name,
+        'at': at.toIso8601String(),
+        'by': by,
+        if (note != null) 'note': note,
+      };
 }
 
 class LostItem {
@@ -66,6 +103,51 @@ class LostItem {
     this.imageUrl,
     this.contactInfo,
   });
+
+  factory LostItem.fromJson(Map<String, dynamic> json) {
+    final rawAt = json['reportedAt'] ?? json['ReportedAt'] ?? json['dateReport'] ?? json['createdAt'];
+    final parsedAt = rawAt is String
+        ? (DateTime.tryParse(rawAt) ?? DateTime.now())
+        : DateTime.now();
+
+    final rawHistory = json['statusHistory'] ?? json['StatusHistory'] as List<dynamic>? ?? [];
+    final historyList = rawHistory
+        .whereType<Map<String, dynamic>>()
+        .map((e) => LostItemStatusEvent.fromJson(e))
+        .toList();
+
+    return LostItem(
+      id: (json['id'] ?? json['Id'] ?? json['idTicket'] ?? '').toString(),
+      ticketNumber: (json['ticketNumber'] ?? json['TicketNumber'] ?? 'TK-${json['id'] ?? '001'}').toString(),
+      title: (json['title'] ?? json['Title'] ?? '').toString(),
+      description: (json['description'] ?? json['Description'] ?? '').toString(),
+      category: (json['category'] ?? json['Category'] ?? 'General').toString(),
+      campus: (json['campus'] ?? json['Campus'] ?? 'Campus San Francisco').toString(),
+      building: (json['building'] ?? json['Building'] ?? json['idStructure'] ?? 'Edificio Central').toString(),
+      reportedBy: (json['reportedBy'] ?? json['ReportedBy'] ?? json['idUsuario'] ?? '').toString(),
+      reportedAt: parsedAt,
+      currentStatus: LostItemStatusExt.fromString((json['currentStatus'] ?? json['CurrentStatus'] ?? json['status'])?.toString()),
+      statusHistory: historyList,
+      imageUrl: json['imageUrl']?.toString() ?? json['pictureUri']?.toString() ?? json['PictureUri']?.toString(),
+      contactInfo: json['contactInfo']?.toString() ?? json['ContactInfo']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'ticketNumber': ticketNumber,
+        'title': title,
+        'description': description,
+        'category': category,
+        'campus': campus,
+        'building': building,
+        'reportedBy': reportedBy,
+        'reportedAt': reportedAt.toIso8601String(),
+        'currentStatus': currentStatus.name,
+        'statusHistory': statusHistory.map((e) => e.toJson()).toList(),
+        if (imageUrl != null) 'imageUrl': imageUrl,
+        if (contactInfo != null) 'contactInfo': contactInfo,
+      };
 }
 
 // ---------------------------------------------------------------------------
