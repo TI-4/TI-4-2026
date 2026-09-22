@@ -21,6 +21,7 @@ import { ObjectReportCard } from '../modules/objects/ObjectReportCard';
 import { IncidentCard } from '../modules/incidents/IncidentCard';
 import { UserManagementCard } from '../modules/admin/UserManagementCard';
 import { MapEditorPanel } from '../modules/admin/MapEditorPanel';
+import { TimedActionCard } from '../modules/actions/TimedActionCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { UCT_LOADING_PHRASES } from '../constants/loadingPhrases';
 import { RoomInfoCard } from '../components/RoomInfoCard';
@@ -161,6 +162,18 @@ export const ShowcaseView = () => {
 
       <div className="w-full max-w-4xl flex flex-col gap-4">
         <MapEditorPanel />
+      </div>
+
+      <div className="w-full max-w-4xl flex flex-col gap-4">
+        <TimedActionCard 
+          title="Confirmar Acción Crítica"
+          description="Debes esperar 5 segundos antes de poder confirmar o cancelar esta acción. Lee detenidamente."
+          initialDurationMs={5000}
+          options={[
+            { label: 'Confirmar', color: 'red', onClick: () => alert('Confirmado!') },
+            { label: 'Cancelar', color: 'gray', onClick: () => alert('Cancelado!') }
+          ]}
+        />
       </div>
 
       <ObjectReportCard

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthState } from '../states/authState';
 import type { Role } from '../constants/role';
+import { Button } from '../components/Button';
 
 export const LoginView = () => {
   const navigate = useNavigate();
@@ -9,37 +10,61 @@ export const LoginView = () => {
 
   const handleLogin = (role: Role) => {
     mockLoginAs(role);
-    navigate('/map'); // Redirigimos al inicio después de loguear
+    navigate('/map');
   };
 
   const handleGuest = () => {
-    logout(); // Nos aseguramos de limpiar cualquier sesión
+    logout();
     navigate('/map');
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 space-y-4">
-      <h1 className="text-3xl font-bold mb-4">Simulador de Login</h1>
-      <p className="text-gray-600 mb-8">Elige un rol para entrar:</p>
-      
-      <button onClick={() => handleGuest()} className="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 w-80 text-center font-bold shadow-md">
-        Entrar como Invitado (Sin Cuenta)
-      </button>
+    <div className="w-full min-h-screen flex items-center justify-center bg-page-dark font-sans relative overflow-hidden">
 
-      <div className="h-4"></div> {/* Separador visual */}
+      {/* Placeholder Text */}
+      <h1 className="text-4xl font-bold text-white tracking-widest uppercase opacity-20 text-center">
+        &lt;Login View&gt;
+      </h1>
 
-      <button onClick={() => handleLogin('MEMBER')} className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-80 text-left">
-        Entrar como Miembro Normal
-      </button>
-      <button onClick={() => handleLogin('INCIDENTS_OFFICER')} className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 w-80 text-left">
-        Entrar como Encargado de Incidentes
-      </button>
-      <button onClick={() => handleLogin('OBJECTS_OFFICER')} className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 w-80 text-left">
-        Entrar como Encargado de Objetos
-      </button>
-      <button onClick={() => handleLogin('ADMIN')} className="px-6 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 w-80 text-left">
-        Entrar como Administrador
-      </button>
+      {/* Dev Tool Panel (Bottom Right, Smaller) */}
+      <div className="absolute bottom-6 right-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-200 flex flex-col items-center gap-4 w-56 z-10">
+        <div className="flex flex-col items-center gap-0">
+          <h2 className="text-lg font-bold text-gray-800">Dev Tool</h2>
+        </div>
+
+        <div className="flex flex-col w-full gap-2">
+          <Button onClick={handleGuest} color="gray" size="sm" className="!w-full !px-2">
+            Invitado
+          </Button>
+
+          <div className="w-full h-px bg-gray-100 my-0.5"></div>
+
+          <Button onClick={() => handleLogin('MEMBER')} color="blue" size="sm" className="!w-full !px-2">
+            Estudiante
+          </Button>
+
+          <Button onClick={() => handleLogin('TEACHER')} color="dark" size="sm" className="!w-full !px-2">
+            Profesor
+          </Button>
+
+          <Button onClick={() => handleLogin('OFFICIAL')} color="green" size="sm" className="!w-full !px-2">
+            Funcionario
+          </Button>
+
+          <Button onClick={() => handleLogin('INCIDENTS_OFFICER')} color="blue" size="sm" className="!w-full !px-2">
+            Enc. Incidentes
+          </Button>
+
+          <Button onClick={() => handleLogin('OBJECTS_OFFICER')} color="blue" size="sm" className="!w-full !px-2">
+            Enc. Objetos
+          </Button>
+
+          <Button onClick={() => handleLogin('ADMIN')} color="purple" size="sm" className="!w-full !px-2">
+            Admin
+          </Button>
+        </div>
+      </div>
+
     </div>
   );
 };

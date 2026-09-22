@@ -1,4 +1,4 @@
-export type PageColor = 'blue' | 'red' | 'yellow' | 'dark' | 'gray' | 'green' | 'white' | 'transparent';
+export type PageColor = 'blue' | 'red' | 'yellow' | 'dark' | 'gray' | 'green' | 'white' | 'transparent' | 'purple';
 
 export const bgPageColors: Record<PageColor, string> = {
   blue: "bg-page-blue",
@@ -9,6 +9,7 @@ export const bgPageColors: Record<PageColor, string> = {
   green: "bg-page-green",
   white: "bg-page-white",
   transparent: "bg-transparent",
+  purple: "bg-page-purple",
 };
 
 export const textPageColors: Record<PageColor, string> = {
@@ -20,6 +21,7 @@ export const textPageColors: Record<PageColor, string> = {
   green: "text-page-green",
   white: "text-page-white",
   transparent: "text-transparent",
+  purple: "text-page-purple",
 };
 
 export const borderPageColors: Record<PageColor, string> = {
@@ -31,6 +33,7 @@ export const borderPageColors: Record<PageColor, string> = {
   green: "border-page-green",
   white: "border-page-white",
   transparent: "border-transparent",
+  purple: "border-page-purple",
 };
 
 export const ringPageColors: Record<PageColor, string> = {
@@ -42,6 +45,7 @@ export const ringPageColors: Record<PageColor, string> = {
   green: "focus:ring-page-green",
   white: "focus:ring-page-white",
   transparent: "focus:ring-transparent",
+  purple: "focus:ring-page-purple",
 };
 
 export const hoverBgPageColors: Record<PageColor, string> = {
@@ -53,6 +57,7 @@ export const hoverBgPageColors: Record<PageColor, string> = {
   green: "hover:bg-page-green/10",
   white: "hover:bg-white/10",
   transparent: "hover:bg-transparent",
+  purple: "hover:bg-page-purple/10",
 };
 
 export const solidButtonConfig: Record<PageColor, { text: string; hover: string }> = {
@@ -64,4 +69,5 @@ export const solidButtonConfig: Record<PageColor, { text: string; hover: string 
   green: { text: "text-page-white", hover: "hover:brightness-110" },
   white: { text: "text-page-dark", hover: "hover:bg-gray-50" },
   transparent: { text: "text-inherit", hover: "" },
+  purple: { text: "text-page-white", hover: "hover:brightness-110" },
 };
