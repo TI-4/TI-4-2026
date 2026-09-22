@@ -27,5 +27,21 @@
       "type": {"type": "string", "enum": ["Point"]},
       "coordinates": {"type": "array", "items": "number", "description": "[longitude, latitude]"}
     }
-  }
+  },
+  "complaint": {
+      "_id": {"type": "ObjectId"},
+      "user_id": {"type": "UUID", "description": "Reference to Identity DB"},
+      "structure_id": {"type": "UUID", "description": "Reference to Campus DB"},
+      "title": {"type": "string"},
+      "description": {"type": "string"},
+      "status": {
+        "type": "string",
+        "enum": ["Pending", "In_Process", "Resolved", "Dismissed"]
+      },
+      "date": {"type": "string", "format": "date-time"},
+      "location": {
+        "type": {"type": "string", "enum": ["Point"]},
+        "coordinates": {"type": "array", "items": "number", "description": "[longitude, latitude]"}
+      }
+    }
 }
