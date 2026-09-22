@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { Select } from '../components/Select';
 import { SearchInput } from '../components/SearchInput';
-import { EmptyState } from '../components/EmptyState';
-import { UserManagementCard } from '../modules/admin/UserManagementCard';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
-import CategoryIcon from '../assets/svg/icons/icon_category_cube.svg?react'; // We can use this as a temporary role icon
+import CategoryIcon from '../assets/svg/icons/icon_category_cube.svg?react';
 
 export const AdministrationView = () => {
   const [searchQuery, setSearchQuery] = useState('');
