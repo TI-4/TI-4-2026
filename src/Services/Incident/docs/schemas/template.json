@@ -1,35 +1,31 @@
 {
-  "incident_queja":{
-    "_id_queja" : {"type": "UUID"},
-    "_id_ticket": {"type": "UUID"},
-    "titulo": {"type" : "string"},
-    "descripcion": {"type": "string"}
+  "incident_object": {
+    "_id": {"type": "ObjectId"},
+    "title": {"type": "string"},
+    "description": {"type": "string"},
+    "status": {
+      "type": "string",
+      "enum": ["Pending", "In_Process", "Resolved", "Canceled"]
+    },
+    "photo_url": {"type": "string", "format": "uri"}
   },
 
+  "incident_ticket": {
+    "_id": {"type": "ObjectId"},
+    "object_id": {"type": "ObjectId", "description": "Reference to incident_object"},
+    "user_id": {"type": "UUID", "description": "Reference to Identity DB"},
+    "structure_id": {"type": "UUID", "description": "Reference to Campus DB"},
 
-  "incident_objeto":{
-    "_id_objeto" : {"type": "UUID"},
-    "_id_ticket": {"type": "UUID"},
-    "titulo": {"type" : "string"},
-    "descripcion": {"type": "string"},
-    "estado": {
-          "type": "string",
-          "enum": ["pendiente", "en_proceso", "resuelto", "cancelado"]
-        },
-    "foto_url": {"type": "string", "format": "uri"}
-  },
-
-
-"incident_ticket":{
-  "_id_ticket": {"type": "UUID"},
-  "_id_usuario_ref": {"type": "UUID"},
-  "_id_estructura_ref" : {"type": "UUID"},
-  "tipo_ticket": {
+    "ticket_type": {
       "type": "string",
       "enum": ["Claim", "Found", "Match", "Pickup"]
-  },
-  "activo": {"type": "bool"},
-  "fecha": {"type": "string", "format":"date-time"},
-  "coordenadas": {"type": "tuple"}
+    },
+    "is_active": {"type": "bool"},
+    "date": {"type": "string", "format": "date-time"},
+
+    "location": {
+      "type": {"type": "string", "enum": ["Point"]},
+      "coordinates": {"type": "array", "items": "number", "description": "[longitude, latitude]"}
+    }
   }
 }
