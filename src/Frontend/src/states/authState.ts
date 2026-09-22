@@ -22,9 +22,9 @@ export const useAuthState = create<AuthState>((set) => ({
   // --- TEMPORAL MOCK TEST ---
   mockLoginAs: (role) => {
     const mockUser = {
-      id: '123e4567',
+      id: '123',
       role: role,
-      name: `Usuario ${role}`,
+      name: `${role}`,
       email: `${role.toLowerCase()}@uct.cl`,
       registeredAt: new Date().toISOString()
     } as UserIdentity;

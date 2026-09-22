@@ -22,7 +22,7 @@ export const AdministrationView = () => {
     { value: 'OBJECTS_OFFICER', label: 'Encargado de Objetos' },
   ];
 
-  // Search suggestions (Optional, can come from backend later)
+  // Search suggestions (mock)
   const userSearchOptions = [
     { value: '11111111-1', label: 'Juan Pérez (11.111.111-1)' },
     { value: '22222222-2', label: 'María González (22.222.222-2)' },
