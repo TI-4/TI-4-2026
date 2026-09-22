@@ -2,7 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { SectionButton } from './SectionButton';
 import { Avatar } from './Avatar';
 import { Tag } from './Tag';
-import { useNavStore } from '../states/navStore';
+import { useNavStore } from '../states/navState';
 
 import logoUrl from '../assets/svg/logo.svg';
 import MapIcon from '../assets/svg/icons/icon_section_map.svg?react';
