@@ -7,6 +7,7 @@ import { ContactsView } from '../views/ContactsView';
 import { ShowcaseView } from '../views/ShowcaseView';
 import { LoginView } from '../views/LoginView';
 import { ProtectedRoute } from '../router/ProtectedRoute';
+import { AdministrationView } from '../views/AdministrationView';
 
 export const AppRouter = () => {
   return (
@@ -19,6 +20,7 @@ export const AppRouter = () => {
         <Route path="/map" element={<MapView />} />
         <Route path="/reports" element={<IncidentsView />} />
         <Route path="/objects" element={<ObjectsView />} />
+        <Route path="/reports" element={<IncidentsView />} />
         <Route path="/showcase" element={<ShowcaseView />} />
 
         {/* Protected general routes */}
@@ -27,6 +29,9 @@ export const AppRouter = () => {
         </Route>
 
         {/* Role-Restricted Routes */}
+        <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+          <Route path="/administration" element={<AdministrationView />} />
+        </Route>
 
 
       </Route>

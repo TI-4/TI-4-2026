@@ -9,6 +9,8 @@ import MapIcon from '../assets/svg/icons/icon_section_map.svg?react';
 import ReportsIcon from '../assets/svg/icons/icon_section_incidents.svg?react';
 import ObjectsIcon from '../assets/svg/icons/icon_section_objects.svg?react';
 import ContactsIcon from '../assets/svg/icons/icon_section_contacts.svg?react';
+import AdminIcon from '../assets/svg/icons/icon_admin.svg?react';
+import { RoleGuard } from '../router/RoleGuard';
 
 export const AppLayout = () => {
   const { isExpanded, setIsExpanded } = useNavStore();
@@ -20,6 +22,7 @@ export const AppLayout = () => {
     if (path.includes('/objects')) return 'Objetos';
     if (path.includes('/contacts')) return 'Contactos';
     if (path.includes('/showcase')) return 'Showcase';
+    if (path.includes('/administration')) return 'Administración';
     return '';
   };
 
@@ -110,6 +113,16 @@ export const AppLayout = () => {
           expandedWidth="288px"
           icon={<ObjectsIcon className="w-8 h-8" />}
         />
+
+        <RoleGuard allowedRoles={['ADMIN', 'TEACHER']}>
+          <SectionButton
+            to="/administration"
+            label="Administración"
+            isExpanded={isExpanded}
+            expandedWidth="288px"
+            icon={<AdminIcon className="w-12 h-12" />}
+          />
+        </RoleGuard>
 
         {/* User Info Container*/}
         <div className="mt-auto">
