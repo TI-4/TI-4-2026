@@ -31,16 +31,37 @@ services:
   # The team will add their Dockerfile builds here as they progress
   # Example:
   identity-api:
-    build:
-      context: .
-      dockerfile: src/Services/Identity/Dockerfile
+    image: ${IDENTITY_IMAGE:-uct-map-identity:local}
     ports:
-      - "5001:8080"
+      - "${IDENTITY_PORT:-5001}:80"
     environment:
-      ConnectionStrings__IdentityDb: Host=postgres;Port=5432;Database=uct_map_db;Username=root;Password=rootpassword
-      JwtConfig__Key: 7d82f3a9b4e1c60d5f27a8b9c0d1e2f3a4b5c6d7e8f90a1b2c3d4e5f6a7b8c9d
+      ConnectionStrings__IdentityDb: ${IDENTITY_DB_CONNECTION_STRING}
+      JwtConfig__Key: ${JWT_KEY}
+      JwtConfig__Issuer: ${JWT_ISSUER}
+      JwtConfig__Audience: ${JWT_AUDIENCE}
+      JwtConfig__TokenValidationMins: ${JWT_TOKEN_VALIDATION_MINS:-30}
     depends_on:
-      - postgres
+      identity-db:
+        condition: service_healthy
+    networks:
+      - uct_network
+
+  identity-db:
+    image: postgres:16-alpine
+    container_name: uct_identity_db
+    environment:
+      POSTGRES_DB: ${IDENTITY_POSTGRES_DB:-identity_db}
+      POSTGRES_USER: ${IDENTITY_POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${IDENTITY_POSTGRES_PASSWORD:?IDENTITY_POSTGRES_PASSWORD must be set}
+    ports:
+      - "${IDENTITY_DB_PORT:-5431}:5432"
+    volumes:
+      - identity_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${IDENTITY_POSTGRES_USER:-postgres} -d $${IDENTITY_POSTGRES_DB:-identity_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - uct_network
 
@@ -49,5 +70,6 @@ networks:
     driver: bridge
 
 volumes:
+  identity_db_data:
   postgres_data:
   mongodb_data:

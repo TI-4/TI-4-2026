@@ -12,6 +12,8 @@ RUN dotnet publish src/Services/Identity/Api/IdentityService.Api.csproj -c Relea
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
-EXPOSE 8080
+ENV ASPNETCORE_HTTP_PORTS=80
+EXPOSE 80
 COPY --from=build /app/publish .
+USER $APP_UID
 ENTRYPOINT ["dotnet", "IdentityService.Api.dll"]
