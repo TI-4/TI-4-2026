@@ -23,7 +23,7 @@ export const AppLayout = () => {
 
   const getRoleConfig = (role?: Role): { label: string; color: PageColor } => {
     if (!role) return { label: 'INVITADO', color: 'gray' };
-    
+
     switch (role) {
       case 'ADMIN': return { label: 'ADMINISTRADOR', color: 'purple' };
       case 'INCIDENTS_OFFICER': return { label: 'ENC. INCIDENTES', color: 'blue' };
@@ -135,7 +135,7 @@ export const AppLayout = () => {
           icon={<ObjectsIcon className="w-8 h-8" />}
         />
 
-        <RoleGuard allowedRoles={['ADMIN', 'TEACHER']}>
+        <RoleGuard allowedRoles={['ADMIN']}>
           <SectionButton
             to="/administration"
             label="Administración"
@@ -169,10 +169,10 @@ export const AppLayout = () => {
                 <span className="text-gray-800 font-bold text-lg leading-tight line-clamp-2">
                   {user.name}
                 </span>
-                <Tag 
-                  label={roleConfig.label} 
-                  color={roleConfig.color} 
-                  className="mt-1 w-max scale-90 origin-left" 
+                <Tag
+                  label={roleConfig.label}
+                  color={roleConfig.color}
+                  className="mt-1 w-max scale-90 origin-left"
                 />
               </div>
             </div>
