@@ -1,18 +1,32 @@
-namespace ObjectModel;
-
-public enum Statusenum {
-    Pendiente,
-    EnProceso,
-    Resuelto,
-    Cancelado
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+namespace ObjectModels;
+public enum Objectenum {
+    Pending,
+    In_Process,
+    Resolved,
+    Canceled,
 }
-
-public class ObjectoReportado
+public class LostObject
 {
-    public String IdObject { get; } = Guid.NewGuid().ToString();
-    public required String IdtTicket { get; init; }
-    public required String Title { get; set; }
-    public required String Description { get; set; }
-    public required Statusenum Status { get; set; }
-    public String? PictureUri { get; set; }
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public String? ObjectId { get; init; }
+
+    [BsonElement("title")]
+    public required String title { get; init; }
+
+    [BsonElement("description")]
+    public required String description { get; init; }
+
+    [BsonElement("status")]
+    [BsonRepresentation(BsonType.String)]
+    public required Objectenum status { get; init; }
+
+    [BsonElement("photo_url")]
+    public String? photo_url { get; init; }
+
+
+
+
 }
