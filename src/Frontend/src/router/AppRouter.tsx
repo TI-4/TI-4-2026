@@ -24,7 +24,7 @@ export const AppRouter = () => {
         <Route path="/showcase" element={<ShowcaseView />} />
 
         {/* Protected general routes */}
-        <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute unauthorizedTo="/login" />}>
           <Route path="/contacts" element={<ContactsView />} />
         </Route>
 

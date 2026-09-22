@@ -82,6 +82,13 @@ Con la gestión de interfaces basadas en roles se permite añadir nuevas funcion
      </ProtectedRoute>
    } />
    ```
+Si se desea llevar al usuario a una ruta específica si no cuenta con autorización, se puede modificar con `unauthorizedTo` (por default, lleva a `/map`):
+
+```tsx
+<Route element="{<ProtectedRoute" unauthorizedTo="/login"/>}>
+  <Route element="{<ContactsView" path="/contacts"/>} />
+</Route>
+```
    El enrutador maneja la seguridad automáticamente e intercepta a los usuarios no autorizados.
 
 3. **Para Lógica Interna:**

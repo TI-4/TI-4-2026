@@ -4,18 +4,22 @@ import { useAuthState } from "../states/authState";
 
 interface ProtectedRouteProps {
   allowedRoles?: Role[];
+  UnauthorizedTo: string;
 }
 
-export const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({
+  allowedRoles,
+  unauthorizedTo = "/map"
+}: ProtectedRouteProps) => {
   const { isAuthenticated, user } = useAuthState();
 
   // Avoid unauthorized users requests
   if (!isAuthenticated || !user) {
-    return <Navigate to="/map" replace />;
+    return <Navigate to={unauthorizedTo} replace />;
   }
 
   if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/map" replace />;
+    return <Navigate to={unauthorizedTo} replace />;
   }
 
   // Authorized user
