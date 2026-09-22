@@ -10,4 +10,10 @@ builder.Services.AddDbContext<CampusDbContext>(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CampusDbContext>();
+    dbContext.Database.Migrate();
+}
+
 app.Run();
