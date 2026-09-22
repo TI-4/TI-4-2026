@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { Select } from '../components/Select';
 import { SearchInput } from '../components/SearchInput';
 import { EmptyState } from '../components/EmptyState';
+import { UserManagementCard } from '../modules/admin/UserManagementCard';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
-import CategoryIcon from '../assets/svg/icons/icon_category_cube.svg?react'; // Podemos usar este como ícono de rol temporalmente
+import CategoryIcon from '../assets/svg/icons/icon_category_cube.svg?react'; // We can use this as a temporary role icon
 
 export const AdministrationView = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState('todos');
 
-  // Opciones del filtro de Roles
+  // Role filter options
   const roleOptions = [
     { value: 'todos', label: 'Todos los roles' },
     { value: 'MEMBER', label: 'Miembro' },
@@ -21,7 +22,7 @@ export const AdministrationView = () => {
     { value: 'OBJECTS_OFFICER', label: 'Encargado de Objetos' },
   ];
 
-  // Sugerencias de búsqueda (Opcional, pueden venir del backend luego)
+  // Search suggestions (Optional, can come from backend later)
   const userSearchOptions = [
     { value: '11111111-1', label: 'Juan Pérez (11.111.111-1)' },
     { value: '22222222-2', label: 'María González (22.222.222-2)' },
@@ -29,12 +30,12 @@ export const AdministrationView = () => {
 
   return (
     <div className="p-6 min-h-screen bg-page-dark flex flex-col gap-6">
-      
-      {/* Barra de Filtros (alineada a la derecha como en el resto de vistas) */}
+
+      {/* Filter Bar (right-aligned like in other views) */}
       <div className="bg-page-dark py-2 px-4 flex flex-col gap-4">
         <div className="flex flex-wrap items-end justify-end gap-4">
-          
-          {/* Buscador de Usuarios */}
+
+          {/* User Search */}
           <div className="w-80">
             <SearchInput
               label="Buscar Usuario"
@@ -46,7 +47,7 @@ export const AdministrationView = () => {
             />
           </div>
 
-          {/* Filtro por Rol */}
+          {/* Role Filter */}
           <div className="w-72">
             <Select
               label="Filtrar por Rol"
@@ -60,11 +61,11 @@ export const AdministrationView = () => {
         </div>
       </div>
 
-      {/* Área de Resultados */}
-      <div className="flex-1 flex items-center justify-center p-12">
-        <EmptyState message="Utiliza el buscador de arriba para encontrar un usuario y gestionar sus permisos." />
+      {/* Results Area */}
+      <div className="flex-1 flex flex-col gap-4 max-w-5xl w-full mx-auto">
+
       </div>
-      
+
     </div>
   );
 };

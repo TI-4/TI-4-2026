@@ -3,6 +3,9 @@ import { SectionButton } from './SectionButton';
 import { Avatar } from './Avatar';
 import { Tag } from './Tag';
 import { useNavStore } from '../states/navState';
+import { useAuthState } from '../states/authState';
+import type { PageColor } from '../constants/colors';
+import type { Role } from '../constants/role';
 
 import logoUrl from '../assets/svg/logo.svg';
 import MapIcon from '../assets/svg/icons/icon_section_map.svg?react';
@@ -15,6 +18,23 @@ import { RoleGuard } from '../router/RoleGuard';
 export const AppLayout = () => {
   const { isExpanded, setIsExpanded } = useNavStore();
   const location = useLocation();
+  const user = useAuthState((state) => state.user);
+
+  const getRoleConfig = (role?: Role): { label: string; color: PageColor } => {
+    if (!role) return { label: 'INVITADO', color: 'gray' };
+    
+    switch (role) {
+      case 'ADMIN': return { label: 'ADMINISTRADOR', color: 'green' };
+      case 'INCIDENTS_OFFICER': return { label: 'ENC. INCIDENTES', color: 'red' };
+      case 'OBJECTS_OFFICER': return { label: 'ENC. OBJETOS', color: 'yellow' };
+      case 'TEACHER': return { label: 'PROFESOR', color: 'dark' };
+      case 'OFFICIAL': return { label: 'FUNCIONARIO', color: 'blue' };
+      case 'MEMBER': return { label: 'ESTUDIANTE', color: 'blue' };
+      default: return { label: 'USUARIO', color: 'gray' };
+    }
+  };
+
+  const roleConfig = getRoleConfig(user?.role);
 
   const getPageTitle = (path: string) => {
     if (path.includes('/map')) return 'Mapa';
@@ -133,7 +153,7 @@ export const AppLayout = () => {
           >
             {/* Avatar*/}
             <div className={`flex-shrink-0 flex items-center justify-center z-10 transition-all duration-300 ease-in-out ${isExpanded ? 'w-20 h-20' : 'w-14 h-14'}`}>
-              <Avatar className="w-full h-full" />
+              <Avatar className="w-full h-full" src={user?.avatar} />
             </div>
 
             {/* User texts */}
@@ -144,8 +164,14 @@ export const AppLayout = () => {
                   : 'max-w-0 opacity-0 ml-0'
               }`}
             >
-              <span className="text-gray-800 font-bold text-lg leading-tight line-clamp-2">NOMBRE APELLIDO</span>
-              <Tag label="ESTUDIANTE" color="blue" className="mt-1 w-max scale-90 origin-left" />
+              <span className="text-gray-800 font-bold text-lg leading-tight line-clamp-2">
+                {user ? user.name : 'Invitado'}
+              </span>
+              <Tag 
+                label={roleConfig.label} 
+                color={roleConfig.color} 
+                className="mt-1 w-max scale-90 origin-left" 
+              />
             </div>
           </div>
         </div>

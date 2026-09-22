@@ -19,6 +19,8 @@ import { ContactProfilePanel } from '../modules/contacts/ContactProfilePanel';
 import { ContactCard } from '../modules/contacts/ContactCard';
 import { ObjectReportCard } from '../modules/objects/ObjectReportCard';
 import { IncidentCard } from '../modules/incidents/IncidentCard';
+import { UserManagementCard } from '../modules/admin/UserManagementCard';
+import { MapEditorPanel } from '../modules/admin/MapEditorPanel';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { UCT_LOADING_PHRASES } from '../constants/loadingPhrases';
 import { RoomInfoCard } from '../components/RoomInfoCard';
@@ -138,6 +140,28 @@ export const ShowcaseView = () => {
         role="Cargo Principal"
         department="Facultad y Departamento"
       />
+
+      <div className="w-full max-w-4xl flex flex-col gap-4">
+        <UserManagementCard
+          id="showcase-1"
+          name="Juan Pérez"
+          rut="11.111.111-1"
+          email="juan.perez@uct.cl"
+          initialRole="MEMBER"
+        />
+        <UserManagementCard
+          id="showcase-2"
+          name="Carlos Hacker"
+          rut="33.333.333-3"
+          email="carlos.h@uct.cl"
+          initialRole="TEACHER"
+          isBanned={true}
+        />
+      </div>
+
+      <div className="w-full max-w-4xl flex flex-col gap-4">
+        <MapEditorPanel />
+      </div>
 
       <ObjectReportCard
         title="OBJETO"
