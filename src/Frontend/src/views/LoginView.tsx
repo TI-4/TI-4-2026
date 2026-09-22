@@ -21,12 +21,12 @@ export const LoginView = () => {
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-page-dark font-sans relative overflow-hidden">
 
-      {/* Placeholder Text */}
+      {/* Placeholder */}
       <h1 className="text-4xl font-bold text-white tracking-widest uppercase opacity-20 text-center">
         &lt;Login View&gt;
       </h1>
 
-      {/* Dev Tool Panel (Bottom Right, Smaller) */}
+      {/* Dev Tool Panel */}
       <div className="absolute bottom-6 right-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-200 flex flex-col items-center gap-4 w-56 z-10">
         <div className="flex flex-col items-center gap-0">
           <h2 className="text-lg font-bold text-gray-800">Dev Tool</h2>
