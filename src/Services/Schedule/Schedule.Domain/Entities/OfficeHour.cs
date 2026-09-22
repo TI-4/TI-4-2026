@@ -17,7 +17,7 @@ public class OfficeHour
         if (endTime <= startTime)
         {
             throw new ArgumentException(
-                "La hora de termino debe ser posterior a la hora de inicio.", nameof(endTime));
+                "End Hour must be later than Start Hour", nameof(endTime));
         }
 
         this.Id = Guid.NewGuid();
