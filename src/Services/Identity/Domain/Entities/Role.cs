@@ -10,7 +10,9 @@ public class Role : IdentityRole
 
     public const string Docente = "Docente";
 
-    public const string Funcionario = "Funcionario";
+    public const string FuncionarioObjetosPerdidos = "FuncionarioObjetosPerdidos";
+
+    public const string FuncionarioQuejas = "FuncionarioQuejas";
 
     public Role()
     {
