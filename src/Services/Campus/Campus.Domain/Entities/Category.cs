@@ -21,5 +21,12 @@ public class Category
         this.Description = description;
     }
 
+    public void Update(string name, string icon, string description)
+    {
+        this.Name = name;
+        this.Icon = icon;
+        this.Description = description;
+    }
+
     protected Category() { }
 }

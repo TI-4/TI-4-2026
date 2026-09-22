@@ -2,27 +2,27 @@ using System;
 
 namespace Campus.Application.DTOs;
 
-public record BuildingDto(
+public record StructureDto(
     Guid Id,
     Guid CampusId,
+    Guid CategoryId,
     string Name,
-    int FloorsCount,
     double Latitude,
     double Longitude
 );
 
-public record CreateBuildingDto(
+public record CreateStructureDto(
     Guid CampusId,
+    Guid CategoryId,
     string Name,
-    int FloorsCount,
     double Latitude,
     double Longitude
 );
 
-public record UpdateBuildingDto(
+public record UpdateStructureDto(
     Guid CampusId,
+    Guid CategoryId,
     string Name,
-    int FloorsCount,
     double Latitude,
     double Longitude
 );
