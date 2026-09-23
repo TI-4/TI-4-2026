@@ -1,6 +1,6 @@
 import 'user.dart';
 
-/// Modelo de sesión de usuario autenticado con token JWT (ms.svg - Identity Service).
+/// Modelo de sesión de usuario autenticado con token JWT.
 class AuthSession {
   final User user;
   final DateTime loginAt;
