@@ -1,64 +1,52 @@
 import 'user_role.dart';
 
-// Entidad de dominio: espejo móvil de Identidad_Usuario (sin contraseña).
+// Espejo del User de Identity: Id + Email + Name + rol único +
+// RegistrationDate. Un rol por usuario; si el JWT trae varios se toma el
+// primero. Sin registro local (SSO): RegistrationDate cae a ahora si no
+// viene y Name llega solo si el backend lo envía.
 class User {
   final String id;
-  final String nombre;
-  final String correo;
-  final String idRol;
-  final UserRole rol;
-  final DateTime? fechaRegistro;
+  final String email;
+  final String? name;
+  final UserRole role;
+  final DateTime registrationDate;
 
   const User({
     required this.id,
-    required this.nombre,
-    required this.correo,
-    required this.idRol,
-    required this.rol,
-    this.fechaRegistro,
+    required this.email,
+    this.name,
+    required this.role,
+    required this.registrationDate,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    final rolRaw =
-        json['rol'] ?? json['rolNombre'] ?? json['rol_nombre'] ?? 'desconocido';
-    final fechaRaw =
-        json['fechaRegistro'] ?? json['fecha_registro'] ?? json['createdAt'];
+    final rawRoles = json['roles'];
+    final roles = rawRoles is List
+        ? rawRoles.map(UserRole.fromString).toList()
+        : const <UserRole>[];
     return User(
-      id: _str(json['id'] ?? json['id_usuario'] ?? json['idUsuario']),
-      nombre: _str(json['nombre']),
-      correo: _str(json['correo'] ?? json['email']),
-      idRol: _str(json['idRol'] ?? json['id_rol']),
-      rol: UserRole.fromString(rolRaw),
-      fechaRegistro:
-          fechaRaw is String ? DateTime.tryParse(fechaRaw) : null,
+      id: _str(json['UserId']),
+      email: _str(json['Email']),
+      name: _nonEmpty(json['Name']),
+      role: roles.isNotEmpty ? roles.first : UserRole.desconocido,
+      registrationDate: _date(json['RegistrationDate']),
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'id_usuario': id,
-        'nombre': nombre,
-        'correo': correo,
-        'id_rol': idRol,
-        'rol': rol.toShortString(),
-        if (fechaRegistro != null)
-          'fecha_registro': fechaRegistro!.toIso8601String(),
-      };
-
-  User copyWith({
-    String? id,
-    String? nombre,
-    String? correo,
-    String? idRol,
-    UserRole? rol,
-    DateTime? fechaRegistro,
+  /// Usuario recién logueado: trae UserId + Email (+ Name si el backend lo
+  /// envía); el rol llega en el JWT y RegistrationDate cae al default.
+  factory User.fromLogin({
+    required String userId,
+    required String email,
+    String? name,
+    UserRole role = UserRole.desconocido,
   }) {
     return User(
-      id: id ?? this.id,
-      nombre: nombre ?? this.nombre,
-      correo: correo ?? this.correo,
-      idRol: idRol ?? this.idRol,
-      rol: rol ?? this.rol,
-      fechaRegistro: fechaRegistro ?? this.fechaRegistro,
+      id: userId,
+      email: email,
+      name: _nonEmpty(name),
+      role: role,
+      registrationDate: DateTime.now(),
     );
   }
 
@@ -67,13 +55,23 @@ class User {
       identical(this, other) ||
       other is User &&
           id == other.id &&
-          nombre == other.nombre &&
-          correo == other.correo &&
-          idRol == other.idRol &&
-          rol == other.rol;
+          email == other.email &&
+          name == other.name &&
+          role == other.role &&
+          registrationDate == other.registrationDate;
 
   @override
-  int get hashCode => Object.hash(id, nombre, correo, idRol, rol);
+  int get hashCode => Object.hash(id, email, name, role, registrationDate);
 }
 
 String _str(dynamic v) => v?.toString() ?? '';
+
+String? _nonEmpty(dynamic v) {
+  final s = v?.toString().trim() ?? '';
+  return s.isEmpty ? null : s;
+}
+
+DateTime _date(dynamic v) {
+  if (v is String) return DateTime.tryParse(v) ?? DateTime.now();
+  return DateTime.now();
+}

@@ -30,9 +30,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // Rol seleccionado (por defecto Estudiante según el diseño del Figma)
-  UserRole _currentRole = UserRole.estudiante;
-
   // Avatar seleccionado (índice para simulación de cambio de foto)
   int _avatarIndex = 0;
 
@@ -160,61 +157,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showRoleSelectorDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text(
-            'Seleccionar Rol',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildRoleRadio(UserRole.estudiante, 'Estudiante (Figma predeterminado)'),
-              _buildRoleRadio(UserRole.profesor, 'Docente / Profesor'),
-              _buildRoleRadio(UserRole.funcionarioObjetos, 'Funcionario Custodia'),
-              _buildRoleRadio(UserRole.funcionarioQuejas, 'Funcionario Incidencias'),
-              _buildRoleRadio(UserRole.administrador, 'Administrador'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Listo', style: TextStyle(color: AppColors.uctBlue)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildRoleRadio(UserRole role, String title) {
-    final isSelected = _currentRole == role;
-    return ListTile(
-      dense: true,
-      leading: Icon(
-        isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-        color: isSelected ? AppColors.uctBlue : AppColors.hint,
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          color: isSelected ? AppColors.uctBlue : AppColors.ink,
-        ),
-      ),
-      onTap: () {
-        setState(() {
-          _currentRole = role;
-        });
-        Navigator.pop(context);
-      },
-    );
-  }
-
   void _confirmLogout() {
     showDialog(
       context: context,
@@ -295,8 +237,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = widget.session?.currentUser;
-    final userName = user?.nombre ?? 'Patricio Benavides';
-    final userEmail = user?.correo ?? 'patricio.benavides@uct.cl';
+    final userName = user?.name ?? user?.email ?? 'Patricio Benavides';
+    final userEmail = user?.email ?? 'patricio.benavides@uct.cl';
+    final userRole = user?.role;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
@@ -372,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           const SizedBox(height: 14),
 
-          // Nombre del usuario
+          // Nombre del usuario (correo si el backend no lo envía)
           Text(
             userName,
             style: const TextStyle(
@@ -392,10 +335,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           const SizedBox(height: 12),
 
-          // 2. Rol del usuario (por defecto: Estudiante, editable con tap)
-          GestureDetector(
-            onTap: _showRoleSelectorDialog,
-            child: Container(
+          // Rol del usuario según sesión; oculto si no hay rol asignado.
+          if (userRole != null && userRole != UserRole.desconocido)
+            Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
                 color: AppColors.uctBlue.withValues(alpha: 0.08),
@@ -415,7 +357,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    _getRoleLabel(_currentRole),
+                    _getRoleLabel(userRole),
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -423,16 +365,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       letterSpacing: 0.2,
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  const Icon(
-                    Icons.arrow_drop_down,
-                    size: 18,
-                    color: AppColors.uctBlue,
-                  ),
                 ],
               ),
             ),
-          ),
 
           const SizedBox(height: 24),
 

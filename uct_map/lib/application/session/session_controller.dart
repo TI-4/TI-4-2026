@@ -1,62 +1,89 @@
 import 'package:flutter/foundation.dart';
 
+import '../../core/auth/jwt_claims.dart';
+import '../../data/storage/token_storage.dart';
 import '../../domain/entities/auth_session.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/entities/user_role.dart';
+import '../../domain/repositories/auth_repository.dart';
 
-// Controlador reactivo de sesión de usuario y token JWT.
+// Sesión en memoria con forma del backend y token persistido.
 class SessionController extends ChangeNotifier {
+  SessionController({TokenStorage? storage})
+      : _storage = storage ?? SecureTokenStorage();
+
+  final TokenStorage _storage;
   AuthSession? _session;
 
   bool get isAuthenticated => _session != null && _session!.isValid;
   User? get currentUser => _session?.user;
-  String? get token => _session?.token;
-
-  /// Establece una sesión autenticada con credenciales y token emitido por Identity Service.
-  void signIn({
-    required String userId,
-    required String email,
-    required String token,
-    String? name,
-    UserRole? role,
-    DateTime? expiresAt,
-  }) {
-    final cleanEmail = email.trim();
-    _session = AuthSession(
-      user: User(
-        id: userId,
-        nombre: name != null && name.isNotEmpty ? name : cleanEmail.split('@').first,
-        correo: cleanEmail,
-        idRol: '',
-        rol: role ?? UserRole.desconocido,
-      ),
-      token: token,
-      expiresAt: expiresAt,
-      loginAt: DateTime.now(),
-    );
-    notifyListeners();
+  String? get token {
+    final session = _session;
+    final value = session?.token;
+    if (session == null || !session.isValid) return null;
+    if (value == null || value.isEmpty) return null;
+    return value;
   }
 
-  /// Sesión rápida para desarrollo o pruebas locales sin token del Gateway.
   void signInDemo(String email) {
-    final clean = email.trim();
     _session = AuthSession(
-      user: User(
-        id: 'local',
-        nombre: clean.split('@').first,
-        correo: clean,
-        idRol: '',
-        rol: UserRole.desconocido,
-      ),
-      token: 'demo-local-token',
+      user: User.fromLogin(userId: 'local', email: email.trim()),
       loginAt: DateTime.now(),
+      token: 'demo-local-token',
     );
     notifyListeners();
   }
 
-  /// Cierra la sesión activa y notifica a los listeners.
+  Future<void> signInReal(AuthLoginResult result) async {
+    final claims = parseJwt(result.token);
+    _session = AuthSession(
+      user: User.fromLogin(
+        userId: result.userId,
+        email: result.email,
+        role: claims.roles.isNotEmpty
+            ? claims.roles.first
+            : UserRole.desconocido,
+      ),
+      loginAt: DateTime.now(),
+      token: result.token,
+      expiresAt: claims.expiresAt,
+    );
+    await _storage.save(result.token);
+    notifyListeners();
+  }
+
+  Future<bool> restore() async {
+    final token = await _storage.read();
+    if (token == null || token.isEmpty) return false;
+    try {
+      final claims = parseJwt(token);
+      if (DateTime.now().isAfter(claims.expiresAt)) {
+        await _storage.clear();
+        return false;
+      }
+      _session = AuthSession(
+        user: User.fromLogin(
+          userId: claims.subject,
+          email: claims.email,
+          role: claims.roles.isNotEmpty
+              ? claims.roles.first
+              : UserRole.desconocido,
+        ),
+        loginAt: DateTime.now(),
+        token: token,
+        expiresAt: claims.expiresAt,
+      );
+      notifyListeners();
+      return true;
+    } on AuthFailure {
+      await _storage.clear();
+      return false;
+    }
+  }
+
   void signOut() {
     _session = null;
+    _storage.clear();
     notifyListeners();
   }
 }
