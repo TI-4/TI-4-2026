@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Schedule.Application.UseCases;
 using Schedule.Domain.Interfaces;
 using Schedule.Infrastructure.Persistence;
 using Schedule.Infrastructure.Persistence.Repositories;
@@ -23,6 +24,9 @@ public static class DependencyInjection
 
         services.AddScoped<IOfficeHourRepository, OfficeHourRepository>();
         services.AddScoped<IMeetingRepository, MeetingRepository>();
+
+        services.AddScoped<OfficeHourHandler>();
+        services.AddScoped<MeetingHandler>();
 
         return services;
     }
