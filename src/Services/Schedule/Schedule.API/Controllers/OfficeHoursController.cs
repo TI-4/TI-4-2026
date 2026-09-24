@@ -1,67 +1,60 @@
 using Microsoft.AspNetCore.Mvc;
 using Schedule.Application.DTOs;
-using Schedule.Domain.Entities;
-using Schedule.Domain.Interfaces;
+using Schedule.Application.UseCases;
 
 namespace Schedule.API.Controllers;
 
 [ApiController]
 [Route("api/schedule/office-hours")]
-public class OfficeHoursController(IOfficeHourRepository repository) : ControllerBase
+public class OfficeHoursController : ControllerBase
 {
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
-    {
-        var officeHour = await repository.GetByIdAsync(id, cancellationToken);
+    private readonly OfficeHourHandler _handler;
 
-        if (officeHour is null)
+    public OfficeHoursController(OfficeHourHandler handler)
+    {
+        _handler = handler;
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<OfficeHourDto>> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var dto = await _handler.GetByIdAsync(id, cancellationToken);
+
+        if (dto is null)
         {
-            return NotFound();
+            return NotFound(new { message = $"Office hour '{id}' was not found." });
         }
 
-        return Ok(OfficeHourDto.FromEntity(officeHour));
+        return Ok(dto);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetByTeacher(
+    public async Task<ActionResult<IEnumerable<OfficeHourDto>>> GetByTeacher(
         [FromQuery] Guid teacherId,
         CancellationToken cancellationToken)
     {
         if (teacherId == Guid.Empty)
         {
-            return BadRequest("The 'teacherId' query parameter is required.");
+            return BadRequest(new { message = "The 'teacherId' query parameter is required." });
         }
 
-        var officeHours = await repository.GetByTeacherAsync(teacherId, cancellationToken);
+        var dtos = await _handler.GetByTeacherAsync(teacherId, cancellationToken);
 
-        return Ok(officeHours.Select(OfficeHourDto.FromEntity));
+        return Ok(dtos);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(
+    public async Task<ActionResult<OfficeHourDto>> Create(
         [FromBody] CreateOfficeHourRequest request,
         CancellationToken cancellationToken)
     {
-        OfficeHour officeHour;
+        var (dto, error) = await _handler.CreateAsync(request, cancellationToken);
 
-        try
+        if (error is not null)
         {
-            officeHour = new OfficeHour(
-                request.TeacherRefId,
-                request.DayOfWeek,
-                request.StartTime,
-                request.EndTime);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
+            return BadRequest(new { message = error });
         }
 
-        await repository.AddAsync(officeHour, cancellationToken);
-
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = officeHour.Id },
-            OfficeHourDto.FromEntity(officeHour));
+        return CreatedAtAction(nameof(GetById), new { id = dto!.Id }, dto);
     }
 }

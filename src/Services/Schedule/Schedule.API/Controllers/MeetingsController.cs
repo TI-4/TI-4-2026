@@ -1,29 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
 using Schedule.Application.DTOs;
-using Schedule.Domain.Entities;
-using Schedule.Domain.Interfaces;
+using Schedule.Application.UseCases;
 
 namespace Schedule.API.Controllers;
 
 [ApiController]
 [Route("api/schedule/meetings")]
-public class MeetingsController(IMeetingRepository repository) : ControllerBase
+public class MeetingsController : ControllerBase
 {
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
-    {
-        var meeting = await repository.GetByIdAsync(id, cancellationToken);
+    private readonly MeetingHandler _handler;
 
-        if (meeting is null)
+    public MeetingsController(MeetingHandler handler)
+    {
+        _handler = handler;
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<MeetingDto>> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var dto = await _handler.GetByIdAsync(id, cancellationToken);
+
+        if (dto is null)
         {
-            return NotFound();
+            return NotFound(new { message = $"Meeting '{id}' was not found." });
         }
 
-        return Ok(MeetingDto.FromEntity(meeting));
+        return Ok(dto);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetByTeacher(
+    public async Task<ActionResult<IEnumerable<MeetingDto>>> GetByTeacher(
         [FromQuery] Guid teacherId,
         [FromQuery] DateTime from,
         [FromQuery] DateTime to,
@@ -31,35 +37,31 @@ public class MeetingsController(IMeetingRepository repository) : ControllerBase
     {
         if (teacherId == Guid.Empty)
         {
-            return BadRequest("The 'teacherId' query parameter is required.");
+            return BadRequest(new { message = "The 'teacherId' query parameter is required." });
         }
 
-        if (to <= from)
+        var (dtos, error) = await _handler.GetByTeacherAsync(teacherId, from, to, cancellationToken);
+
+        if (error is not null)
         {
-            return BadRequest("The 'to' parameter must be later than 'from'.");
+            return BadRequest(new { message = error });
         }
 
-        var meetings = await repository.GetByTeacherAsync(teacherId, from, to, cancellationToken);
-
-        return Ok(meetings.Select(MeetingDto.FromEntity));
+        return Ok(dtos);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(
+    public async Task<ActionResult<MeetingDto>> Create(
         [FromBody] CreateMeetingRequest request,
         CancellationToken cancellationToken)
     {
-        var meeting = new Meeting(
-            request.TeacherRefId,
-            request.StudentRefId,
-            request.StructureRefId,
-            request.ScheduledAt);
+        var (dto, error) = await _handler.CreateAsync(request, cancellationToken);
 
-        await repository.AddAsync(meeting, cancellationToken);
+        if (error is not null)
+        {
+            return BadRequest(new { message = error });
+        }
 
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = meeting.Id },
-            MeetingDto.FromEntity(meeting));
+        return CreatedAtAction(nameof(GetById), new { id = dto!.Id }, dto);
     }
 }
