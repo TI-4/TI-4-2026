@@ -1,31 +1,44 @@
 using Microsoft.AspNetCore.Mvc;
+using Schedule.Application.DTOs;
 using Schedule.Application.UseCases;
 
 namespace Schedule.API.Controllers;
 
 [ApiController]
 [Route("api/schedule/teachers")]
-public class TeachersController(GetTeacherWorkloadUseCase getTeacherWorkload) : ControllerBase
+public class TeachersController : ControllerBase
 {
+    private readonly TeacherHandler _handler;
+
+    public TeachersController(TeacherHandler handler)
+    {
+        _handler = handler;
+    }
+
     [HttpGet("{teacherId:guid}/workload")]
-    public async Task<IActionResult> GetWorkload(
+    public async Task<ActionResult<TeacherWorkloadDto>> GetWorkload(
         Guid teacherId,
         [FromQuery] DateTime from,
         [FromQuery] DateTime to,
         CancellationToken cancellationToken)
     {
-        if (teacherId == Guid.Empty)
+        var (dto, error) = await _handler.GetWorkloadAsync(teacherId, from, to, cancellationToken);
+
+        if (error is not null)
         {
-            return BadRequest("The 'teacherId' route parameter is required.");
+            return BadRequest(new { message = error });
         }
 
-        if (to <= from)
-        {
-            return BadRequest("The 'to' parameter must be later than 'from'.");
-        }
+        return Ok(dto);
+    }
 
-        var workload = await getTeacherWorkload.ExecuteAsync(teacherId, from, to, cancellationToken);
+    [HttpGet("{teacherId:guid}/availability")]
+    public async Task<ActionResult<TeacherAvailabilityDto>> GetAvailability(
+        Guid teacherId,
+        CancellationToken cancellationToken)
+    {
+        var dto = await _handler.GetAvailabilityAsync(teacherId, cancellationToken);
 
-        return Ok(workload);
+        return Ok(dto);
     }
 }
