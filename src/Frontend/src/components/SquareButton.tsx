@@ -1,4 +1,3 @@
-import React from 'react';
 
 interface SquareButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;

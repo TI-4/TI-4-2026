@@ -15,7 +15,6 @@ public class IdentityDbContext : IdentityDbContext<User, Role, string>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<User>().ToTable("Identidad_Usuario");
-        builder.Entity<Role>().ToTable("Identidad_Rol");
+        builder.Entity<User>().ToTable("Users");
     }
 }

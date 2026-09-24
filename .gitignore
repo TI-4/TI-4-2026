@@ -317,3 +317,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Directorio espurio que generan las EF Core tools en macOS/Linux
+bin\\Debug/

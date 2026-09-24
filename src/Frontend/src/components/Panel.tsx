@@ -1,4 +1,3 @@
-import React from 'react';
 import { type PageColor, bgPageColors } from '../constants/colors';
 import { CloseButton } from './ExitButton'; // <-- Asegúrate de que la ruta coincida con tu archivo
 
@@ -15,7 +14,7 @@ export const Panel = ({
   children,
   color = 'white',
   withUctBorder = false,
-  outerClassName = 'rounded-3xl',
+  outerClassName = '',
   innerClassName = 'p-6 flex flex-col relative',
   onClose
 }: PanelProps) => {
@@ -39,7 +38,7 @@ export const Panel = ({
   if (withUctBorder) {
     return (
       <div
-        className={`bg-gradient-to-b from-page-blue from-50% to-page-yellow to-50% p-1.5 shadow-md w-max h-max ${outerClassName}`}
+        className={`bg-gradient-to-b from-page-blue from-50% to-page-yellow to-50% p-1.5 shadow-md w-max h-max rounded-3xl ${outerClassName}`}
       >
         <div className={`${bgColorClass} w-full h-full rounded-2xl ${innerClassName}`}>
           {renderCloseButton()}
@@ -50,7 +49,7 @@ export const Panel = ({
   }
 
   return (
-    <div className={`${bgColorClass} shadow-sm w-max h-max relative ${outerClassName} ${innerClassName}`}>
+    <div className={`${bgColorClass} shadow-sm w-max h-max relative rounded-3xl ${outerClassName} ${innerClassName}`}>
       {renderCloseButton()}
       {children}
     </div>

@@ -21,8 +21,7 @@ public class IdentityController(LoginUseCase loginUseCase) : ControllerBase
 
         return result.Match(
             loginResult => Ok(loginResult),
-            errors => Problem(
-                statusCode: StatusCodes.Status401Unauthorized,
-                title: errors.First().Description));
+            errors => Problem(statusCode: StatusCodes.Status401Unauthorized, title: errors.First().Description)
+        );
     }
 }
