@@ -1,10 +1,11 @@
-namespace Enums;
+namespace Incident.Domain.Entities;
+
 public enum Objectenum {
     Pending,
     In_Process,
     Resolved,
     Canceled,
-};
+}
 
 public enum Complainenum
 {
@@ -16,8 +17,8 @@ public enum Complainenum
 
 public enum Tickets
 {
-    Claim,   // Reporte de pérdida
-    Found,   // Objeto encontrado
-    Match,   // Coincidencia encontrada
-    Pickup   // Entrega/retiro
+    Claim,
+    Found,
+    Match,
+    Pickup
 }

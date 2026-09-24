@@ -1,6 +1,6 @@
-namespace Incident.Infrastructure.Persistence.Models;
-
 using MongoDB.Bson.Serialization.Attributes;
+
+namespace Incident.Domain.Entities;
 
 public class GeoPoint
 {
@@ -8,7 +8,7 @@ public class GeoPoint
     public string Type { get; set; } = "Point";
 
     [BsonElement("coordinates")]
-    public double[] Coordinates { get; set; } = new double[2]; // [longitud, latitud]
+    public double[] Coordinates { get; set; } = new double[2];
 
     public GeoPoint() { }
 

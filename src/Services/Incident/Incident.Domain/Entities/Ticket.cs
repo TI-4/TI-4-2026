@@ -1,15 +1,14 @@
-using Incident.Infrastructure.Persistence.Models;
+using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Enums;
-namespace TicketsModel;
 
+namespace Incident.Domain.Entities;
 
 public class Ticket
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public String? ObjectID { get; init; }
+    public string? ObjectID { get; init; }
 
     [BsonElement("user_id")]
     [BsonRepresentation(BsonType.String)]
@@ -24,7 +23,7 @@ public class Ticket
 
     [BsonElement("is_active")]
     [BsonRepresentation(BsonType.Boolean)]
-    public required Boolean IsActive { get; set; }
+    public required bool IsActive { get; set; }
 
     [BsonElement("date_ticket")]
     [BsonRepresentation(BsonType.DateTime)]

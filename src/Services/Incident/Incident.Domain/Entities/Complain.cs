@@ -1,10 +1,8 @@
 using System;
-using Incident.Infrastructure.Persistence.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Enums;
 
-namespace Incident.Infrastructure.Persistence.Models;
+namespace Incident.Domain.Entities;
 
 public class Complain
 {
