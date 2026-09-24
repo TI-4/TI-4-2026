@@ -1,47 +1,43 @@
 {
+  "incident_object": {
+    "_id": {"type": "ObjectId"},
+    "title": {"type": "string"},
+    "description": {"type": "string"},
+    "status": {
+      "type": "string",
+      "enum": ["Pending", "In_Process", "Resolved", "Canceled"]
+    },
+    "photo_url": {"type": "string", "format": "uri"}
+  },
   "incident_ticket": {
     "_id": {"type": "ObjectId"},
-
-    "user_id": {"type": "UUID", "description": "Reference to Identity DB"},
-    "structure_id": {"type": "UUID", "description": "Reference to Campus DB"},
-
+    "user_id": {"type": "UUID"},
+    "structure_id": {"type": "UUID"},
     "ticket_type": {
       "type": "string",
       "enum": ["Claim", "Found", "Match", "Pickup"]
     },
     "is_active": {"type": "bool"},
-    "date": {"type": "string", "format": "date-time"},
-
-    "coordinates": {
-      "type": "object",
-      "properties": {
-        "latitude": {"type": "number"},
-        "longitude": {"type": "number"}
-      }
+    "date_ticket": {"type": "string", "format": "date-time"},
+    "location": {
+      "type": {"type": "string", "enum": ["Point"]},
+      "coordinates": {"type": "array", "items": "number"}
     },
-
+    "object_id": {
+      "type": "ObjectId",
+      "optional": true,
+      "description": "Reference to an independent incident_object"
+    },
     "complaint_details": {
       "type": "object",
       "optional": true,
-      "description": "Embedded document. Only populated if ticket is a complaint.",
-      "properties": {
-        "title": {"type": "string"},
-        "description": {"type": "string"}
-      }
-    },
-
-    "object_details": {
-      "type": "object",
-      "optional": true,
-      "description": "Embedded document. Only populated if ticket involves a lost/found object.",
       "properties": {
         "title": {"type": "string"},
         "description": {"type": "string"},
         "status": {
           "type": "string",
-          "enum": ["Pending", "In_Process", "Resolved", "Canceled"]
-        },
-        "photo_url": {"type": "string", "format": "uri"}
+          "enum": ["Pending", "In_Process", "Resolved", "Dismissed"]
+        }
       }
     }
   }
