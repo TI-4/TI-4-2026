@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthState } from '../states/authState';
 import type { Role } from '../constants/role';
-import { Button } from '../components/Button';
+import { Button } from '../components/ui/Button';
+import httpClient from '../api/httpClient';
 
 export const LoginView = () => {
   const navigate = useNavigate();
@@ -61,6 +62,27 @@ export const LoginView = () => {
 
           <Button onClick={() => handleLogin('ADMIN')} color="purple" size="sm" className="!w-full !px-2">
             Admin
+          </Button>
+
+          <div className="w-full h-px bg-gray-200 my-1"></div>
+          <p className="text-[10px] text-gray-400 font-bold w-full text-center">TEST HTTP CLIENT</p>
+
+          <div className="flex gap-2 w-full">
+            <Button onClick={() => httpClient.get('https://dummyjson.com/http/200')} color="green" size="sm" className="!w-full !px-1 !text-xs">
+              200
+            </Button>
+            <Button onClick={() => httpClient.get('https://dummyjson.com/http/401')} color="red" size="sm" className="!w-full !px-1 !text-xs">
+              401
+            </Button>
+            <Button onClick={() => httpClient.get('https://dummyjson.com/http/403')} color="yellow" size="sm" className="!w-full !px-1 !text-xs">
+              403
+            </Button>
+          </div>
+          <Button onClick={() => {
+            console.log("Intentando conectar al API Gateway en:", httpClient.defaults.baseURL);
+            httpClient.get('/ping-de-prueba');
+          }} color="purple" size="sm" className="!w-full mt-2">
+            Testear .env Gateway
           </Button>
         </div>
       </div>

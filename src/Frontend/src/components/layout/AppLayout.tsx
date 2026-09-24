@@ -1,20 +1,21 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import { SectionButton } from './SectionButton';
-import { Avatar } from './Avatar';
-import { Tag } from './Tag';
-import { useNavStore } from '../states/navState';
-import { useAuthState } from '../states/authState';
-import type { PageColor } from '../constants/colors';
-import type { Role } from '../constants/role';
+import { SectionButton } from '../ui/SectionButton';
+import { Avatar } from '../media/Avatar';
+import { Tag } from '../ui/Tag';
+import { useNavStore } from '../../states/navState';
+import { useAuthState } from '../../states/authState';
+import type { PageColor } from '../../constants/colors';
+import type { Role } from '../../constants/role';
 
-import logoUrl from '../assets/svg/logo.svg';
-import MapIcon from '../assets/svg/icons/icon_section_map.svg?react';
-import ReportsIcon from '../assets/svg/icons/icon_section_incidents.svg?react';
-import ObjectsIcon from '../assets/svg/icons/icon_section_objects.svg?react';
-import ContactsIcon from '../assets/svg/icons/icon_section_contacts.svg?react';
-import AdminIcon from '../assets/svg/icons/icon_admin.svg?react';
-import UserIcon from '../assets/svg/icons/icon_user.svg?react';
-import { RoleGuard } from '../router/RoleGuard';
+import logoUrl from '../../assets/svg/logo.svg';
+import MapIcon from '../../assets/svg/icons/icon_section_map.svg?react';
+import ReportsIcon from '../../assets/svg/icons/icon_section_incidents.svg?react';
+import ObjectsIcon from '../../assets/svg/icons/icon_section_objects.svg?react';
+import ContactsIcon from '../../assets/svg/icons/icon_section_contacts.svg?react';
+import AdminIcon from '../../assets/svg/icons/icon_admin.svg?react';
+import UserIcon from '../../assets/svg/icons/icon_user.svg?react';
+import { RoleGuard } from '../../router/RoleGuard';
+import { GlobalModals } from './GlobalModals';
 
 export const AppLayout = () => {
   const { isExpanded, setIsExpanded } = useNavStore();
@@ -200,6 +201,9 @@ export const AppLayout = () => {
       <main className="flex-1 relative overflow-auto bg-page-dark z-10">
         <Outlet />
       </main>
+
+      {/* GLOBAL MODALS CONTAINER */}
+      <GlobalModals />
     </div>
   );
 };

@@ -1,6 +1,6 @@
-import { Panel } from '../../components/Panel';
-import { PhotoFrame } from '../../components/PhotoFrame';
-import { Button } from '../../components/Button';
+import { Panel } from '../../components/layout/Panel';
+import { PhotoFrame } from '../../components/media/PhotoFrame';
+import { Button } from '../../components/ui/Button';
 import EyeIcon from '../../assets/svg/icons/icon_eye.svg?react';
 
 export interface ContactCardProps {

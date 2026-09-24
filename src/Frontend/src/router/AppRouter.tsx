@@ -1,12 +1,12 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AppLayout } from '../components/AppLayout';
+import { AppLayout } from '../components/layout/AppLayout';
 import { MapView } from '../views/MapView';
 import { IncidentsView } from '../views/IncidentsView';
 import { ObjectsView } from '../views/ObjectsView';
 import { ContactsView } from '../views/ContactsView';
 import { ShowcaseView } from '../views/ShowcaseView';
 import { LoginView } from '../views/LoginView';
-import { ProtectedRoute } from '../router/ProtectedRoute';
+import { ProtectedRoute } from './ProtectedRoute';
 import { AdministrationView } from '../views/AdministrationView';
 
 export const AppRouter = () => {

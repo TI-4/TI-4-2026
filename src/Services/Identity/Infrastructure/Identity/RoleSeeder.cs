@@ -8,10 +8,10 @@ public static class RoleSeeder
     private static readonly string[] DefaultRoles =
     [
         Role.Admin,
-        Role.Estudiante,
-        Role.Docente,
-        Role.FuncionarioObjetosPerdidos,
-        Role.FuncionarioQuejas
+        Role.Student,
+        Role.Teacher,
+        Role.ObjectsOfficer,
+        Role.ComplaintsOfficer
     ];
 
     public static async Task EnsureAsync(RoleManager<Role> roleManager)

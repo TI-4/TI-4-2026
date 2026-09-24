@@ -1,5 +1,5 @@
-import { type PageColor, bgPageColors } from '../constants/colors';
-import { CloseButton } from './ExitButton'; // <-- Asegúrate de que la ruta coincida con tu archivo
+import { type PageColor, bgPageColors } from '../../constants/colors';
+import { CloseButton } from '../ui/ExitButton'; // <-- Asegúrate de que la ruta coincida con tu archivo
 
 interface PanelProps {
   children: React.ReactNode;

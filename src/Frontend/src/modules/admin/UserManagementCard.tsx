@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import type { Role } from '../../constants/role';
-import { Avatar } from '../../components/Avatar';
-import { Tag } from '../../components/Tag';
-import { Select } from '../../components/Select';
-import { Button } from '../../components/Button';
+import { Avatar } from '../../components/media/Avatar';
+import { Tag } from '../../components/ui/Tag';
+import { Select } from '../../components/ui/Select';
+import { Button } from '../../components/ui/Button';
 
 export interface UserManagementCardProps {
   id: string;

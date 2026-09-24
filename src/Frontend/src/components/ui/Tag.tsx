@@ -1,4 +1,4 @@
-import { type PageColor, bgPageColors, solidButtonConfig } from '../constants/colors';
+import { type PageColor, bgPageColors, solidButtonConfig } from '../../constants/colors';
 
 interface TagProps {
   label: string;

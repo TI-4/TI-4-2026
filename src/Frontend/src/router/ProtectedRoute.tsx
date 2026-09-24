@@ -4,7 +4,7 @@ import { useAuthState } from "../states/authState";
 
 interface ProtectedRouteProps {
   allowedRoles?: Role[];
-  UnauthorizedTo: string;
+  unauthorizedTo?: string;
 }
 
 export const ProtectedRoute = ({

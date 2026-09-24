@@ -6,4 +6,5 @@ export interface UserIdentity {
   name: string;
   email: string;
   registeredAt: string;
+  avatar?: string;
 }

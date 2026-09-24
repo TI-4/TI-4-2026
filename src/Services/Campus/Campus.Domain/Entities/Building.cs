@@ -27,5 +27,22 @@ public class Building
         this.CampusId = campus.Id;
     }
 
+    public Building(string name, int floorsCount, Coordinate coordinates, Guid campusId)
+    {
+        this.Id = Guid.NewGuid();
+        this.Name = name;
+        this.FloorsCount = floorsCount;
+        this.Coordinates = coordinates;
+        this.CampusId = campusId;
+    }
+
+    public void Update(string name, int floorsCount, Coordinate coordinates, Guid campusId)
+    {
+        this.Name = name;
+        this.FloorsCount = floorsCount;
+        this.Coordinates = coordinates;
+        this.CampusId = campusId;
+    }
+
     protected Building() { }
 }

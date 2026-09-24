@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Select } from '../components/Select';
-import { Button } from '../components/Button';
+import { Select } from '../components/ui/Select';
+import { Button } from '../components/ui/Button';
 
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
 import SortIcon from '../assets/svg/icons/icon_sort.svg?react';
 import PlusIcon from '../assets/svg/icons/icon_plus.svg?react';
-import { EmptyState } from '../components/EmptyState';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export const IncidentsView = () => {
   const [sortOrder, setSortOrder] = useState('reciente');

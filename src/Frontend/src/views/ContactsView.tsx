@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Select } from '../components/Select';
-import { SearchInput } from '../components/SearchInput';
-import { EmptyState } from '../components/EmptyState';
+import { Select } from '../components/ui/Select';
+import { SearchInput } from '../components/ui/SearchInput';
+import { EmptyState } from '../components/ui/EmptyState';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
 import RoleIcon from '../assets/svg/icons/icon_role.svg?react';

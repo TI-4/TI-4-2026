@@ -1,9 +1,9 @@
 import React from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import WorldMap from '../assets/svg/maps/world.svg?react';
-import { Select } from '../components/Select';
-import { SearchInput } from '../components/SearchInput';
-import { SquareButton } from '../components/SquareButton';
+import { Select } from '../components/ui/Select';
+import { SearchInput } from '../components/ui/SearchInput';
+import { SquareButton } from '../components/ui/SquareButton';
 import { HeatmapSpot } from '../modules/map/HeatmapSpot';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
@@ -14,7 +14,6 @@ import TargetIcon from '../assets/svg/icons/icon_target.svg?react';
 import PencilIcon from '../assets/svg/icons/icon_pencil.svg?react';
 import { RoleGuard } from '../router/RoleGuard';
 import { MapEditorPanel } from '../modules/admin/MapEditorPanel';
-
 export const MapView = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [isEditorOpen, setIsEditorOpen] = React.useState(false);
