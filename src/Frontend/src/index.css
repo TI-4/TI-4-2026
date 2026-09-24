@@ -86,15 +86,15 @@
 }
 
 @keyframes uct-spin-expo {
-  0% { 
-    transform: rotate(0deg); 
-    animation-timing-function: cubic-bezier(0.8, 0, 0.2, 1); 
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: cubic-bezier(0.8, 0, 0.2, 1);
   }
-  60% { 
-    transform: rotate(360deg); 
+  60% {
+    transform: rotate(360deg);
   }
-  100% { 
-    transform: rotate(360deg); 
+  100% {
+    transform: rotate(360deg);
   }
 }
 
@@ -123,12 +123,10 @@
 .animate-slide-stretch-left {
   animation: slide-stretch-left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-
 @keyframes float-up-down {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
 }
-
 .animate-float-up-down {
   animation: float-up-down 3s ease-in-out infinite;
 }
