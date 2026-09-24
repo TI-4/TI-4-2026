@@ -15,6 +15,7 @@ import ContactsIcon from '../assets/svg/icons/icon_section_contacts.svg?react';
 import AdminIcon from '../assets/svg/icons/icon_admin.svg?react';
 import UserIcon from '../assets/svg/icons/icon_user.svg?react';
 import { RoleGuard } from '../router/RoleGuard';
+import { GlobalModals } from './GlobalModals';
 
 export const AppLayout = () => {
   const { isExpanded, setIsExpanded } = useNavStore();
@@ -200,6 +201,9 @@ export const AppLayout = () => {
       <main className="flex-1 relative overflow-auto bg-page-dark z-10">
         <Outlet />
       </main>
+
+      {/* GLOBAL MODALS CONTAINER */}
+      <GlobalModals />
     </div>
   );
 };

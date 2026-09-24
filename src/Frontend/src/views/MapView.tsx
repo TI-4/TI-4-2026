@@ -14,7 +14,6 @@ import TargetIcon from '../assets/svg/icons/icon_target.svg?react';
 import PencilIcon from '../assets/svg/icons/icon_pencil.svg?react';
 import { RoleGuard } from '../router/RoleGuard';
 import { MapEditorPanel } from '../modules/admin/MapEditorPanel';
-
 export const MapView = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [isEditorOpen, setIsEditorOpen] = React.useState(false);
