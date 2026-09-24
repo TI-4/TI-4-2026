@@ -1,0 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Schedule.Domain.Entities;
+
+namespace Schedule.Domain.Interfaces;
+
+public interface IMeetingRepository
+{
+    Task<Meeting?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Meeting>> GetByTeacherAsync(
+        Guid teacherRefId,
+        DateTime from,
+        DateTime to,
+        CancellationToken cancellationToken = default);
+
+    Task AddAsync(Meeting meeting, CancellationToken cancellationToken = default);
+}
