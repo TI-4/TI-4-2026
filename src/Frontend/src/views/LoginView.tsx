@@ -78,6 +78,12 @@ export const LoginView = () => {
               403
             </Button>
           </div>
+          <Button onClick={() => {
+            console.log("Intentando conectar al API Gateway en:", httpClient.defaults.baseURL);
+            httpClient.get('/ping-de-prueba');
+          }} color="purple" size="sm" className="!w-full mt-2">
+            Testear .env Gateway
+          </Button>
         </div>
       </div>
 
