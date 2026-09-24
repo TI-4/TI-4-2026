@@ -1,3 +1,4 @@
+using Incident.Application.Protos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Incident.API.Controllers;
@@ -7,7 +8,7 @@ namespace Incident.API.Controllers;
 public class TicketsController : ControllerBase
 {
     [HttpPost]
-    public async Task Create()
+    public async Task Create([FromBody] CreateTicketRequest request)
     {
     }
 

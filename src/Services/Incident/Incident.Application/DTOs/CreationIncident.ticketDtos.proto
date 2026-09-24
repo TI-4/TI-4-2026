@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto"; //datetime -> c#
+
+option csharp_namespace = "Incident.Application.Protos";
+
+enum TicketTypeProto {
+  TICKET_TYPE_UNKNOWN = 0;
+  CLAIM = 1;
+  FOUND = 2;
+  MATCH = 3;
+  PICKUP = 4;
+}
+
+enum ComplaintStatusProto {
+  COMPLAINT_STATUS_UNKNOWN = 0;
+  PENDING = 1;
+  IN_PROCESS = 2;
+  RESOLVED = 3;
+  DISMISSED = 4;
+}
+
+message GeoPointMessage {
+  double longitude = 1;
+  double latitude = 2;
+}
+
+message ComplaintDetailsMessage {
+  string title = 1;
+  string description = 2;
+  ComplaintStatusProto status = 3;
+}
+
+message CreateTicketRequest {
+  string user_id = 1;
+  string structure_id = 2;
+  TicketTypeProto ticket_type = 3;
+  bool is_active = 4;
+  google.protobuf.Timestamp date_report = 5;
+
+  GeoPointMessage location = 6;
+  optional string object_id = 7;
+  optional ComplaintDetailsMessage complaint_details = 8;
+}
