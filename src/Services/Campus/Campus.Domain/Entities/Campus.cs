@@ -23,5 +23,12 @@ public class Campus
         this.Coordinates = coordinates;
     }
 
+    public void Update(string name, string address, Coordinate coordinates)
+    {
+        this.Name = name;
+        this.Address = address;
+        this.Coordinates = coordinates;
+    }
+
     protected Campus() { }
 }

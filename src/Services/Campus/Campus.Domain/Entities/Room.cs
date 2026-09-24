@@ -29,5 +29,24 @@ public class Room
         this.CategoryId = category.Id;
     }
 
+    public Room(string name, int floor, string? number, Guid buildingId, Guid categoryId)
+    {
+        this.Id = Guid.NewGuid();
+        this.Name = name;
+        this.Floor = floor;
+        this.Number = number;
+        this.BuildingId = buildingId;
+        this.CategoryId = categoryId;
+    }
+
+    public void Update(string name, int floor, string? number, Guid buildingId, Guid categoryId)
+    {
+        this.Name = name;
+        this.Floor = floor;
+        this.Number = number;
+        this.BuildingId = buildingId;
+        this.CategoryId = categoryId;
+    }
+
     protected Room() { }
 }

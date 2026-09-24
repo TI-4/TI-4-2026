@@ -29,5 +29,22 @@ public class Structure
         this.CategoryId = category.Id;
     }
 
+    public Structure(string name, Coordinate coordinates, Guid campusId, Guid categoryId)
+    {
+        this.Id = Guid.NewGuid();
+        this.Name = name;
+        this.Coordinates = coordinates;
+        this.CampusId = campusId;
+        this.CategoryId = categoryId;
+    }
+
+    public void Update(string name, Coordinate coordinates, Guid campusId, Guid categoryId)
+    {
+        this.Name = name;
+        this.Coordinates = coordinates;
+        this.CampusId = campusId;
+        this.CategoryId = categoryId;
+    }
+
     protected Structure() { }
 }
