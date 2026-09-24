@@ -1,20 +1,49 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../data/datasources/incident_remote_ds.dart';
 import '../../../domain/entities/lost_item.dart';
+import '../../../domain/repositories/incident_repository.dart';
 import 'lost_item_detail_screen.dart';
 
 class LostFoundScreen extends StatefulWidget {
-  const LostFoundScreen({super.key});
+  const LostFoundScreen({super.key, this.incidentRepository});
+
+  final IncidentRepository? incidentRepository;
 
   @override
   State<LostFoundScreen> createState() => _LostFoundScreenState();
 }
 
 class _LostFoundScreenState extends State<LostFoundScreen> {
+  late final IncidentRepository _repository;
   final TextEditingController _searchController = TextEditingController();
+  List<LostItem> _items = [];
+  bool _loading = true;
   String _selectedCampus = 'Todos los campus';
   bool _newerFirst = true;
   String _selectedCategory = 'Todos';
+
+  @override
+  void initState() {
+    super.initState();
+    _repository = widget.incidentRepository ?? IncidentRemoteDataSource();
+    _loadItems();
+  }
+
+  Future<void> _loadItems() async {
+    setState(() => _loading = true);
+    try {
+      final list = await _repository.getLostItems();
+      if (mounted) {
+        setState(() {
+          _items = list;
+          _loading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -82,7 +111,8 @@ class _LostFoundScreenState extends State<LostFoundScreen> {
 
   List<LostItem> get _filtered {
     final query = _searchController.text.trim().toLowerCase();
-    List<LostItem> result = List.from(mockLostItems);
+    List<LostItem> result =
+        _items.isNotEmpty ? List.from(_items) : List.from(mockLostItems);
 
     if (_selectedCampus != 'Todos los campus') {
       result = result.where((i) => i.campus == _selectedCampus).toList();

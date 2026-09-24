@@ -6,6 +6,7 @@ import '../screens/reports/reports_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/login/auth_required_view.dart';
 import '../../application/session/session_controller.dart';
+import '../../domain/repositories/auth_repository.dart';
 import '../widgets/uct_logo.dart';
 import '../widgets/custom_drawer.dart';
 
@@ -37,6 +38,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _session.restore().then((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
   void dispose() {
     _session.dispose();
     super.dispose();
@@ -46,8 +55,24 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final result =
         await Navigator.pushNamed(context, '/login', arguments: section);
     if (result is Map && result['ok'] == true && mounted) {
-      // TODO(tarea 3): sesión real desde el endpoint de auth.
-      _session.signInDemo((result['email'] ?? '').toString());
+      final userId = (result['userId'] ?? '').toString();
+      final email = (result['email'] ?? '').toString();
+      final token = (result['token'] ?? '').toString();
+      try {
+        if (userId.isNotEmpty && token.isNotEmpty) {
+          await _session.signInReal(
+            AuthLoginResult(userId: userId, email: email, token: token),
+          );
+        } else {
+          _session.signInDemo(email);
+        }
+      } on AuthFailure {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se pudo iniciar sesión.')),
+        );
+        return;
+      }
       setState(() {});
     }
   }

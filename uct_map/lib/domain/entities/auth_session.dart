@@ -1,11 +1,23 @@
 import 'user.dart';
 
-// Sesión básica en memoria. El token JWT y la expiración real llegan en tarea 4.
+/// Modelo de sesión de usuario autenticado con token JWT.
 class AuthSession {
   final User user;
   final DateTime loginAt;
+  final String? token;
+  final DateTime? expiresAt;
 
-  const AuthSession({required this.user, required this.loginAt});
+  const AuthSession({
+    required this.user,
+    required this.loginAt,
+    this.token,
+    this.expiresAt,
+  });
 
-  bool get isValid => true;
+  bool get isValid {
+    if (expiresAt != null && DateTime.now().isAfter(expiresAt!)) {
+      return false;
+    }
+    return true;
+  }
 }

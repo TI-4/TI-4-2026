@@ -1,21 +1,51 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../data/datasources/incident_remote_ds.dart';
 import '../../../domain/entities/report.dart';
+import '../../../domain/repositories/incident_repository.dart';
 import 'report_detail_screen.dart';
 
-// Pantalla de Reportes de Incidencias con filtros, mapa de calor y tarjetas.
+// Pantalla de Reportes de Incidencias con filtros, mapa de calor y tarjetas (ms.svg - Incident Service).
 class ReportsScreen extends StatefulWidget {
-  const ReportsScreen({super.key});
+  const ReportsScreen({super.key, this.incidentRepository});
+
+  final IncidentRepository? incidentRepository;
 
   @override
   State<ReportsScreen> createState() => _ReportsScreenState();
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
+  late final IncidentRepository _repository;
+  List<Report> _reports = [];
+  bool _loading = true;
+
   // Filtros
   String _selectedCampus = 'Todos';
   bool _newerFirst = true;
   bool _heatmapEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _repository = widget.incidentRepository ?? IncidentRemoteDataSource();
+    _loadReports();
+  }
+
+  Future<void> _loadReports() async {
+    setState(() => _loading = true);
+    try {
+      final list = await _repository.getReports(campus: _selectedCampus);
+      if (mounted) {
+        setState(() {
+          _reports = list;
+          _loading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
 
   Color _statusColor(ReportStatus s) {
     switch (s) {
@@ -55,7 +85,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   }
 
   List<Report> get _filteredReports {
-    List<Report> result = List.from(mockReports);
+    List<Report> result = _reports.isNotEmpty ? List.from(_reports) : List.from(mockReports);
     if (_selectedCampus != 'Todos') {
       result = result.where((r) => r.campus == _selectedCampus).toList();
     }
