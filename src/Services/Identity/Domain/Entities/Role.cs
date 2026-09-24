@@ -6,13 +6,13 @@ public class Role : IdentityRole
 {
     public const string Admin = "Admin";
 
-    public const string Estudiante = "Estudiante";
+    public const string Student = "Student";
 
-    public const string Docente = "Docente";
+    public const string Teacher = "Teacher";
 
-    public const string FuncionarioObjetosPerdidos = "FuncionarioObjetosPerdidos";
+    public const string ObjectsOfficer = "ObjectsOfficer";
 
-    public const string FuncionarioQuejas = "FuncionarioQuejas";
+    public const string ComplaintsOfficer = "ComplaintsOfficer";
 
     public Role()
     {
