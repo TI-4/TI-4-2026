@@ -63,6 +63,7 @@ appsettings.local.json
 # Docker
 docker-compose.override.yml
 .dockerignore
+!.dockerignore
 
 # Frontend (if added later)
 node_modules/

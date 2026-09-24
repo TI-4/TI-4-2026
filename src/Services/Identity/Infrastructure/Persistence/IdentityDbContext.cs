@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Infrastructure.Persistence;
 
-public class IdentityDbContext : IdentityDbContext<User>
+public class IdentityDbContext : IdentityDbContext<User, Role, string>
 {
     public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
         : base(options)
@@ -16,5 +16,6 @@ public class IdentityDbContext : IdentityDbContext<User>
         base.OnModelCreating(builder);
 
         builder.Entity<User>().ToTable("Users");
+        builder.Entity<Role>().ToTable("Roles");
     }
 }

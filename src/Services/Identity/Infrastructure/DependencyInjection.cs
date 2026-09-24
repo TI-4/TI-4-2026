@@ -24,7 +24,7 @@ public static class DependencyInjection
         services.Configure<JwtSettings>(configuration.GetSection("JwtConfig"));
 
         services.AddIdentityCore<User>()
-            .AddRoles<IdentityRole>()
+            .AddRoles<Role>()
             .AddEntityFrameworkStores<IdentityDbContext>();
 
         services.AddScoped<IUserAuthenticator, IdentityUserAuthenticator>();
