@@ -21,7 +21,6 @@ public class MeetingHandler
     public async Task<MeetingDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var meeting = await _repository.GetByIdAsync(id, cancellationToken);
-
         return meeting is null ? null : MeetingDto.FromEntity(meeting);
     }
 
@@ -31,13 +30,9 @@ public class MeetingHandler
         DateTime to,
         CancellationToken cancellationToken)
     {
-        if (to <= from)
-        {
-            return (null, "The 'to' parameter must be later than 'from'.");
-        }
+        if (to <= from) return (null, "The 'to' parameter must be later than 'from'.");
 
         var meetings = await _repository.GetByTeacherAsync(teacherRefId, from, to, cancellationToken);
-
         return (meetings.Select(MeetingDto.FromEntity), null);
     }
 
@@ -49,10 +44,10 @@ public class MeetingHandler
             request.TeacherRefId,
             request.StudentRefId,
             request.StructureRefId,
-            request.ScheduledAt);
+            request.ScheduledAt,
+            request.DurationMinutes);
 
         await _repository.AddAsync(meeting, cancellationToken);
-
         return (MeetingDto.FromEntity(meeting), null);
     }
 }

@@ -9,6 +9,7 @@ public record MeetingDto(
     Guid StudentRefId,
     Guid StructureRefId,
     DateTime ScheduledAt,
+    int DurationMinutes,
     string Status)
 {
     public static MeetingDto FromEntity(Meeting meeting) => new(
@@ -17,5 +18,6 @@ public record MeetingDto(
         meeting.StudentRefId,
         meeting.StructureRefId,
         meeting.ScheduledAt,
+        meeting.DurationMinutes,
         meeting.Status.ToString());
 }

@@ -27,6 +27,7 @@ public static class DependencyInjection
 
         services.AddScoped<OfficeHourHandler>();
         services.AddScoped<MeetingHandler>();
+        services.AddScoped<TeacherHandler>();
 
         return services;
     }
