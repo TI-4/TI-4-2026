@@ -15,7 +15,7 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("ScheduleDb")
             ?? throw new InvalidOperationException(
-                "No se encontro la cadena de conexion 'ScheduleDb'.");
+                "Connection string 'ScheduleDb' was not found.");
 
         services.AddDbContext<ScheduleDbContext>(options =>
             options.UseNpgsql(connectionString, npgsql =>
