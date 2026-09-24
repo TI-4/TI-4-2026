@@ -95,6 +95,23 @@ services:
     networks:
       - uct_network
 
+
+  # ---- API Gateway ---- #
+  api-gateway:
+    build:
+      context: .
+      dockerfile: src/ApiGateway/Dockerfile
+    container_name: uct_api_gateway
+    ports:
+      - "5000:8080"
+    depends_on:
+      - identity-api
+      - campus-api
+      - incident-api
+      - schedule-api
+    networks:
+      - uct_network
+
 networks:
   uct_network:
     driver: bridge
@@ -102,3 +119,4 @@ networks:
 volumes:
   postgres_data:
   mongodb_data:
+
