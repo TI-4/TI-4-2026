@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { useAuthState } from '../states/authState';
 
+const API_URL = import.meta.env.VITE_API_GATEWAY_URL;
+
 const httpClient = axios.create({
+  baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
   timeout: 10000
 });
