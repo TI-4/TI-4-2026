@@ -1,4 +1,3 @@
-import React from 'react';
 import { type PageColor, bgPageColors, borderPageColors } from '../constants/colors';
 
 interface MapMarkerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
