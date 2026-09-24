@@ -40,11 +40,11 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
       }
       throw ApiException('Error al obtener profesores (${res.statusCode})', res.statusCode);
     } on SocketException {
-      return _fallbackProfessors;
+      return fallbackProfessors;
     } on http.ClientException {
-      return _fallbackProfessors;
+      return fallbackProfessors;
     } on TimeoutException {
-      return _fallbackProfessors;
+      return fallbackProfessors;
     }
   }
 
@@ -157,7 +157,8 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
     }
   }
 
-  static const List<Professor> _fallbackProfessors = [
+  // Profesores de ejemplo para ver la funcionalidad sin red o con servicios apagados.
+  static const List<Professor> fallbackProfessors = [
     Professor(
       id: 'prof-1',
       name: 'Dr. Roberto González',

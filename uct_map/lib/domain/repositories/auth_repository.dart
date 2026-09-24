@@ -1,4 +1,4 @@
-// POST /api/identity/login {Email, Password} -> {UserId, Email, Token}.
+// POST /api/identity/login {email, password} -> {userId, email, token}.
 class AuthLoginResult {
   const AuthLoginResult({
     required this.userId,

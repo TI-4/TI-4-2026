@@ -187,13 +187,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: const Text('Cancelar', style: TextStyle(color: AppColors.subtitle)),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(ctx);
                 if (widget.onLogout != null) {
                   widget.onLogout!();
                 } else if (widget.session != null) {
-                  widget.session!.signOut();
+                  await widget.session!.signOut();
                 }
+                if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Sesión cerrada correctamente'),

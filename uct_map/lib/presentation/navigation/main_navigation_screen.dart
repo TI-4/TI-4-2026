@@ -6,6 +6,10 @@ import '../screens/reports/reports_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/login/auth_required_view.dart';
 import '../../application/session/session_controller.dart';
+import '../../core/network/api_client_provider.dart';
+import '../../core/network/authenticated_client.dart';
+import '../../data/datasources/campus_remote_ds.dart';
+import '../../data/datasources/incident_remote_ds.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../widgets/uct_logo.dart';
 import '../widgets/custom_drawer.dart';
@@ -20,6 +24,7 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
   final _session = SessionController();
+  late final AuthenticatedClient _apiClient;
 
   static const _protectedTabs = [2, 3];
 
@@ -40,6 +45,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   void initState() {
     super.initState();
+    _apiClient = ApiClientProvider.create(_session);
     _session.restore().then((_) {
       if (mounted) setState(() {});
     });
@@ -47,6 +53,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   void dispose() {
+    _apiClient.close();
     _session.dispose();
     super.dispose();
   }
@@ -58,14 +65,17 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       final userId = (result['userId'] ?? '').toString();
       final email = (result['email'] ?? '').toString();
       final token = (result['token'] ?? '').toString();
+      if (userId.isEmpty || token.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se pudo iniciar sesión.')),
+        );
+        return;
+      }
       try {
-        if (userId.isNotEmpty && token.isNotEmpty) {
-          await _session.signInReal(
-            AuthLoginResult(userId: userId, email: email, token: token),
-          );
-        } else {
-          _session.signInDemo(email);
-        }
+        await _session.signInReal(
+          AuthLoginResult(userId: userId, email: email, token: token),
+        );
       } on AuthFailure {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -90,18 +100,31 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final isSearchTab = _currentIndex == 1;
 
     final List<Widget> screens = [
-      const MapScreen(),
+      MapScreen(
+        campusRepository: CampusRemoteDataSource(client: _apiClient),
+      ),
       SearchScreen(
         onExploreMap: () => _onTabTapped(0),
       ),
-      _protected(2, const LostFoundScreen(), 'Objetos perdidos'),
-      _protected(3, const ReportsScreen(), 'Reportes de incidencias'),
+      _protected(
+          2,
+          LostFoundScreen(
+            incidentRepository: IncidentRemoteDataSource(client: _apiClient),
+          ),
+          'Objetos perdidos'),
+      _protected(
+          3,
+          ReportsScreen(
+            incidentRepository: IncidentRemoteDataSource(client: _apiClient),
+          ),
+          'Reportes de incidencias'),
       ProfileScreen(
         session: _session,
         onNavigateToTab: _onTabTapped,
         onLogout: () {
-          _session.signOut();
-          setState(() {});
+          _session.signOut().then((_) {
+            if (mounted) setState(() {});
+          });
         },
       ),
     ];
