@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { CloseButton } from './ExitButton';
 import { useImageControls } from '../hooks/useImageControls';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { ImageControls } from './ImageControls';
 import { ImagePagination } from './ImagePagination';
-import PhotoIcon from '../assets/svg/icon_photo.svg?react';
+import PhotoIcon from '../assets/svg/icons/icon_photo.svg?react';
 
 interface FileUploadProps {
   label?: string;

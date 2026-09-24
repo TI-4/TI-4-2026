@@ -1,4 +1,3 @@
-import React from 'react';
 import { useImageControls } from '../hooks/useImageControls';
 import { ImageControls } from './ImageControls';
 import { ImagePagination } from './ImagePagination';
