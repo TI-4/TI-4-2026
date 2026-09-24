@@ -8,7 +8,7 @@ import '../../core/network/api_config.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 /// Llama a POST /api/identity/login y valida la respuesta exacta
-/// {UserId, Email, Token}. La contraseña solo viaja en el body del POST.
+/// {userId, email, token}. La contraseña solo viaja en el body del POST.
 class AuthRemoteDataSource implements AuthRepository {
   AuthRemoteDataSource({http.Client? client, ApiConfig? config})
       : _client = client ?? http.Client(),
@@ -29,7 +29,7 @@ class AuthRemoteDataSource implements AuthRepository {
             _config.loginUri,
             headers: const {'Content-Type': 'application/json'},
             body: jsonEncode(
-                {'Email': email.trim(), 'Password': password}),
+                {'email': email.trim(), 'password': password}),
           )
           .timeout(_config.timeout);
     } on TimeoutException {
@@ -56,9 +56,10 @@ class AuthRemoteDataSource implements AuthRepository {
       try {
         final decoded = jsonDecode(body);
         if (decoded is Map<String, dynamic>) {
-          final userId = decoded['UserId'];
-          final mail = decoded['Email'];
-          final token = decoded['Token'];
+          // Casing real del backend (camelCase, verificado contra Identity).
+          final userId = decoded['userId'];
+          final mail = decoded['email'];
+          final token = decoded['token'];
           if (userId is String &&
               userId.isNotEmpty &&
               mail is String &&

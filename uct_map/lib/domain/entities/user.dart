@@ -25,11 +25,11 @@ class User {
         ? rawRoles.map(UserRole.fromString).toList()
         : const <UserRole>[];
     return User(
-      id: _str(json['UserId']),
-      email: _str(json['Email']),
-      name: _nonEmpty(json['Name']),
+      id: _str(json['userId']),
+      email: _str(json['email']),
+      name: _nonEmpty(json['name']),
       role: roles.isNotEmpty ? roles.first : UserRole.desconocido,
-      registrationDate: _date(json['RegistrationDate']),
+      registrationDate: _date(json['registrationDate']),
     );
   }
 
