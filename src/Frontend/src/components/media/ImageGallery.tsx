@@ -1,4 +1,4 @@
-import { useImageControls } from '../hooks/useImageControls';
+import { useImageControls } from '../../hooks/useImageControls';
 import { ImageControls } from './ImageControls';
 import { ImagePagination } from './ImagePagination';
 

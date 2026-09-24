@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Select } from '../components/Select';
-import { Button } from '../components/Button';
-import { SearchInput } from '../components/SearchInput';
+import { Select } from '../components/ui/Select';
+import { Button } from '../components/ui/Button';
+import { SearchInput } from '../components/ui/SearchInput';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
 import SortIcon from '../assets/svg/icons/icon_sort.svg?react';
 import CategoryIcon from '../assets/svg/icons/icon_category_cube.svg?react';
 import PlusIcon from '../assets/svg/icons/icon_plus.svg?react';
-import { EmptyState } from '../components/EmptyState';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export const ObjectsView = () => {
   const [searchQuery, setSearchQuery] = useState('');

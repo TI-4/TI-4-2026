@@ -10,23 +10,23 @@
 | `CheckboxItem` | Elemento de selección (checkbox) con título y descripción. | `label`, `desc`, `icon` |
 | `ExitButton` | Botón estándar de cierre (X). | `variant` (solid/ghost), `size` |
 | `FileUpload` | Área interactiva para arrastrar y soltar archivos. | `label`, `maxFiles`, `onFilesChange` |
+| `GlobalModals` | Contenedor maestro de modales flotantes globales gestionado por Zustand. | N/A |
 | `IconText` | Bloque pequeño de texto acompañado de un ícono. | `icon`, `text`, `className` |
 | `ImageControls` | Botones de navegación (anterior/siguiente) para galería. | `onPrev`, `onNext` |
 | `ImageGallery` | Carrusel automático de imágenes. | `images`, `autoPlayInterval`, `width`, `height` |
 | `ImagePagination` | Indicadores de posición (puntos) para la galería. | `total`, `currentIndex`, `onSelect` |
 | `Input` | Campo estándar para ingreso de texto con etiqueta opcional superior. | `label`, `labelColor` (opcional), `error`, `multiline`, `icon`, *Props HTML* |
 | `LoadingSpinner` | Componente visual animado para indicar carga. | `size` (sm/md/lg/xl), `color`, `text`, `className` |
-| `MapMarker` | Botón interactivo usado como pin en el mapa. | `icon`, `color` |
+| `ModalOverlay` | Envoltorio con animaciones y fondo oscuro para pop-ups. | `isOpen`, `onClose`, `children` |
 | `NavButton` | Enlace de navegación para rutas del React Router. | `to`, `icon`, `label`, `size`, `width` |
 | `Panel` | Contenedor reutilizable con estilos estandarizados de tarjeta. | `children`, `color`, `withUctBorder`, `onClose` |
 | `PhotoFrame` | Contenedor con borde para mostrar imágenes o miniaturas. | `src`, `alt`, `className` |
-| `RoomInfoCard` | Tarjeta/Banner informativo de sala con título, tipo y capacidad. | `title`, `type`, `capacity`, `icon`, `className` |
-| `ScheduleCard` | Banner/Tarjeta informativa de horario de atención. | `title`, `schedule`, `icon`, `color`, `className` |
 | `SearchInput` | Campo de texto avanzado con menú desplegable de sugerencias. | `label`, `placeholder`, `value`, `onChange`, `icon`, `options` |
 | `SectionButton` | Botón especializado para el menú de navegación lateral. | `to`, `icon`, `label`, `isExpanded`, `expandedWidth` |
 | `Select` | Menú desplegable de selección de opciones con bordes UCT. | `label`, `labelColor`, `options`, `icon`, `error` |
 | `SquareButton` | Botón interactivo cuadrado. | `children` |
 | `Tag` | Etiqueta pequeña (pill) para categorías o estados. | `label`, `icon`, `color` |
+| `TimedActionCard` | Tarjeta para acciones críticas con barra de progreso regresiva y bordes activos UCT. | `title`, `description`, `initialDurationMs`, `options` |
 | `UserActionInfo` | Muestra detalles rápidos de un usuario o acción. | `title`, `subtitle`, `avatarSrc` |
 
 ## Módulos
@@ -35,13 +35,15 @@ Para mantener la arquitectura escalable, las piezas de interfaz más complejas (
 
 | Módulo | Componente | Descripción del componente | Parámetros |
 |---|---|---|---|
-| `actions` | `TimedActionCard` | Tarjeta para acciones críticas con barra de progreso regresiva y bordes activos UCT. | `title`, `description`, `initialDurationMs`, `options` |
 | `admin` | `UserManagementCard` | Tarjeta para la gestión administrativa de usuarios, roles y baneos. | `user`, `roles`, `onRoleChange`, `onToggleBan` |
 | `admin` | `MapEditorPanel` | Panel animado con herramientas para la edición interactiva del mapa. | N/A |
 | `global` | `UserProfilePanel` | Panel lateral con información del usuario logueado y reportes activos. | `name`, `admissionYear`, `career`, `email`, `photoUrl`, `objectReports`, `incidentReports`, `onClose` |
-| `map` | `MapFiltersPanel` | Panel interactivo para filtrar categorías y ubicaciones dentro del mapa. | `title`, `sections`, `onToggleItem`, `className` |
 | `map` | `BuildingDetailCard` | Tarjeta/Modal detallado de edificio con carrusel, horarios y salas. | `title`, `subtitle`, `images`, `schedule`, `floors`, `services`, `rooms`, `onClose`, `onNavigate`, `onView360`, `onReportProblem` |
 | `map` | `HeatmapSpot` | Elemento visual superpuesto en el mapa que representa zonas térmicas. | `intensity` (low/medium/high), `size`, `className` |
+| `map` | `MapFiltersPanel` | Panel interactivo para filtrar categorías y ubicaciones dentro del mapa. | `title`, `sections`, `onToggleItem`, `className` |
+| `map` | `MapMarker` | Botón interactivo usado como pin en el mapa. | `icon`, `color` |
+| `map` | `RoomInfoCard` | Tarjeta/Banner informativo de sala con título, tipo y capacidad. | `title`, `type`, `capacity`, `icon`, `className` |
+| `map` | `ScheduleCard` | Banner/Tarjeta informativa de horario de atención. | `title`, `schedule`, `icon`, `color`, `className` |
 | `contacts` | `ContactProfilePanel`, `ContactCard` | Perfiles de profesores, personal e información de contacto. | `title`, `contact`, `onClose`, `className` |
 | `objects` | `PublishReportCard`, `ObjectReportCard`, `ReportLostObjectCard` | Modales/Cards para la gestión de objetos perdidos y encontrados. | Múltítulos props según tarjeta. |
 | `incidents` | `IncidentCard` | Tarjeta para visualizar un reporte de incidente. | `location`, `status`, `photoUrl`, `title`, `reporterName`, `reportTime`, `reporterAvatar`, `description` |
@@ -96,4 +98,40 @@ Si se desea llevar al usuario a una ruta específica si no cuenta con autorizaci
    ```tsx
    const user = useAuthState(state => state.user);
    if (user?.role === 'MEMBER') { /* lógica específica */ }
+   ```
+
+## Gestión de Modales Globales
+
+Gracias a la arquitectura basada en estado global (Zustand) y React Portals integrados, crear y lanzar ventanas flotantes (Modales) que se sobreponen a toda la aplicación es sumamente sencillo y no requiere "ensuciar" el estado local de tus vistas.
+
+Sigue estos 3 pasos para crear un panel flotante nuevo:
+
+1. **Registra el nombre del Panel:**
+   Añade un identificador único en `src/states/uiState.ts`:
+   ```tsx
+   type Panel = 'none' | 'saveMapChanges' | 'discardMapChanges' | 'miNuevoPanel';
+   ```
+
+2. **Dibuja el Modal:**
+   Agrega tu diseño envuelto en `<ModalOverlay>` dentro del componente central `src/components/layout/GlobalModals.tsx`. Esto garantiza que la ventana tenga el fondo oscuro, las animaciones de entrada/salida y que flote por encima de la barra de navegación:
+   ```tsx
+   <ModalOverlay 
+     isOpen={activePanel === 'miNuevoPanel'} 
+     onClose={closePanel}
+   >
+     <div className="bg-white p-8 rounded-xl shadow-lg">
+       <h2 className="text-2xl font-bold">¡Hola!</h2>
+       <p>Soy un panel flotante.</p>
+     </div>
+   </ModalOverlay>
+   ```
+
+3. **Ejecuta (Trigger):**
+   Desde cualquier botón o componente de la aplicación, sin importar cuán profundo esté, invoca el estado global para abrirlo:
+   ```tsx
+   import { useUiState } from '../states/uiState';
+
+   <button onClick={() => useUiState.getState().openPanel('miNuevoPanel')}>
+     Abrir Panel
+   </button>
    ```

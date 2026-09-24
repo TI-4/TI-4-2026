@@ -1,8 +1,8 @@
-import { Panel } from '../../components/Panel';
-import { PhotoFrame } from '../../components/PhotoFrame';
-import { UserActionInfo } from '../../components/UserActionInfo';
-import { IconText } from '../../components/IconText';
-import { Tag } from '../../components/Tag';
+import { Panel } from '../../components/layout/Panel';
+import { PhotoFrame } from '../../components/media/PhotoFrame';
+import { UserActionInfo } from '../../components/ui/UserActionInfo';
+import { IconText } from '../../components/ui/IconText';
+import { Tag } from '../../components/ui/Tag';
 import MapPinIcon from '../../assets/svg/icons/icon_location.svg?react';
 
 

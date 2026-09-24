@@ -1,4 +1,4 @@
-import { type PageColor, bgPageColors, textPageColors, borderPageColors, hoverBgPageColors, solidButtonConfig } from '../constants/colors';
+import { type PageColor, bgPageColors, textPageColors, borderPageColors, hoverBgPageColors, solidButtonConfig } from '../../constants/colors';
 
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonWidth = 'sm' | 'md' | 'lg';

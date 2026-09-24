@@ -1,8 +1,8 @@
 import React from 'react';
-import { Panel } from '../../components/Panel';
-import { PhotoFrame } from '../../components/PhotoFrame';
-import { IconText } from '../../components/IconText';
-import { Button } from '../../components/Button';
+import { Panel } from '../../components/layout/Panel';
+import { PhotoFrame } from '../../components/media/PhotoFrame';
+import { IconText } from '../../components/ui/IconText';
+import { Button } from '../../components/ui/Button';
 import BuildingIcon from '../../assets/svg/icons/icon_building.svg?react';
 import PhoneIcon from '../../assets/svg/icons/icon_phone.svg?react';
 import MailIcon from '../../assets/svg/icons/icon_mail.svg?react';

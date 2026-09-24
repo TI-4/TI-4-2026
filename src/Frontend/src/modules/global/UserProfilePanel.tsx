@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { Panel } from '../../components/Panel';
-import { Avatar } from '../../components/Avatar';
-import { IconText } from '../../components/IconText';
-import { CloseButton } from '../../components/ExitButton';
-import { Button } from '../../components/Button';
+import { Panel } from '../../components/layout/Panel';
+import { Avatar } from '../../components/media/Avatar';
+import { IconText } from '../../components/ui/IconText';
+import { CloseButton } from '../../components/ui/ExitButton';
+import { Button } from '../../components/ui/Button';
 import MailIcon from '../../assets/svg/icons/icon_mail.svg?react';
 import StudyIcon from '../../assets/svg/icons/icon_study.svg?react';
 import CalendarIcon from '../../assets/svg/icons/icon_calendar.svg?react';
 import { ObjectReportCard } from '../objects/ObjectReportCard';
 import { IncidentCard } from '../incidents/IncidentCard';
-import { EmptyState } from '../../components/EmptyState';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 export interface UserProfilePanelProps {
   name: string;

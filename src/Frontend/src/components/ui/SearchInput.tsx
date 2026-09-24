@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Input } from './Input';
-import type { SearchOption } from '../interfaces/SearchOption';
+import type { SearchOption } from '../../interfaces/SearchOption';
 
 interface SearchInputProps {
   label?: string;

@@ -1,5 +1,5 @@
-import { Panel } from '../../components/Panel';
-import { CheckboxItem } from '../../components/CheckboxItem';
+import { Panel } from '../../components/layout/Panel';
+import { CheckboxItem } from '../../components/ui/CheckboxItem';
 import type { FilterSection } from '../../interfaces/FilterSection';
 
 interface MapFiltersPanelProps {
