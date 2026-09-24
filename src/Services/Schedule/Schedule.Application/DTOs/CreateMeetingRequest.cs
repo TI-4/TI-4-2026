@@ -6,4 +6,5 @@ public record CreateMeetingRequest(
     Guid TeacherRefId,
     Guid StudentRefId,
     Guid StructureRefId,
-    DateTime ScheduledAt);
+    DateTime ScheduledAt,
+    int DurationMinutes);
