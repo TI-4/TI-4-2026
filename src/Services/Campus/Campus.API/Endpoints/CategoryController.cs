@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Campus.Domain.Entities;
 using Campus.Application.DTOs;
-using Campus.Infraestructure.Persistence;
+using Campus.Application.UseCases;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System;
 
 namespace Campus.API.Endpoints;
 
@@ -10,92 +12,44 @@ namespace Campus.API.Endpoints;
 [Route("api/categories")]
 public class CategoryController : ControllerBase
 {
-    private readonly CampusDbContext _context;
+    private readonly CategoryHandler _handler;
 
-    public CategoryController(CampusDbContext context)
+    public CategoryController(CategoryHandler handler)
     {
-        _context = context;
+        _handler = handler;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetAll(CancellationToken cancellationToken)
     {
-        var categories = await _context.Categories
-            .AsNoTracking()
-            .Select(c => new CategoryDto(
-                c.Id,
-                c.Name,
-                c.Icon,
-                c.Description
-            ))
-            .ToListAsync(cancellationToken);
-
+        var categories = await _handler.GetAllAsync(cancellationToken);
         return Ok(categories);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<CategoryDto>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var category = await _context.Categories
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
-
-        if (category is null)
-        {
-            return NotFound(new { message = $"Categoría con ID '{id}' no fue encontrada." });
-        }
-
-        var dto = new CategoryDto(
-            category.Id,
-            category.Name,
-            category.Icon,
-            category.Description
-        );
-
+        var dto = await _handler.GetByIdAsync(id, cancellationToken);
+        if (dto is null) return NotFound(new { message = $"Categoría con ID '{id}' no fue encontrada." });
         return Ok(dto);
     }
 
     [HttpPost]
     public async Task<ActionResult<CategoryDto>> Create([FromBody] CreateCategoryDto request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Name))
-        {
-            return BadRequest(new { message = "El nombre de la categoría es obligatorio." });
-        }
-
-        var category = new Category(request.Name, request.Icon, request.Description);
-
-        _context.Categories.Add(category);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        var responseDto = new CategoryDto(
-            category.Id,
-            category.Name,
-            category.Icon,
-            category.Description
-        );
-
-        return CreatedAtAction(nameof(GetById), new { id = category.Id }, responseDto);
+        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "El nombre es obligatorio." });
+        
+        var dto = await _handler.CreateAsync(request, cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCategoryDto request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Name))
-        {
-            return BadRequest(new { message = "El nombre de la categoría es obligatorio." });
-        }
+        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "El nombre es obligatorio." });
 
-        var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
-
-        if (category is null)
-        {
-            return NotFound(new { message = $"Categoría con ID '{id}' no fue encontrada." });
-        }
-
-        category.Update(request.Name, request.Icon, request.Description);
-
-        await _context.SaveChangesAsync(cancellationToken);
+        var success = await _handler.UpdateAsync(id, request, cancellationToken);
+        if (!success) return NotFound(new { message = $"Categoría con ID '{id}' no fue encontrada." });
 
         return NoContent();
     }
@@ -103,15 +57,8 @@ public class CategoryController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
-
-        if (category is null)
-        {
-            return NotFound(new { message = $"Categoría con ID '{id}' no fue encontrada." });
-        }
-
-        _context.Categories.Remove(category);
-        await _context.SaveChangesAsync(cancellationToken);
+        var success = await _handler.DeleteAsync(id, cancellationToken);
+        if (!success) return NotFound(new { message = $"Categoría con ID '{id}' no fue encontrada." });
 
         return NoContent();
     }
