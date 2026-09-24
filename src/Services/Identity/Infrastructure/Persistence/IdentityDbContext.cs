@@ -24,11 +24,11 @@ public class IdentityDbContext : IdentityDbContext<User, Role, string>
         builder.Entity<User>().ToTable("Users");
         builder.Entity<Role>().ToTable("Roles");
 
-        builder.Entity<AdminProfile>().ToTable("Identidad_Admin");
-        builder.Entity<StudentProfile>().ToTable("Identidad_Estudiante");
-        builder.Entity<TeacherProfile>().ToTable("Identidad_Docente");
-        builder.Entity<ObjectsOfficerProfile>().ToTable("Identidad_Funcionario_ObjetosPerdidos");
-        builder.Entity<ComplaintsOfficerProfile>().ToTable("Identidad_Funcionario_Quejas");
+        builder.Entity<AdminProfile>().ToTable("AdminProfiles");
+        builder.Entity<StudentProfile>().ToTable("StudentProfiles");
+        builder.Entity<TeacherProfile>().ToTable("TeacherProfiles");
+        builder.Entity<ObjectsOfficerProfile>().ToTable("ObjectsOfficerProfiles");
+        builder.Entity<ComplaintsOfficerProfile>().ToTable("ComplaintsOfficerProfiles");
 
         builder.Entity<AdminProfile>().HasOne<User>().WithMany().HasForeignKey(profile => profile.UserId);
         builder.Entity<StudentProfile>().HasOne<User>().WithMany().HasForeignKey(profile => profile.UserId);
