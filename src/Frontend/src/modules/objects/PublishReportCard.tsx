@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Panel } from '../../components/Panel';
-import { Input } from '../../components/Input';
-import { Select } from '../../components/Select';
-import { FileUpload } from '../../components/FileUpload';
-import { Button } from '../../components/Button';
-import { CloseButton } from '../../components/ExitButton';
+import { Panel } from '../../components/layout/Panel';
+import { Input } from '../../components/ui/Input';
+import { Select } from '../../components/ui/Select';
+import { FileUpload } from '../../components/ui/FileUpload';
+import { Button } from '../../components/ui/Button';
+import { CloseButton } from '../../components/ui/ExitButton';
 import BuildingIcon from '../../assets/svg/icons/icon_building.svg?react';
 
 

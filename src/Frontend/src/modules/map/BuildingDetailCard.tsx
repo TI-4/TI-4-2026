@@ -1,10 +1,10 @@
-import { Panel } from '../../components/Panel';
-import { CloseButton } from '../../components/ExitButton';
-import { ImageGallery } from '../../components/ImageGallery';
-import { Tag } from '../../components/Tag';
-import { RoomInfoCard } from '../../components/RoomInfoCard';
-import { ScheduleCard } from '../../components/ScheduleCard';
-import { Button } from '../../components/Button';
+import { Panel } from '../../components/layout/Panel';
+import { CloseButton } from '../../components/ui/ExitButton';
+import { ImageGallery } from '../../components/media/ImageGallery';
+import { Tag } from '../../components/ui/Tag';
+import { RoomInfoCard } from './RoomInfoCard';
+import { ScheduleCard } from './ScheduleCard';
+import { Button } from '../../components/ui/Button';
 import BuildingIcon from '../../assets/svg/icons/icon_building.svg?react';
 import WarningIcon from '../../assets/svg/icons/icon_warning.svg?react';
 import NavigationIcon from '../../assets/svg/icons/icon_navigation.svg?react';

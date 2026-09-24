@@ -1,5 +1,5 @@
-import UserIcon from '../assets/svg/icons/icon_users.svg?react';
-import DoorIcon from '../assets/svg/icons/icon_door.svg?react';
+import UserIcon from '../../assets/svg/icons/icon_users.svg?react';
+import DoorIcon from '../../assets/svg/icons/icon_door.svg?react';
 
 
 interface RoomInfoCardProps {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Select } from '../components/Select';
-import { SearchInput } from '../components/SearchInput';
+import { Select } from '../components/ui/Select';
+import { SearchInput } from '../components/ui/SearchInput';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
 import CategoryIcon from '../assets/svg/icons/icon_category_cube.svg?react';

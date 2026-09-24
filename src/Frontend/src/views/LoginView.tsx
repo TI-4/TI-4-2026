@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthState } from '../states/authState';
 import type { Role } from '../constants/role';
-import { Button } from '../components/Button';
+import { Button } from '../components/ui/Button';
 import httpClient from '../api/httpClient';
 
 export const LoginView = () => {

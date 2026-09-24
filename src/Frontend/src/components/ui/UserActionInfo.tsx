@@ -1,4 +1,4 @@
-import { Avatar } from './Avatar';
+import { Avatar } from '../media/Avatar';
 
 interface UserActionInfoProps {
   title: string;

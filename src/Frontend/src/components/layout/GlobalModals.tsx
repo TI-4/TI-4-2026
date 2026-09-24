@@ -1,6 +1,6 @@
-import { useUiState } from '../states/uiState';
+import { useUiState } from '../../states/uiState';
 import { ModalOverlay } from './ModalOverlay';
-import { TimedActionCard } from '../modules/actions/TimedActionCard';
+import { TimedActionCard } from '../ui/TimedActionCard';
 
 export const GlobalModals = () => {
   const activePanel = useUiState(state => state.activePanel);

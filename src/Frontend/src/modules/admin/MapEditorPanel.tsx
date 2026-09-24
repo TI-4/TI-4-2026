@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { SquareButton } from '../../components/SquareButton';
-import { Button } from '../../components/Button';
+import { SquareButton } from '../../components/ui/SquareButton';
+import { Button } from '../../components/ui/Button';
 import { useUiState } from '../../states/uiState';
 
 import PencilIcon from '../../assets/svg/icons/icon_pencil.svg?react';
