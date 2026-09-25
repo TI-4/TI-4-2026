@@ -26,6 +26,20 @@ public class RoomController : ControllerBase
         return Ok(rooms);
     }
 
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<RoomDto>>> Search([FromQuery] string term, CancellationToken cancellationToken)
+    {
+        var rooms = await _handler.SearchRoomsAsync(term ?? string.Empty, cancellationToken);
+        return Ok(rooms);
+    }
+
+    [HttpGet("/api/buildings/{buildingId:guid}/rooms")]
+    public async Task<ActionResult<IEnumerable<RoomDto>>> GetByBuilding(Guid buildingId, CancellationToken cancellationToken)
+    {
+        var rooms = await _handler.GetRoomsByBuildingAsync(buildingId, cancellationToken);
+        return Ok(rooms);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<RoomDto>> GetById(Guid id, CancellationToken cancellationToken)
     {

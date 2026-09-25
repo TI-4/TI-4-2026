@@ -24,11 +24,19 @@ public class RoomHandler
 
     public async Task<IEnumerable<RoomDto>> GetAllAsync(Guid? buildingId, Guid? categoryId, CancellationToken cancellationToken)
     {
-        var rooms = await _repository.GetAllAsync(r => 
-            (!buildingId.HasValue || r.BuildingId == buildingId.Value) && 
-            (!categoryId.HasValue || r.CategoryId == categoryId.Value), 
-        cancellationToken);
-        
+        var rooms = await _repository.GetAllAsync(r => (!buildingId.HasValue || r.BuildingId == buildingId.Value) && (!categoryId.HasValue || r.CategoryId == categoryId.Value), cancellationToken);
+        return rooms.Select(r => new RoomDto(r.Id, r.BuildingId, r.CategoryId, r.Name, r.Floor, r.Number));
+    }
+
+    public async Task<IEnumerable<RoomDto>> SearchRoomsAsync(string term, CancellationToken cancellationToken)
+    {
+        var rooms = await _repository.GetAllAsync(r => r.Name.Contains(term) || (r.Number != null && r.Number.Contains(term)), cancellationToken);
+        return rooms.Select(r => new RoomDto(r.Id, r.BuildingId, r.CategoryId, r.Name, r.Floor, r.Number));
+    }
+
+    public async Task<IEnumerable<RoomDto>> GetRoomsByBuildingAsync(Guid buildingId, CancellationToken cancellationToken)
+    {
+        var rooms = await _repository.GetAllAsync(r => r.BuildingId == buildingId, cancellationToken);
         return rooms.Select(r => new RoomDto(r.Id, r.BuildingId, r.CategoryId, r.Name, r.Floor, r.Number));
     }
 
