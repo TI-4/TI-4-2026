@@ -6,5 +6,6 @@ namespace Incident.Application.Handlers;
 
 public interface ILostObjectHandler
 {
-    Task<ErrorOr<string>> CreateObjectAsync(CreateObjectRequest request);
+    Task<ErrorOr<string>> CreateObjectAsync(CreateLostObjectRequest request);
 }
+

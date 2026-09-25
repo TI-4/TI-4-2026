@@ -16,7 +16,7 @@ public class LostObjectHandler : ILostObjectHandler
         _lostObjectRepository = lostObjectRepository;
     }
 
-    public async Task<ErrorOr<string>> CreateObjectAsync(CreateObjectRequest request)
+    public async Task<ErrorOr<string>> CreateObjectAsync(CreateLostObjectRequest request)
     {
         if (!string.IsNullOrWhiteSpace(request.PhotoUrl))
         {
@@ -46,3 +46,4 @@ public class LostObjectHandler : ILostObjectHandler
         return lostObject.Id ?? string.Empty;
     }
 }
+

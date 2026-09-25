@@ -19,7 +19,7 @@ public class LostObjectsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateObjectRequest request)
+    public async Task<IActionResult> Create([FromBody] CreateLostObjectRequest request)
     {
         var result = await _lostObjectHandler.CreateObjectAsync(request);
 
@@ -35,3 +35,4 @@ public class LostObjectsController : ControllerBase
         return Ok();
     }
 }
+

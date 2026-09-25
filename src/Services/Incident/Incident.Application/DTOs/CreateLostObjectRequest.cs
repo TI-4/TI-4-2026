@@ -3,10 +3,11 @@ using Incident.Domain.Entities;
 
 namespace Incident.Application.DTOs;
 
-public record CreateObjectRequest(
+public record CreateLostObjectRequest(
     string Title,
     string Description,
     int Status,
     string PhotoUrl,
     Guid StructureId
 );
+
