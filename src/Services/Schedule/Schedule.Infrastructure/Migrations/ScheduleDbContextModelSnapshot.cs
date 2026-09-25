@@ -28,6 +28,9 @@ namespace Schedule.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("ScheduledAt")
                         .HasColumnType("timestamp without time zone");
 

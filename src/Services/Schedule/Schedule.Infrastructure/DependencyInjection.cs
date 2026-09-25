@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Schedule.Application.UseCases;
+using Schedule.Domain.Interfaces;
 using Schedule.Infrastructure.Persistence;
+using Schedule.Infrastructure.Persistence.Repositories;
 
 namespace Schedule.Infrastructure;
 
@@ -13,11 +16,18 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("ScheduleDb")
             ?? throw new InvalidOperationException(
-                "No se encontro la cadena de conexion 'ScheduleDb'.");
+                "Connection string 'ScheduleDb' was not found.");
 
         services.AddDbContext<ScheduleDbContext>(options =>
             options.UseNpgsql(connectionString, npgsql =>
                 npgsql.MigrationsHistoryTable("__EFMigrationsHistory_Schedule")));
+
+        services.AddScoped<IOfficeHourRepository, OfficeHourRepository>();
+        services.AddScoped<IMeetingRepository, MeetingRepository>();
+
+        services.AddScoped<OfficeHourHandler>();
+        services.AddScoped<MeetingHandler>();
+        services.AddScoped<TeacherHandler>();
 
         return services;
     }
