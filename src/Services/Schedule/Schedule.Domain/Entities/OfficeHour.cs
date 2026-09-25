@@ -7,7 +7,7 @@ public class OfficeHour
     public Guid Id { get; private set; }
 
     public Guid TeacherRefId { get; private set; }
-    public Guid StructureRefId { get; private set; }
+    public Guid? StructureRefId { get; private set; }
 
     public DayOfWeek DayOfWeek { get; private set; }
     public TimeOnly StartTime { get; private set; }
@@ -15,7 +15,7 @@ public class OfficeHour
 
     public OfficeHour(
         Guid teacherRefId,
-        Guid structureRefId,
+        Guid? structureRefId,
         DayOfWeek dayOfWeek,
         TimeOnly startTime,
         TimeOnly endTime)
@@ -36,3 +36,4 @@ public class OfficeHour
 
     protected OfficeHour() { }
 }
+

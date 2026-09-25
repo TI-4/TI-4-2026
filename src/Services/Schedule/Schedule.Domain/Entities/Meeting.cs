@@ -8,7 +8,7 @@ public class Meeting
     public Guid Id { get; private set; }
     public Guid TeacherRefId { get; private set; }
     public Guid StudentRefId { get; private set; }
-    public Guid StructureRefId { get; private set; }
+    public Guid? StructureRefId { get; private set; }
     public DateTime ScheduledAt { get; private set; }
     public int DurationMinutes { get; private set; }
     public MeetingStatus Status { get; private set; }
@@ -16,7 +16,7 @@ public class Meeting
     public Meeting(
         Guid teacherRefId,
         Guid studentRefId,
-        Guid structureRefId,
+        Guid? structureRefId,
         DateTime scheduledAt,
         int durationMinutes)
     {
@@ -31,3 +31,4 @@ public class Meeting
 
     protected Meeting() { }
 }
+

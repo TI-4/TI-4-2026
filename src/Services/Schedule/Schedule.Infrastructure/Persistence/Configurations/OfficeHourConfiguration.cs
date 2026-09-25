@@ -13,8 +13,7 @@ public class OfficeHourConfiguration : IEntityTypeConfiguration<OfficeHour>
         builder.Property(o => o.TeacherRefId)
             .IsRequired();
 
-        builder.Property(o => o.StructureRefId)
-            .IsRequired();
+        builder.Property(o => o.StructureRefId);
 
         builder.Property(o => o.DayOfWeek)
             .HasConversion<string>()
@@ -33,3 +32,4 @@ public class OfficeHourConfiguration : IEntityTypeConfiguration<OfficeHour>
         builder.HasIndex(o => new { o.StructureRefId, o.DayOfWeek });
     }
 }
+

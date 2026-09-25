@@ -7,7 +7,7 @@ public record MeetingDto(
     Guid Id,
     Guid TeacherRefId,
     Guid StudentRefId,
-    Guid StructureRefId,
+    Guid? StructureRefId,
     DateTime ScheduledAt,
     int DurationMinutes,
     string Status)
@@ -21,3 +21,4 @@ public record MeetingDto(
         meeting.DurationMinutes,
         meeting.Status.ToString());
 }
+

@@ -6,7 +6,7 @@ namespace Schedule.Application.DTOs;
 public record OfficeHourDto(
     Guid Id,
     Guid TeacherRefId,
-    Guid StructureRefId,
+    Guid? StructureRefId,
     string DayOfWeek,
     TimeOnly StartTime,
     TimeOnly EndTime)
@@ -19,3 +19,4 @@ public record OfficeHourDto(
         officeHour.StartTime,
         officeHour.EndTime);
 }
+
