@@ -14,9 +14,12 @@ import TargetIcon from '../assets/svg/icons/icon_target.svg?react';
 import PencilIcon from '../assets/svg/icons/icon_pencil.svg?react';
 import { RoleGuard } from '../router/RoleGuard';
 import { MapEditorPanel } from '../modules/admin/MapEditorPanel';
+import { BuildingFormModal } from '../modules/admin/BuildingFormModal';
+
 export const MapView = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [isEditorOpen, setIsEditorOpen] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const mapSearchOptions = [
     { value: 'biblioteca', label: 'Biblioteca Central' },
@@ -25,6 +28,18 @@ export const MapView = () => {
     { value: 'gimnasio', label: 'Gimnasio' },
     { value: 'auditorio', label: 'Auditorio Principal' }
   ];
+  const transformComponentRef = React.useRef<any>(null);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'p') {
+        setIsModalOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className="w-full h-full absolute inset-0 overflow-hidden">
       <div className="absolute top-6 right-6 z-10 flex flex-col gap-3 items-end">
@@ -53,6 +68,7 @@ export const MapView = () => {
       </div>
 
       <TransformWrapper
+        ref={transformComponentRef}
         initialScale={1}
         minScale={0.2}
         maxScale={8}
@@ -117,6 +133,9 @@ export const MapView = () => {
           </React.Fragment>
         )}
       </TransformWrapper>
+
+      {/* Edit modal */}
+      {isModalOpen && <BuildingFormModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
 };

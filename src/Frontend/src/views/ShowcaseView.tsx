@@ -32,6 +32,7 @@ import { PublishReportCard } from '../modules/objects/PublishReportCard';
 import { ReportLostObjectCard } from '../modules/objects/ReportLostObjectCard';
 import { UserProfilePanel } from '../modules/global/UserProfilePanel';
 import { SearchInput } from '../components/ui/SearchInput';
+import { NumberSelect } from '../components/ui/NumberSelect';
 import type { FilterSection } from '../interfaces/FilterSection';
 
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
@@ -233,6 +234,12 @@ export const ShowcaseView = () => {
         <Button variant="solid">Guardar</Button>
         <Button variant="outline">Cancelar</Button>
         <Button variant="ghost">Ignorar</Button>
+      </Panel>
+
+      <Panel color="white" innerClassName="p-6 flex gap-8 items-end flex-wrap">
+        <NumberSelect label="Horizontal (Default)" initialValue={0} min={-5} max={5} />
+        <NumberSelect label="Vertical" initialValue={10} multiplier={5} variant="vertical" />
+        <NumberSelect label="Float" initialValue={1.5} multiplier={0.5} isFloat />
       </Panel>
 
       <Panel color="white" innerClassName="p-6 flex flex-col gap-4 min-w-[350px]">

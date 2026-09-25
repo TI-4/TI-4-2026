@@ -92,7 +92,6 @@ services:
     networks:
       - uct_network
 
-
   # ---- API Gateway ---- #
   api-gateway:
     build:
@@ -106,6 +105,19 @@ services:
       - campus-api
       - incident-api
       - schedule-api
+    networks:
+      - uct_network
+
+  # ---- Frontend ---- #
+  frontend:
+    build:
+      context: ./src/Frontend
+      dockerfile: Dockerfile
+    container_name: uct_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
     networks:
       - uct_network
 
