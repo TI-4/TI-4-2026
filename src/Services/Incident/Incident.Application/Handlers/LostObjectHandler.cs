@@ -37,13 +37,37 @@ public class LostObjectHandler : ILostObjectHandler
             Title = request.Title,
             Description = request.Description,
             Status = (Objectenum)request.Status,
-            PhotoUrl = request.PhotoUrl,
+            Photo_url = request.PhotoUrl,
             StructureRefId = request.StructureId
         };
 
         await _lostObjectRepository.CreateAsync(lostObject);
 
-        return lostObject.Id ?? string.Empty;
+        return lostObject.ObjectId ?? string.Empty;
+    }
+    public async Task<ErrorOr<LostObjectResponse>> GetByIdAsync(string id) {
+        var lostObject = await _lostObjectRepository.GetByIdAsync(id);
+        if (lostObject is null) {
+            return Error.NotFound(
+                code: "LostObject.NotFound",
+                description: $"LostObject with ID '{id}'"
+            );
+        }
+        LostObjectResponse response;
+        try
+        {
+            response = new LostObjectResponse
+            (
+                lostObject.Title,
+                lostObject.Description,
+                Enum.GetName(typeof(Objectenum), lostObject.Status)!,
+                lostObject.Photo_url!,
+                lostObject.StructureRefId // -> findname structure
+            );
+        }
+        catch (ArgumentException ex){
+            return Error.NotFound(code: "LostObject.NotFound", description: $"Error response: '{ex}'");
+        }
+        return response;
     }
 }
-
