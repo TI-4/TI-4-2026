@@ -28,7 +28,7 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<IdentityDbContext>();
 
         services.AddScoped<IUserAuthenticator, IdentityUserAuthenticator>();
-        services.AddScoped<IUserRegistrar, IdentityUserRegistrar>();
+        services.AddScoped<IUserRegistrationService, IdentityUserRegistrationService>();
         services.AddScoped<IUserQuery, IdentityUserQuery>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<LoginUseCase>();

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace IdentityService.Infrastructure.Authentication;
 
-public sealed class IdentityUserRegistrar(
+public sealed class IdentityUserRegistrationService(
     UserManager<User> userManager,
-    RoleManager<Role> roleManager) : IUserRegistrar
+    RoleManager<Role> roleManager) : IUserRegistrationService
 {
     public async Task<RegisteredUserResponse?> RegisterAsync(
         RegisterRequest request,
@@ -49,3 +49,4 @@ public sealed class IdentityUserRegistrar(
             roleName);
     }
 }
+

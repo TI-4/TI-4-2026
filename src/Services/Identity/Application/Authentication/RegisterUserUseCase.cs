@@ -2,7 +2,7 @@ using ErrorOr;
 
 namespace IdentityService.Application.Authentication;
 
-public sealed class RegisterUserUseCase(IUserRegistrar userRegistrar)
+public sealed class RegisterUserUseCase(IUserRegistrationService registrationService)
 {
     public async Task<ErrorOr<RegisteredUserResponse>> ExecuteAsync(
         RegisterRequest request,
@@ -17,7 +17,7 @@ public sealed class RegisterUserUseCase(IUserRegistrar userRegistrar)
                 description: "Name, email, and password are required.");
         }
 
-        var createdUser = await userRegistrar.RegisterAsync(request, cancellationToken);
+        var createdUser = await registrationService.RegisterAsync(request, cancellationToken);
 
         if (createdUser is null)
         {
@@ -29,3 +29,4 @@ public sealed class RegisterUserUseCase(IUserRegistrar userRegistrar)
         return createdUser;
     }
 }
+
