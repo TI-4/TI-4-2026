@@ -11,9 +11,9 @@ namespace Incident.API.Controllers;
 [Route("api/incident/reports")]
 public class ReportsController : ControllerBase
 {
-    private readonly ReportHandler _reportHandler;
+    private readonly IReportHandler _reportHandler;
 
-    public ReportsController(ReportHandler reportHandler)
+    public ReportsController(IReportHandler reportHandler)
     {
         _reportHandler = reportHandler;
     }
@@ -49,3 +49,4 @@ public class ReportsController : ControllerBase
         );
     }
 }
+

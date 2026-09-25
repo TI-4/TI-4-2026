@@ -7,7 +7,7 @@ using System;
 
 namespace Incident.Application.Handlers;
 
-public class ReportHandler
+public class ReportHandler : IReportHandler
 {
     private readonly ITicketRepository _ticketRepository;
 
@@ -42,18 +42,18 @@ public class ReportHandler
         return ticket.Id ?? string.Empty;
     }
 
-    public async Task<ErrorOr<TicketResponse>> GetByIdAsync(string id)
+    public async Task<ErrorOr<ReportResponse>> GetByIdAsync(string id)
     {
         var ticket = await _ticketRepository.GetByIdAsync(id);
         if (ticket is null)
         {
             return Error.NotFound(
                 code: "Report.NotFound",
-                description: $"No se encontro el reporte con el ID '{id}'"
+                description: $"Report with ID '{id}'"
             );
         }
 
-        return new TicketResponse(
+        return new ReportResponse(
             ticket.Id!,
             ticket.UserRefId,
             ticket.StructureRefId,
@@ -61,7 +61,8 @@ public class ReportHandler
             ticket.IsActive,
             ticket.ReportedAt,
             ticket.ComplaintDetails,
-            ticket.ObjectLoss
+            ticket.LostObjectId
         );
     }
 }
+
