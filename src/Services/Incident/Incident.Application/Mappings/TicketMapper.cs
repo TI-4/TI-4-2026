@@ -3,11 +3,6 @@ using Incident.Domain.Entities;
 
 namespace Incident.Application.Mappings;
 
-/// <summary>
-/// Convierte el contrato de entrada (proto) a la entidad de dominio.
-/// El switch explícito es intencional: los valores numéricos de los enums
-/// proto y dominio NO están alineados, un cast directo produciría datos incorrectos.
-/// </summary>
 public static class TicketMapper
 {
     public static Ticket ToTicket(CreateTicketRequest request) => new()

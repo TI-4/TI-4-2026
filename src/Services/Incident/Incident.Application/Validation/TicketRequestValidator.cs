@@ -3,17 +3,12 @@ using Incident.Application.Protos;
 
 namespace Incident.Application.Validation;
 
-/// <summary>
-/// Valida el contrato de entrada de un ticket. Cada validación en un método corto.
-/// Ejecuta: presencia -> formato -> rango de enum -> contenido -> reglas cruzadas.
-/// </summary>
 public static class TicketRequestValidator
 {
     private const int MaxTitleLength = 200;
     private const int MaxDescriptionLength = 5000;
     private const int MaxObjectIdLength = 24;
 
-    /// <summary>Valida el request y lo devuelve no-nulo, o lanza <see cref="ValidationException"/>.</summary>
     public static CreateTicketRequest Validate(CreateTicketRequest? request)
     {
         if (request is null)
