@@ -12,10 +12,11 @@ public class Ticket
 
     [BsonElement("user_id")]
     [BsonRepresentation(BsonType.String)]
-    public required Guid IdUsuario { get; init; }
+    public required Guid UserRefId { get; init; }
 
     [BsonElement("structure_id")]
-    public required Guid IdStructure { get; init; }
+    [BsonRepresentation(BsonType.String)]
+    public required Guid StructureRefId { get; init; }
 
     [BsonElement("ticket_type")]
     [BsonRepresentation(BsonType.String)]
@@ -27,7 +28,7 @@ public class Ticket
 
     [BsonElement("date_ticket")]
     [BsonRepresentation(BsonType.DateTime)]
-    public required DateTime DateReport { get; init; }
+    public required DateTime ReportedAt { get; init; }
 
     [BsonElement("location")]
     public GeoPoint? Location { get; set; }
@@ -41,3 +42,4 @@ public class Ticket
     [BsonElement("complaint_details")]
     public ComplaintDetails? ComplaintDetails { get; init; }
 }
+
