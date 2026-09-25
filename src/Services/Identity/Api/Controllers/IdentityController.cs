@@ -5,7 +5,10 @@ namespace IdentityService.Api.Controllers;
 
 [ApiController]
 [Route("api/identity")]
-public class IdentityController(LoginUseCase loginUseCase) : ControllerBase
+public class IdentityController(
+    LoginUseCase loginUseCase,
+    RegisterUserUseCase registerUserUseCase,
+    GetUserByIdUseCase getUserByIdUseCase) : ControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login(
@@ -22,6 +25,44 @@ public class IdentityController(LoginUseCase loginUseCase) : ControllerBase
         return result.Match(
             loginResult => Ok(loginResult),
             errors => Problem(statusCode: StatusCodes.Status401Unauthorized, title: errors.First().Description)
+        );
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(
+        [FromBody] RegisterRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.Name)
+            || string.IsNullOrWhiteSpace(request.Email)
+            || string.IsNullOrWhiteSpace(request.Password))
+        {
+            return BadRequest("Name, email and password are required.");
+        }
+
+        var result = await registerUserUseCase.ExecuteAsync(request, cancellationToken);
+
+        return result.Match(
+            registeredUser => StatusCode(StatusCodes.Status201Created, registeredUser),
+            errors => Problem(statusCode: StatusCodes.Status400BadRequest, title: errors.First().Description)
+        );
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetById(
+        string userId,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return BadRequest("User id is required.");
+        }
+
+        var result = await getUserByIdUseCase.ExecuteAsync(userId, cancellationToken);
+
+        return result.Match(
+            user => Ok(user),
+            errors => Problem(statusCode: StatusCodes.Status404NotFound, title: errors.First().Description)
         );
     }
 }
