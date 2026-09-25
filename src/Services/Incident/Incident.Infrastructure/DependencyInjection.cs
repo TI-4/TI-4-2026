@@ -34,10 +34,11 @@ public static class DependencyInjection
         });
 
         services.AddScoped<ITicketRepository, TicketRepository>();
-        services.AddScoped<ReportHandler, ReportHandler>();
+        services.AddScoped<IReportHandler, ReportHandler>();
         services.AddScoped<ILostObjectRepository, ObjectRepository>();
-        services.AddScoped<ObjectHandler>();
+        services.AddScoped<ILostObjectHandler, LostObjectHandler>();
         return services;
     }
 }
+
 

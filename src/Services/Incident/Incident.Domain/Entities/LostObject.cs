@@ -8,18 +8,22 @@ public class LostObject
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? ObjectId { get; init; }
+    public string? Id { get; init; }
 
     [BsonElement("title")]
-    public required string title { get; init; }
+    public required string Title { get; init; }
 
     [BsonElement("description")]
-    public required string description { get; init; }
+    public required string Description { get; init; }
 
     [BsonElement("status")]
     [BsonRepresentation(BsonType.String)]
-    public required Objectenum status { get; init; }
+    public required Objectenum Status { get; init; }
 
     [BsonElement("photo_url")]
-    public string? photo_url { get; init; }
+    public string? PhotoUrl { get; init; }
+
+    [BsonElement("structure_id")]
+    [BsonRepresentation(BsonType.String)]
+    public required Guid StructureRefId { get; init; }
 }
