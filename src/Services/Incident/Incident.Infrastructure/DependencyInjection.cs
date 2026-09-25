@@ -35,7 +35,8 @@ public static class DependencyInjection
 
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<ReportHandler, ReportHandler>();
-
+        services.AddScoped<ILostObjectRepository, ObjectRepository>();
+        services.AddScoped<ObjectHandler>();
         return services;
     }
 }
