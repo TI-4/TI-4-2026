@@ -24,10 +24,10 @@ public class MongoRepository<T> : IRepository<T> where T : class
         return await _collection.Find(filter).FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public virtual async Task<IEnumerable<T>> GetAllAsync()
         => await _collection.Find(_ => true).ToListAsync();
 
-    public async Task CreateAsync(T entity)
+    public virtual async Task CreateAsync(T entity)
         => await _collection.InsertOneAsync(entity);
 
     public async Task UpdateAsync(string id, T entity)
