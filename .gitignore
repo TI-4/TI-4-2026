@@ -127,7 +127,7 @@ coverage.xml
 .pytest_cache/
 cover/
 
-# Local validation projects (do not commit)
+# Local validation projects
 src/Services/Identity/Tests/
 
 # Translations
