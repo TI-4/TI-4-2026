@@ -1,8 +1,10 @@
-using Incident.Application.Protos;
+using ErrorOr;
+using Incident.Application.DTOs;
+using System.Threading.Tasks;
 
 namespace Incident.Application.Services;
 
 public interface ITicketService
 {
-    Task<string> CreateTicketAsync(CreateTicketRequest? request);
+    Task<ErrorOr<string>> CreateTicketAsync(CreateTicketRequest request);
 }

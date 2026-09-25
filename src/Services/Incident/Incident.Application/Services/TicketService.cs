@@ -1,7 +1,8 @@
-using Incident.Application.Mappings;
-using Incident.Application.Protos;
-using Incident.Application.Validation;
+using ErrorOr;
+using Incident.Application.DTOs;
+using Incident.Domain.Entities;
 using Incident.Domain.Repositories;
+using System.Threading.Tasks;
 
 namespace Incident.Application.Services;
 
@@ -14,11 +15,25 @@ public class TicketService : ITicketService
         _ticketRepository = ticketRepository;
     }
 
-    public async Task<string> CreateTicketAsync(CreateTicketRequest? request)
+    public async Task<ErrorOr<string>> CreateTicketAsync(CreateTicketRequest request)
     {
-        var validated = TicketRequestValidator.Validate(request);
+        if (string.IsNullOrWhiteSpace(request.Details))
+        {
+            return Error.Validation("Ticket.Details", "Ticket details are required.");
+        }
 
-        var ticket = TicketMapper.ToTicket(validated);
+        if (string.IsNullOrWhiteSpace(request.Location))
+        {
+            return Error.Validation("Ticket.Location", "Ticket location is required.");
+        }
+
+        var ticket = new Ticket
+        {
+            ReporterRefId = request.ReporterRefId,
+            Details = request.Details,
+            Location = request.Location,
+            Status = "Open"
+        };
 
         await _ticketRepository.CreateAsync(ticket);
 

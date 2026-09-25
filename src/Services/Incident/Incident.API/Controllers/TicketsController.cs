@@ -1,6 +1,9 @@
-using Incident.Application.Protos;
+using Incident.Application.DTOs;
 using Incident.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace Incident.API.Controllers;
 
@@ -16,11 +19,14 @@ public class TicketsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateTicketRequest? request)
+    public async Task<IActionResult> Create([FromBody] CreateTicketRequest request)
     {
-        var id = await _ticketService.CreateTicketAsync(request);
+        var result = await _ticketService.CreateTicketAsync(request);
 
-        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        return result.Match(
+            id => CreatedAtAction(nameof(GetById), new { id }, new { id }),
+            errors => Problem(statusCode: StatusCodes.Status400BadRequest, title: errors.First().Description)
+        );
     }
 
     [HttpGet("{id}")]
