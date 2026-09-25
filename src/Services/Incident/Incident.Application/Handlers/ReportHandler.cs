@@ -42,7 +42,7 @@ public class ReportHandler : IReportHandler
         return ticket.Id ?? string.Empty;
     }
 
-    public async Task<ErrorOr<ReportResponse>> GetByIdAsync(string id)
+    public async Task<ErrorOr<TicketResponse>> GetByIdAsync(string id)
     {
         var ticket = await _ticketRepository.GetByIdAsync(id);
         if (ticket is null)
@@ -53,7 +53,7 @@ public class ReportHandler : IReportHandler
             );
         }
 
-        return new ReportResponse(
+        return new TicketResponse(
             ticket.Id!,
             ticket.UserRefId,
             ticket.StructureRefId,
@@ -65,4 +65,5 @@ public class ReportHandler : IReportHandler
         );
     }
 }
+
 

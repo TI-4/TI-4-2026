@@ -4,7 +4,7 @@ using System;
 
 namespace Incident.Application.DTOs;
 
-public record ReportResponse(
+public record TicketResponse(
     string Id,
     Guid UserRefId,
     Guid? StructureRefId,
@@ -13,3 +13,4 @@ public record ReportResponse(
     DateTime ReportedAt,
     ComplaintDetails? ComplaintDetails = null,
     string? LostObjectId = null);
+
