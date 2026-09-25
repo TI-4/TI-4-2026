@@ -4,16 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-
+using ErrorOr;
 namespace Incident.API.Controllers;
 
 [ApiController]
 [Route("api/incident/reports")]
 public class ReportsController : ControllerBase
 {
-    private readonly IReportHandler _reportHandler;
+    private readonly ReportHandler _reportHandler;
 
-    public ReportsController(IReportHandler reportHandler)
+    public ReportsController(ReportHandler reportHandler)
     {
         _reportHandler = reportHandler;
     }
@@ -32,6 +32,20 @@ public class ReportsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
-        return Ok();
+        var result = await _reportHandler.GetByIdAsync(id);
+        return result.Match(
+            ticket => Ok(ticket),
+            errors =>
+            {
+                var firstError = errors.First();
+                var statusCode = firstError.Type switch
+                {
+                    ErrorType.NotFound => StatusCodes.Status404NotFound,
+                    _ => StatusCodes.Status400BadRequest
+                };
+                return Problem(statusCode: statusCode, title: firstError.Description);
+            }
+
+        );
     }
 }

@@ -36,10 +36,9 @@ public class Ticket
     // Optional Reference to the independent Object collection
     [BsonElement("object_id")]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? ObjectId { get; init; }
+    public string? ObjectLoss{ get; init; }
 
     // Optional Embedded Complaint details
     [BsonElement("complaint_details")]
     public ComplaintDetails? ComplaintDetails { get; init; }
 }
-
