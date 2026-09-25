@@ -3,6 +3,7 @@
 Before deploying this project to a production environment, ensure the following technical debt and security configurations are resolved:
 
 ### Security & Identity
+- [ ] **Microservice Authorization (IDOR)**: The Schedule API currently relies entirely on the API Gateway for authentication but lacks its own fine-grained authorization. Add JWT Bearer authentication to the microservice and verify User.Identity against the requested resource IDs (e.g., studentId) to prevent Insecure Direct Object Reference (IDOR) vulnerabilities.
 - [ ] **Database Credentials**: Change the default `rootpassword` for both **PostgreSQL** and **MongoDB** in `docker-compose.yml` to use secure, injected environment variables.
 - [ ] **JWT Secrets**: The JWT Secret Key (`JwtConfig__Key`) is currently hardcoded. Move this to a secure environment variable or a Secret Manager (like Azure Key Vault).
 
@@ -22,4 +23,5 @@ Before deploying this project to a production environment, ensure the following 
 - [ ] **Allowed Hosts**: Update `appsettings.json` to lock down `AllowedHosts` to the production domain (remove `*`).
 - [ ] **Code Cleanup**: Thoroughly clean up unused files, unreferenced routes, dead code, and caches before the final production build.
 - [ ] **MongoDB Domain Coupling**: The Incident microservice currently relies on MongoDB.Bson attributes ([BsonId]) directly inside the Domain layer. Remove these attributes and configure the mappings in the Infrastructure layer (using BsonClassMap) to restore strict Clean Architecture.
+
 
