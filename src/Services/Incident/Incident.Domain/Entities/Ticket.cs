@@ -15,6 +15,7 @@ public class Ticket
     public required Guid IdUsuario { get; init; }
 
     [BsonElement("structure_id")]
+    [BsonRepresentation(BsonType.String)]
     public required Guid IdStructure { get; init; }
 
     [BsonElement("ticket_type")]

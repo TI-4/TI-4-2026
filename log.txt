@@ -1,0 +1,41 @@
+╰─± docker logs uct_incident_api --tail 40 2>&1
+      Content root path: /app
+fail: Microsoft.AspNetCore.Server.Kestrel[13]
+      Connection id "0HNOQNBDP6BKR", Request id "0HNOQNBDP6BKR:00000001": An unhandled exception was thrown by the application.
+      System.TimeoutException: A timeout occurred after 29999ms selecting a server using CompositeServerSelector{ Selectors = WritableServerSelector, LatencyLimitingServerSelector{ AllowedLatencyRange = 00:00:00.0150000 }, OperationsCountServerSelector }. Client view of cluster state is { ClusterId : "1", Type : "Unknown", State : "Disconnected", Servers : [{ ServerId: "{ ClusterId : 1, EndPoint : "Unspecified/mongodb:27017" }", EndPoint: "Unspecified/mongodb:27017", ReasonChanged: "Heartbeat", State: "Disconnected", ServerVersion: , TopologyVersion: , Type: "Unknown", HeartbeatException: "MongoDB.Driver.MongoConnectionException: An exception occurred while opening a connection to the server.
+       ---> System.Net.Sockets.SocketException (00000005, 0xFFFDFFFF): Name or service not known
+         at System.Net.Dns.GetHostEntryOrAddressesCore(String hostName, Boolean justAddresses, AddressFamily addressFamily, Nullable`1 activityOrDefault)
+         at System.Net.Dns.GetHostAddresses(String hostNameOrAddress)
+         at MongoDB.Driver.Core.Connections.TcpStreamFactory.ResolveEndPoints(EndPoint initial)
+         at MongoDB.Driver.Core.Connections.TcpStreamFactory.CreateStream(EndPoint endPoint, CancellationToken cancellationToken)
+         at MongoDB.Driver.Core.Connections.BinaryConnection.OpenHelper(OperationContext operationContext)
+         --- End of inner exception stack trace ---
+         at MongoDB.Driver.Core.Connections.BinaryConnection.OpenHelper(OperationContext operationContext)
+         at MongoDB.Driver.Core.Connections.BinaryConnection.Open(OperationContext operationContext)
+         at MongoDB.Driver.Core.Servers.ServerMonitor.InitializeConnection(OperationContext operationContext)
+         at MongoDB.Driver.Core.Servers.ServerMonitor.Heartbeat(CancellationToken cancellationToken)", LastHeartbeatTimestamp: "2026-09-25T04:10:25.9219166Z", LastUpdateTimestamp: "2026-09-25T04:10:25.9219214Z" }] }.
+         at MongoDB.Driver.Core.Operations.RetryableWriteOperationExecutor.ExecuteAsync[TResult](OperationContext operationContext, IRetryableWriteOperation`1 operation, RetryableWriteContext context)
+         at MongoDB.Driver.Core.Operations.BulkUnmixedWriteOperationBase`1.ExecuteBatchAsync(OperationContext operationContext, RetryableWriteContext context, Batch batch)
+         at MongoDB.Driver.Core.Operations.BulkUnmixedWriteOperationBase`1.ExecuteBatchesAsync(OperationContext operationContext, RetryableWriteContext context)
+         at MongoDB.Driver.Core.Operations.BulkMixedWriteOperation.ExecuteBatchAsync(OperationContext operationContext, RetryableWriteContext context, Batch batch)
+         at MongoDB.Driver.Core.Operations.BulkMixedWriteOperation.ExecuteAsync(OperationContext operationContext, IWriteBinding binding)
+         at MongoDB.Driver.OperationExecutor.ExecuteWriteOperationAsync[TResult](OperationContext operationContext, IClientSessionHandle session, IWriteOperation`1 operation, Boolean allowChannelPinning)
+         at MongoDB.Driver.MongoCollectionImpl`1.ExecuteWriteOperationAsync[TResult](IClientSessionHandle session, IWriteOperation`1 operation, Nullable`1 timeout, CancellationToken cancellationToken)
+         at MongoDB.Driver.MongoCollectionImpl`1.BulkWriteAsync(IClientSessionHandle session, IEnumerable`1 requests, BulkWriteOptions options, CancellationToken cancellationToken)
+         at MongoDB.Driver.MongoCollectionImpl`1.BulkWriteAsync(IEnumerable`1 requests, BulkWriteOptions options, CancellationToken cancellationToken)
+         at MongoDB.Driver.MongoCollectionBase`1.InsertOneAsync(TDocument document, InsertOneOptions options, Func`3 bulkWriteAsync)
+         at Incident.Infrastructure.Repositories.TicketRepository.CreateAsync(Ticket entity) in /src/Incident.Domain/Repositories/TicketRepository.cs:line 23
+         at Incident.Application.Services.TicketService.CreateTicketAsync(CreateTicketRequest request) in /src/Incident.Application/Services/TicketService.cs:line 50
+         at Incident.API.Controllers.TicketsController.Create(CreateTicketRequest request) in /src/Incident.API/Controllers/TicketsController.cs:line 23
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)

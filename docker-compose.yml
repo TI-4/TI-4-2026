@@ -66,19 +66,19 @@ services:
 
   # ---- Incident ---- #
   incident-api:
-    build:
-      context: .
-      dockerfile: src/Services/Incident/Incident.API/Dockerfile
-    container_name: uct_incident_api
-    ports:
-      - "5003:80"
-    environment:
-      MongoDB__ConnectionString: mongodb://root:rootpassword@mongodb:27017
-      MongoDB__DatabaseName: uct_incident_db
-    depends_on:
-      - mongodb
-    networks:
-      - uct_network
+      build:
+        context: .
+        dockerfile: src/Services/Incident/Incident.API/Dockerfile
+      container_name: uct_incident_api
+      ports:
+        - "5003:8080"
+      environment:
+        MongoDB__ConnectionString: mongodb://root:rootpassword@mongodb:27017/?authSource=admin
+        MongoDB__DatabaseName: uct_incident_db
+      depends_on:
+        - mongodb
+      networks:
+        - uct_network
 
   # ---- Schedule ---- #
   schedule-api:
