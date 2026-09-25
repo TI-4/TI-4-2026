@@ -41,4 +41,29 @@ public class ReportHandler : IReportHandler
 
         return ticket.Id ?? string.Empty;
     }
+
+    public async Task<ErrorOr<TicketResponse>> GetByIdAsync(string id)
+    {
+        var ticket = await _ticketRepository.GetByIdAsync(id);
+        if (ticket is null)
+        {
+            return Error.NotFound(
+                code: "Report.NotFound",
+                description: $"Report with ID '{id}'"
+            );
+        }
+
+        return new TicketResponse(
+            ticket.Id!,
+            ticket.UserRefId,
+            ticket.StructureRefId,
+            (Tickets)ticket.TicketType,
+            ticket.IsActive,
+            ticket.ReportedAt,
+            ticket.ComplaintDetails,
+            ticket.LostObjectId
+        );
+    }
 }
+
+
