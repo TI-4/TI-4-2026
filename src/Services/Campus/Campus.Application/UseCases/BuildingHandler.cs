@@ -27,6 +27,17 @@ public class BuildingHandler
         return buildings.Select(b => new BuildingDto(b.Id, b.CampusId, b.Name, b.FloorsCount, b.Coordinates.Latitude, b.Coordinates.Longitude));
     }
 
+    public async Task<IEnumerable<BuildingLocationDto>> GetAllLocationsAsync(Guid? campusId, CancellationToken cancellationToken)
+    {
+        var buildings = await _repository.GetAllAsync(campusId.HasValue ? b => b.CampusId == campusId.Value : null, cancellationToken);
+        return buildings.Select(b => new BuildingLocationDto(
+            b.Id,
+            b.Name,
+            new LocationDto(b.Coordinates.Latitude, b.Coordinates.Longitude),
+            new BuildingMetadataDto(b.CampusId, b.FloorsCount)
+        ));
+    }
+
     public async Task<BuildingDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var building = await _repository.GetByIdAsync(id, cancellationToken);

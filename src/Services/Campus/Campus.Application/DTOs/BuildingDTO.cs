@@ -26,3 +26,21 @@ public record UpdateBuildingDto(
     double Latitude,
     double Longitude
 );
+
+public record LocationDto(
+    double Latitude,
+    double Longitude
+);
+
+public record BuildingMetadataDto(
+    Guid CampusId,
+    int FloorsCount
+);
+
+public record BuildingLocationDto(
+    Guid Id,
+    string Name,
+    LocationDto Location,
+    BuildingMetadataDto Metadata
+);
+

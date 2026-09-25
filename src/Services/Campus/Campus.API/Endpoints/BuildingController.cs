@@ -26,6 +26,13 @@ public class BuildingController : ControllerBase
         return Ok(buildings);
     }
 
+    [HttpGet("locations")]
+    public async Task<ActionResult<IEnumerable<BuildingLocationDto>>> GetLocations([FromQuery] Guid? campusId, CancellationToken cancellationToken)
+    {
+        var buildings = await _handler.GetAllLocationsAsync(campusId, cancellationToken);
+        return Ok(buildings);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<BuildingDto>> GetById(Guid id, CancellationToken cancellationToken)
     {
