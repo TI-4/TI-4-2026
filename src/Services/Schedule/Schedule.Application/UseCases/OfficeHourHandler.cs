@@ -44,6 +44,7 @@ public class OfficeHourHandler
         {
             officeHour = new OfficeHour(
                 request.TeacherRefId,
+                request.StructureRefId,
                 request.DayOfWeek,
                 request.StartTime,
                 request.EndTime);
