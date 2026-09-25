@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Campus.Domain.Interfaces;
 using Campus.Domain.Entities;
 using Campus.Application.DTOs;
+using ErrorOr;
 
 namespace Campus.Application.UseCases;
 
@@ -40,54 +41,54 @@ public class RoomHandler
         return rooms.Select(r => new RoomDto(r.Id, r.BuildingId, r.CategoryId, r.Name, r.Floor, r.Number));
     }
 
-    public async Task<RoomDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ErrorOr<RoomDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var room = await _repository.GetByIdAsync(id, cancellationToken);
-        if (room == null) return null;
+        if (room == null) return Error.NotFound("Room.NotFound", $"Room with ID '{id}' was not found.");
         return new RoomDto(room.Id, room.BuildingId, room.CategoryId, room.Name, room.Floor, room.Number);
     }
 
-    public async Task<(RoomDto? dto, string? error)> CreateAsync(CreateRoomDto request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<RoomDto>> CreateAsync(CreateRoomDto request, CancellationToken cancellationToken)
     {
         if (!await _buildingRepository.ExistsAsync(b => b.Id == request.BuildingId, cancellationToken))
-            return (null, $"El edificio con ID '{request.BuildingId}' no existe.");
+            return Error.NotFound("Building.NotFound", $"Building with ID '{request.BuildingId}' does not exist.");
             
         if (!await _categoryRepository.ExistsAsync(c => c.Id == request.CategoryId, cancellationToken))
-            return (null, $"La categoría con ID '{request.CategoryId}' no existe.");
+            return Error.NotFound("Category.NotFound", $"Category with ID '{request.CategoryId}' does not exist.");
 
         var room = new Room(request.Name, request.Floor, request.Number, request.BuildingId, request.CategoryId);
         
         await _repository.AddAsync(room, cancellationToken);
         await _repository.SaveChangesAsync(cancellationToken);
         
-        return (new RoomDto(room.Id, room.BuildingId, room.CategoryId, room.Name, room.Floor, room.Number), null);
+        return new RoomDto(room.Id, room.BuildingId, room.CategoryId, room.Name, room.Floor, room.Number);
     }
 
-    public async Task<(bool success, string? error)> UpdateAsync(Guid id, UpdateRoomDto request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> UpdateAsync(Guid id, UpdateRoomDto request, CancellationToken cancellationToken)
     {
         var room = await _repository.GetByIdAsync(id, cancellationToken);
-        if (room == null) return (false, null);
+        if (room == null) return Error.NotFound("Room.NotFound", $"Room with ID '{id}' was not found.");
 
         if (!await _buildingRepository.ExistsAsync(b => b.Id == request.BuildingId, cancellationToken))
-            return (false, $"El edificio con ID '{request.BuildingId}' no existe.");
+            return Error.NotFound("Building.NotFound", $"Building with ID '{request.BuildingId}' does not exist.");
             
         if (!await _categoryRepository.ExistsAsync(c => c.Id == request.CategoryId, cancellationToken))
-            return (false, $"La categoría con ID '{request.CategoryId}' no existe.");
+            return Error.NotFound("Category.NotFound", $"Category with ID '{request.CategoryId}' does not exist.");
 
         room.Update(request.Name, request.Floor, request.Number, request.BuildingId, request.CategoryId);
         
         _repository.Update(room);
         await _repository.SaveChangesAsync(cancellationToken);
-        return (true, null);
+        return Result.Success;
     }
 
-    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var room = await _repository.GetByIdAsync(id, cancellationToken);
-        if (room == null) return false;
+        if (room == null) return Error.NotFound("Room.NotFound", $"Room with ID '{id}' was not found.");
 
         _repository.Delete(room);
         await _repository.SaveChangesAsync(cancellationToken);
-        return true;
+        return Result.Success;
     }
 }
