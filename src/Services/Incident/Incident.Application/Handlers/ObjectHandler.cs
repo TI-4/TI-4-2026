@@ -32,7 +32,8 @@ public class ObjectHandler
                 title = request.Title,
                 description = request.Description,
                 status = (Objectenum)request.Status,
-                photo_url = request.PhotoUrl
+                photo_url = request.PhotoUrl,
+                StructureRefId = request.StructureId
             };
         }
         catch (ArgumentException ex)

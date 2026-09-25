@@ -7,5 +7,6 @@ public record CreateObjectRequest(
     string Title,
     string Description,
     int Status,
-    string PhotoUrl
+    string PhotoUrl,
+    Guid StructureId
 );
