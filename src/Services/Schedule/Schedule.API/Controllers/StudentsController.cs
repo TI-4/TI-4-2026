@@ -15,14 +15,14 @@ public class StudentsController : ControllerBase
         _handler = handler;
     }
 
-    [HttpGet("{studentId:guid}/schedule")]
-    public async Task<ActionResult<StudentScheduleDto>> GetSchedule(
+    [HttpGet("{studentId:guid}/meetings")]
+    public async Task<ActionResult<StudentMeetingsDto>> GetMeetings(
         Guid studentId,
         [FromQuery] DateTime from,
         [FromQuery] DateTime to,
         CancellationToken cancellationToken)
     {
-        var (dto, error) = await _handler.GetScheduleAsync(studentId, from, to, cancellationToken);
+        var (dto, error) = await _handler.GetMeetingsAsync(studentId, from, to, cancellationToken);
 
         if (error is not null)
         {
@@ -32,3 +32,4 @@ public class StudentsController : ControllerBase
         return Ok(dto);
     }
 }
+

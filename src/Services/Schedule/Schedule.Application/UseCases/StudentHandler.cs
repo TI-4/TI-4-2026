@@ -16,7 +16,7 @@ public class StudentHandler
         _meetingRepository = meetingRepository;
     }
 
-    public async Task<(StudentScheduleDto? dto, string? error)> GetScheduleAsync(
+    public async Task<(StudentMeetingsDto? dto, string? error)> GetMeetingsAsync(
         Guid studentRefId,
         DateTime from,
         DateTime to,
@@ -30,7 +30,7 @@ public class StudentHandler
         var meetings = await _meetingRepository.GetByStudentAsync(
             studentRefId, from, to, cancellationToken);
 
-        var dto = new StudentScheduleDto(
+        var dto = new StudentMeetingsDto(
             studentRefId,
             from,
             to,
@@ -40,3 +40,4 @@ public class StudentHandler
         return (dto, null);
     }
 }
+
