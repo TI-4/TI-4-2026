@@ -1,5 +1,5 @@
-using IdentityService.Domain.Entities;
 using IdentityService.Application.Authentication;
+using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure.Authentication;
 using IdentityService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -28,8 +28,12 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<IdentityDbContext>();
 
         services.AddScoped<IUserAuthenticator, IdentityUserAuthenticator>();
+        services.AddScoped<IUserRegistrar, IdentityUserRegistrar>();
+        services.AddScoped<IUserQuery, IdentityUserQuery>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<LoginUseCase>();
+        services.AddScoped<RegisterUserUseCase>();
+        services.AddScoped<GetUserByIdUseCase>();
 
         return services;
     }
