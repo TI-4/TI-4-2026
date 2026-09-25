@@ -1,5 +1,5 @@
 using Incident.Application.DTOs;
-using Incident.Application.Services;
+using Incident.Application.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Linq;
@@ -8,20 +8,20 @@ using Microsoft.AspNetCore.Http;
 namespace Incident.API.Controllers;
 
 [ApiController]
-[Route("api/incident/[controller]")]
-public class TicketsController : ControllerBase
+[Route("api/incident/reports")]
+public class ReportsController : ControllerBase
 {
-    private readonly ITicketService _ticketService;
+    private readonly IReportHandler _reportHandler;
 
-    public TicketsController(ITicketService ticketService)
+    public ReportsController(IReportHandler reportHandler)
     {
-        _ticketService = ticketService;
+        _reportHandler = reportHandler;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateTicketRequest request)
+    public async Task<IActionResult> Create([FromBody] CreateReportRequest request)
     {
-        var result = await _ticketService.CreateTicketAsync(request);
+        var result = await _reportHandler.CreateReportAsync(request);
 
         return result.Match(
             id => CreatedAtAction(nameof(GetById), new { id }, new { id }),

@@ -1,4 +1,4 @@
-﻿using Incident.Application.Services;
+using Incident.Application.Handlers;
 using Incident.Domain.Repositories;
 using Incident.Infrastructure.Persistence;
 using Incident.Infrastructure.Repositories;
@@ -34,8 +34,9 @@ public static class DependencyInjection
         });
 
         services.AddScoped<ITicketRepository, TicketRepository>();
-        services.AddScoped<ITicketService, TicketService>();
+        services.AddScoped<IReportHandler, ReportHandler>();
 
         return services;
     }
 }
+
