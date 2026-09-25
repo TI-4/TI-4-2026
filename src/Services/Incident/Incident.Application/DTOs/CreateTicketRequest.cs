@@ -1,6 +1,10 @@
+using System;
+
 namespace Incident.Application.DTOs;
 
 public record CreateTicketRequest(
-    string ReporterRefId,
-    string Details,
-    string Location);
+    Guid IdUsuario,
+    Guid IdStructure,
+    int TicketType,
+    bool IsActive,
+    DateTime DateReport);

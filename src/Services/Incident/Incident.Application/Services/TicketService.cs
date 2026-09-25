@@ -3,6 +3,7 @@ using Incident.Application.DTOs;
 using Incident.Domain.Entities;
 using Incident.Domain.Repositories;
 using System.Threading.Tasks;
+using System;
 
 namespace Incident.Application.Services;
 
@@ -17,26 +18,27 @@ public class TicketService : ITicketService
 
     public async Task<ErrorOr<string>> CreateTicketAsync(CreateTicketRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.Details))
+        if (request.IdUsuario == Guid.Empty)
         {
-            return Error.Validation("Ticket.Details", "Ticket details are required.");
+            return Error.Validation("Ticket.IdUsuario", "User ID is required.");
         }
 
-        if (string.IsNullOrWhiteSpace(request.Location))
+        if (request.IdStructure == Guid.Empty)
         {
-            return Error.Validation("Ticket.Location", "Ticket location is required.");
+            return Error.Validation("Ticket.IdStructure", "Structure ID is required.");
         }
 
         var ticket = new Ticket
         {
-            ReporterRefId = request.ReporterRefId,
-            Details = request.Details,
-            Location = request.Location,
-            Status = "Open"
+            IdUsuario = request.IdUsuario,
+            IdStructure = request.IdStructure,
+            TicketType = (Tickets)request.TicketType,
+            IsActive = request.IsActive,
+            DateReport = request.DateReport
         };
 
         await _ticketRepository.CreateAsync(ticket);
 
-        return ticket.Id!;
+        return ticket.Id ?? string.Empty;
     }
 }
