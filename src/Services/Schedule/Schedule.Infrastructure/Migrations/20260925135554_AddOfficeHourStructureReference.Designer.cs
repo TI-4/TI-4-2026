@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Schedule.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using Schedule.Infrastructure.Persistence;
 namespace Schedule.Infrastructure.Migrations
 {
     [DbContext(typeof(ScheduleDbContext))]
-    partial class ScheduleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260925135554_AddOfficeHourStructureReference")]
+    partial class AddOfficeHourStructureReference
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +42,7 @@ namespace Schedule.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid?>("StructureRefId")
+                    b.Property<Guid>("StructureRefId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("StudentRefId")
@@ -76,7 +79,7 @@ namespace Schedule.Infrastructure.Migrations
                     b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time");
 
-                    b.Property<Guid?>("StructureRefId")
+                    b.Property<Guid>("StructureRefId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("TeacherRefId")

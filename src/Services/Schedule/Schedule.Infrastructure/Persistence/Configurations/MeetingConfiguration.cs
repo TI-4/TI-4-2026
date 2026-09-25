@@ -16,8 +16,7 @@ public class MeetingConfiguration : IEntityTypeConfiguration<Meeting>
         builder.Property(m => m.StudentRefId)
             .IsRequired();
 
-        builder.Property(m => m.StructureRefId)
-            .IsRequired();
+        builder.Property(m => m.StructureRefId);
 
         builder.Property(m => m.ScheduledAt)
             .HasColumnType("timestamp without time zone")
@@ -33,3 +32,4 @@ public class MeetingConfiguration : IEntityTypeConfiguration<Meeting>
         builder.HasIndex(m => new { m.StructureRefId, m.ScheduledAt });
     }
 }
+

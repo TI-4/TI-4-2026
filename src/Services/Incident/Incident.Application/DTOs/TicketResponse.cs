@@ -1,13 +1,16 @@
 using Incident.Domain.Entities;
 using MongoDB.Bson;
+using System;
 
 namespace Incident.Application.DTOs;
+
 public record TicketResponse(
-    string id,
+    string Id,
     Guid UserRefId,
     Guid? StructureRefId,
     Tickets TicketType,
     bool IsActive,
     DateTime ReportedAt,
-    ComplaintDetails? complaintDetails = null,
-    string? ObjectLost = null);
+    ComplaintDetails? ComplaintDetails = null,
+    string? LostObjectId = null);
+

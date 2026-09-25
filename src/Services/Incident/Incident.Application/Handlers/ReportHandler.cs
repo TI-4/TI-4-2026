@@ -7,7 +7,7 @@ using System;
 
 namespace Incident.Application.Handlers;
 
-public class ReportHandler
+public class ReportHandler : IReportHandler
 {
     private readonly ITicketRepository _ticketRepository;
 
@@ -49,7 +49,7 @@ public class ReportHandler
         {
             return Error.NotFound(
                 code: "Report.NotFound",
-                description: $"No se encontro el reporte con el ID '{id}'"
+                description: $"Report with ID '{id}'"
             );
         }
 
@@ -61,7 +61,9 @@ public class ReportHandler
             ticket.IsActive,
             ticket.ReportedAt,
             ticket.ComplaintDetails,
-            ticket.ObjectLoss
+            ticket.LostObjectId
         );
     }
 }
+
+
