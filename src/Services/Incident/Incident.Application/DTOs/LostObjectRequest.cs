@@ -11,3 +11,5 @@ public record CreateLostObjectRequest(
     Guid StructureId
 );
 
+
+public record UpdateStatus(int Status);

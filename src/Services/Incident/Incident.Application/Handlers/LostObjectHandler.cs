@@ -47,6 +47,38 @@ public class LostObjectHandler : ILostObjectHandler
         return lostObject.Id ?? string.Empty;
     }
 
+    public async Task<ErrorOr<Success>> UpdateStatusAsync(string id, UpdateStatus status)
+    {
+        if (!Enum.IsDefined(typeof(Objectenum), status.Status))
+        {
+            return Error.Validation(
+                code: "LostObject.Validation",
+                description: "Invalid status '{status.Status}'"
+            );
+        }
+
+        var lostObject = await _lostObjectRepository.GetByIdAsync(id);
+        if (lostObject is null)
+        {
+            return Error.NotFound(
+                code: "LostObject.NotFound",
+                description: "LostObject with ID '{id}' was not found."
+            );
+        }
+
+        var response = await _lostObjectRepository.UpdateStatusAsync(lostObject, status.Status);
+
+        if (!response)
+        {
+            return Error.Failure(
+                code: "LostObject.UpdateFailed",
+                description: "Failed to update status for LostObject with ID '{id}'."
+            );
+        }
+
+        return Result.Success;
+    }
+
     public async Task<ErrorOr<LostObjectResponse>> GetByIdAsync(string id)
     {
         var lostObject = await _lostObjectRepository.GetByIdAsync(id);
