@@ -45,6 +45,34 @@ public class LostObjectHandler : ILostObjectHandler
 
         return lostObject.ObjectId ?? string.Empty;
     }
+    public async Task<ErrorOr<bool>> UpdateStatusAsync(string id, UpdateStatus status){
+        if (status.Status > 3){
+            return Error.Failure(
+                code: "ListObject.Failure",
+                description: $"Status invalido {status}"
+            );
+        }
+
+        var lostObject = await _lostObjectRepository.GetByIdAsync(id);
+        if (lostObject is null){
+            return Error.NotFound(
+                code: "LostObject.NotFound",
+                description: $"LostObject with ID '{id}'"
+            );
+        }
+        var response = await _lostObjectRepository.UpdateStatusAsync(lostObject!, status.Status);
+
+        if (response == false)
+        {
+            return Error.NotFound(
+                code: "Response.NotFound",
+                description: $"Response with ID '{id}'"
+            );
+        }
+
+        return true;
+
+    }
     public async Task<ErrorOr<LostObjectResponse>> GetByIdAsync(string id)
     {
         var lostObject = await _lostObjectRepository.GetByIdAsync(id);

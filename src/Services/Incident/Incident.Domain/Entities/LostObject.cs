@@ -22,7 +22,7 @@ public class LostObject
 
     [BsonElement("status")]
     [BsonRepresentation(BsonType.String)]
-    public required Objectenum Status { get; init; }
+    public required Objectenum Status { get; set; }
 
     [BsonElement("photo_url")]
     public string? Photo_url { get; init; }

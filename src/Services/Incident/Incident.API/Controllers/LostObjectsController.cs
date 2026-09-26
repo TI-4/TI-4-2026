@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using ErrorOr;
+using MongoDB.Bson;
 namespace Incident.API.Controllers;
 
 [ApiController]
@@ -35,24 +36,7 @@ public class LostObjectsController : ControllerBase
         var result = await _lostObjectHandler.GetByIdAsync(id);
 
         return result.Match(
-            ticket => Ok(ticket),
-            errors =>
-            {
-                var firstError = errors.First();
-                var statusCode = firstError.Type switch
-                {
-                    ErrorType.NotFound => StatusCodes.Status404NotFound,
-                    _ => StatusCodes.Status400BadRequest
-                };
-                return Problem(statusCode: statusCode, title: firstError.Description);
-            }
-        );
-    }
-    [HttpGet("status/{num_status}")]
-    public async Task<IActionResult> FilterStatus(int num_status){
-        var result = await _lostObjectHandler.FilterStatusAsync(num_status);
-        return result.Match(
-            ticket => Ok(ticket),
+            lostObject => Ok(lostObject),
             errors =>
             {
                 var firstError = errors.First();
@@ -66,4 +50,41 @@ public class LostObjectsController : ControllerBase
         );
     }
 
+    [HttpGet("status/{num_status}")]
+    public async Task<IActionResult> FilterStatus(int num_status)
+    {
+        var result = await _lostObjectHandler.FilterStatusAsync(num_status);
+        return result.Match(
+            lostObject => Ok(lostObject),
+            errors =>
+            {
+                var firstError = errors.First();
+                var statusCode = firstError.Type switch
+                {
+                    ErrorType.NotFound => StatusCodes.Status404NotFound,
+                    _ => StatusCodes.Status400BadRequest
+                };
+                return Problem(statusCode: statusCode, title: firstError.Description);
+            }
+        );
+    }
+
+    [HttpPatch("{id}/status")]
+    public async Task<IActionResult> UpdateStatus(string id, [FromBody] UpdateStatus status)
+    {
+        var result = await _lostObjectHandler.UpdateStatusAsync(id.ToString(), status);
+        return result.Match(
+            lostObject => Ok(lostObject),
+            errors =>
+            {
+                var firstError = errors.First();
+                var statusCode = firstError.Type switch
+                {
+                    ErrorType.NotFound => StatusCodes.Status404NotFound,
+                    _ => StatusCodes.Status400BadRequest
+                };
+                return Problem(statusCode: statusCode, title: firstError.Description);
+            }
+        );
+    }
 }
