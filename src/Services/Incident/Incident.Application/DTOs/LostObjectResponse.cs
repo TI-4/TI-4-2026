@@ -12,6 +12,7 @@ public record LostObjectResponse(
 );
 
 public record LostObjectList(
-    List<LostObject> Items,
+    List<LostObjectResponse> Items,
     int TotalCount
 );
+

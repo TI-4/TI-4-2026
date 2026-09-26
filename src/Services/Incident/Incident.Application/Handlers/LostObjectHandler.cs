@@ -4,6 +4,7 @@ using Incident.Domain.Entities;
 using Incident.Domain.Repositories;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace Incident.Application.Handlers;
 
@@ -37,14 +38,15 @@ public class LostObjectHandler : ILostObjectHandler
             Title = request.Title,
             Description = request.Description,
             Status = (Objectenum)request.Status,
-            Photo_url = request.PhotoUrl,
+            PhotoUrl = request.PhotoUrl,
             StructureRefId = request.StructureId
         };
 
         await _lostObjectRepository.CreateAsync(lostObject);
 
-        return lostObject.ObjectId ?? string.Empty;
+        return lostObject.Id ?? string.Empty;
     }
+
     public async Task<ErrorOr<LostObjectResponse>> GetByIdAsync(string id)
     {
         var lostObject = await _lostObjectRepository.GetByIdAsync(id);
@@ -52,57 +54,41 @@ public class LostObjectHandler : ILostObjectHandler
         {
             return Error.NotFound(
                 code: "LostObject.NotFound",
-                description: $"LostObject with ID '{id}'"
+                description: "LostObject with ID '{id}' not found."
             );
         }
-        LostObjectResponse response;
-        try
-        {
-            response = new LostObjectResponse
-            (
-                lostObject.Title,
-                lostObject.Description,
-                Enum.GetName(typeof(Objectenum), lostObject.Status)!,
-                lostObject.Photo_url!,
-                lostObject.StructureRefId // -> findname structure
-            );
-        }
-        catch (ArgumentException ex)
-        {
-            return Error.NotFound(code: "LostObject.NotFound", description: $"Error response: '{ex}'");
-        }
-        return response;
+
+        return new LostObjectResponse(
+            lostObject.Title,
+            lostObject.Description,
+            Enum.GetName(typeof(Objectenum), lostObject.Status)!,
+            lostObject.PhotoUrl!,
+            lostObject.StructureRefId
+        );
     }
-    public async Task<ErrorOr<LostObjectList>> FilterStatusAsync(int status){
-        if (status > 3){
-            return Error.Failure(
-                code: "ListObject.Failure",
-                description: $"Status invalido {status}"
+
+    public async Task<ErrorOr<LostObjectList>> FilterStatusAsync(int status)
+    {
+        if (!Enum.IsDefined(typeof(Objectenum), status))
+        {
+            return Error.Validation(
+                code: "LostObject.Validation",
+                description: "Invalid status '{status}'"
             );
         }
 
         Objectenum estadoEnum = (Objectenum)status;
         string estadoString = estadoEnum.ToString();
-        var ListObjects = await _lostObjectRepository.FilterStatusAsync(estadoString);
+        var lostObjects = await _lostObjectRepository.FilterStatusAsync(estadoString);
 
-        if (ListObjects is []){
-            return Error.Failure(
-                code: "ListObject.Failure",
-                description: $"ListObjects is []"
-            );
-        }
-        LostObjectList response;
-        try
-        {
-            response = new LostObjectList(
-                ListObjects,
-                ListObjects.Count
-            );
-        }
-        catch (ArgumentException ex)
-        {
-            return Error.NotFound(code: "ListLostObject.NotFound", description: $"Error response: '{ex}'");
-        }
-        return response;
+        var mappedList = lostObjects.Select(lo => new LostObjectResponse(
+            lo.Title,
+            lo.Description,
+            Enum.GetName(typeof(Objectenum), lo.Status)!,
+            lo.PhotoUrl!,
+            lo.StructureRefId
+        )).ToList();
+
+        return new LostObjectList(mappedList, mappedList.Count);
     }
 }
