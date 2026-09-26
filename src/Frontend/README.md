@@ -139,16 +139,14 @@ Sigue estos 3 pasos para crear un panel flotante nuevo:
 
 ## Configuración de Docker (Frontend & API Gateway)
 
-El frontend web se despliega en un entorno Dockerizado cumpliendo con los principios de la metodología **Twelve-Factor App**. Para mantener la imagen Docker inmutable y evitar problemas de CORS, la comunicación con el API Gateway se realiza a través de un proxy inverso.
+El Frontend se despliega Dockerizado. Para mantener la imagen Docker inmutable y evitar problemas, la comunicación con el API Gateway se realiza a través de un proxy inverso.
 
 * **Nginx Reverse Proxy:** 
   El archivo `nginx.conf` en este directorio configura a Nginx (el servidor que sirve el frontend dentro de Docker) para interceptar cualquier petición HTTP que comience con `/api/` y redirigirla internamente al contenedor `api-gateway` (puerto `8080`) en la misma red de Docker.
 * **Peticiones Relativas:**
   El cliente HTTP del frontend (`httpClient.ts`) realiza peticiones a rutas relativas (ej. `httpClient.post('/api/identity/login')`). Esto permite que el navegador haga la petición al mismo dominio y puerto del frontend, delegando en Nginx el enrutamiento.
-* **Seguridad y Portabilidad:**
-  El archivo local `.env` se encuentra explícitamente en el `.dockerignore` del frontend. Como no quemamos URLs en tiempo de compilación (build), la misma imagen construida sirve para Desarrollo, Staging y Producción sin necesidad de recompilarse.
-* **Desarrollo Local (Sin Docker) - El "Simulador de Nginx":**
-  Para el desarrollo puramente local (ejecutando `npm run dev` sin Docker), Nginx no está presente. Para evitar errores de CORS y simular el comportamiento exacto de producción, se ha configurado un proxy interno en `vite.config.ts`:
+* **Desarrollo Local (Sin Docker):** 
+  Para el desarrollo puramente local (ejecutando `npm run dev` sin Docker), Nginx no está presente. Para evitar errores y simular el comportamiento exacto de producción, se ha configurado un proxy interno en `vite.config.ts`:
 
   ```typescript
   server: {
@@ -160,34 +158,30 @@ El frontend web se despliega en un entorno Dockerizado cumpliendo con los princi
     }
   }
   ```
-  Con esta configuración, el servidor de desarrollo de Vite actúa como Nginx: intercepta cualquier petición de React que comience con `/api/` y la redirige al API Gateway local (`http://localhost:5000`). 
-  
-  **Beneficio clave:** Gracias a esto, **el proyecto no necesita un archivo `.env`** en el frontend. Las peticiones son siempre relativas (ej. `axios.post('/api/login')`) y el enrutamiento es responsabilidad exclusiva de la infraestructura (Nginx en Docker o Vite en local).
+  Con esta configuración, el servidor de desarrollo de Vite actúa como Nginx, interceptando cualquier petición de React que comience con `/api/` y la redirige al API Gateway local (`http://localhost:5000`). 
 
 ## Arquitectura de Peticiones y Ciclo de Vida (End-to-End)
 
-El flujo de comunicación desde la interacción del usuario en el cliente hasta la persistencia en la base de datos sigue un modelo estrictamente desacoplado, apalancándose en la Clean Architecture y la contenedorización. El ciclo de vida de una petición HTTP típica (ej. Autenticación) es el siguiente:
+El ciclo de vida de una petición HTTP típica es el siguiente:
 
 1. **Capa de Presentación (React + TanStack Query):**
-   El componente de la interfaz de usuario (View) invoca un hook personalizado que encapsula a TanStack Query (ej. `useMutation`). Esta herramienta asume la responsabilidad del manejo del estado de la petición (cargando, error, éxito), previniendo dependencias directas de red en la UI.
+   El componente de la interfaz de usuario invoca un hook que encapsula a TanStack Query. Esta herramienta asume la responsabilidad del manejo del estado de la petición, previniendo dependencias directas de red en la UI.
 2. **Capa de Infraestructura (Servicios y Axios):**
-   El servicio correspondiente (ej. `authService`) utiliza el cliente HTTP (`axios`) para serializar el payload y emitir una petición asíncrona hacia una ruta relativa (ej. `POST /api/identity/login`).
-3. **Proxy Inverso (Nginx):**
-   La petición es interceptada por el servidor Nginx que orquesta el frontend. Mediante reglas de enrutamiento en `nginx.conf`, cualquier tráfico con el prefijo `/api/` es delegado internamente a través de la red de Docker hacia el contenedor del API Gateway.
+   El servicio correspondiente (como `authService`) utiliza el cliente HTTP (configurado con `axios`) para serializar el payload y emitir una petición asíncrona hacia una ruta relativa.
+3. **Inverse Proxy (Nginx):**
+   La petición es interceptada por el servidor Nginx que orquesta el frontend. Mediante las reglas de enrutamiento definidas en `nginx.conf`, cualquier tráfico con el prefijo `/api/` es delegado internamente a través de la red de Docker hacia el contenedor del API Gateway.
 4. **Enrutamiento Central (API Gateway - YARP):**
-   El API Gateway, construido sobre .NET YARP, recibe la petición, resuelve la regla de ruteo configurada (ej. `Path: /api/identity/{**catch-all}`) y balancea o redirige el tráfico hacia el microservicio correspondiente (Identity Cluster).
-5. **Microservicio Backend y Persistencia:**
-   El controlador del microservicio objetivo valida la solicitud y delega la lógica de negocio a los Casos de Uso (Use Cases). Estos interactúan con la base de datos (PostgreSQL) a través de Entity Framework Core para procesar la transacción.
+   El API Gateway recibe la petición, resuelve la regla de ruteo configurada y balancea o redirige el tráfico hacia el microservicio correspondiente.
+5. **Microservicios del Backend:**
+   El controlador del microservicio objetivo valida la solicitud y delega la lógica de negocio a los Casos de Uso.
 6. **Retorno y Actualización de Estado:**
-   La respuesta (ej. `200 OK` con un JWT) transita la misma ruta en sentido inverso (Microservicio -> Gateway -> Nginx -> Axios). El servicio resuelve la promesa, TanStack Query actualiza su estado reactivo de forma automática, y la vista del frontend refleja los cambios correspondientes.
+   La respuesta transita la misma ruta en sentido inverso. El servicio resuelve la promesa, TanStack Query actualiza su estado reactivo de forma automática, y la vista del frontend refleja los cambios correspondientes.
 
 ## Construcción de la Imagen (Multi-stage Build)
 
-El archivo `Dockerfile` del frontend implementa un patrón de **Construcción en Múltiples Etapas** (Multi-stage Build) para garantizar que la imagen final de producción sea ultra ligera, segura y libre de dependencias de desarrollo. El proceso se divide en dos fases:
+El proceso del archivo `Dockerfile` del frontend se divide en dos fases:
 
-1. **Fase de Compilación (Build):**
-   Utiliza una imagen base de Node.js (`node:20-alpine`) como entorno de construcción. En esta etapa se instalan todas las dependencias (`node_modules`) y se ejecuta el compilador de Vite (`npm run build`). El resultado es una carpeta `dist` que contiene únicamente los recursos estáticos optimizados (HTML, CSS, y JavaScript).
-2. **Fase de Producción (Servidor Web):**
-   Inicia un entorno completamente nuevo y aislado basado en Nginx (`nginx:alpine`). Se copia el archivo de configuración `nginx.conf` y se trasladan **únicamente los archivos compilados** (`dist`) de la fase anterior. El entorno de Node.js y el código fuente original son descartados.
-
-Gracias a este patrón, la imagen Docker final que se despliega en producción pesa una fracción del tamaño original, reduciendo drásticamente la superficie de ataque y mejorando los tiempos de despliegue.
+1. **Fase de Compilación:**
+   Utiliza una imagen base de Node.js como entorno de construcción. En esta etapa se instalan todas las dependencias y se ejecuta el compilador de Vite. El resultado es una carpeta que contiene únicamente los recursos estáticos optimizados.
+2. **Fase de Producción:**
+   Inicia un entorno completamente nuevo basado en Nginx (`nginx:alpine`). Se copia el archivo de configuración `nginx.conf` y se trasladan **únicamente los archivos compilados** de la fase anterior. El entorno de Node.js y el código fuente original son descartados, evitando problmeas de seguridad.
