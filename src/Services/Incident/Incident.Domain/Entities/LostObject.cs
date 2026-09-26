@@ -8,7 +8,7 @@ public class LostObject
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? ObjectId { get; init; }
+    public string? Id { get; init; }
 
     [BsonElement("structure_id")]
     [BsonRepresentation(BsonType.String)]
@@ -25,5 +25,6 @@ public class LostObject
     public required Objectenum Status { get; set; }
 
     [BsonElement("photo_url")]
-    public string? Photo_url { get; init; }
+    public string? PhotoUrl { get; init; }
 }
+

@@ -18,10 +18,14 @@ Before deploying this project to a production environment, ensure the following 
 - [x] **Database Exposure**: Audit exposed ports in `docker-compose.yml` to ensure internal databases (Postgres/Mongo) are not exposed publicly to the internet.
 - [ ] **Network Architecture**: Review Docker networking topologies ([Overlay](https://docs.docker.com/engine/network/drivers/overlay/), [Host](https://docs.docker.com/engine/network/drivers/host/), [Bridge](https://docs.docker.com/engine/network/drivers/bridge/)) to choose the correct driver for your production scaling strategy.
 
+### Databases & Migrations
+- [ ] **EF Core Auto-Migrations**: Remove wait context.Database.MigrateAsync() from the Program.cs of all microservices (Identity, Campus, Schedule). Implement a secure CI/CD migration step (like an Init Container or EF Core deployment bundles) to prevent concurrency crashes and strictly limit production database privileges.
+
 ### API Gateway, Codebase & Architecture
 - [ ] **CORS Security**: Update `Program.cs` to remove `AllowAnyOrigin()` and restrict the CORS policy to the exact production frontend domain.
 - [ ] **Allowed Hosts**: Update `appsettings.json` to lock down `AllowedHosts` to the production domain (remove `*`).
 - [ ] **Code Cleanup**: Thoroughly clean up unused files, unreferenced routes, dead code, and caches before the final production build.
 - [ ] **MongoDB Domain Coupling**: The Incident microservice currently relies on MongoDB.Bson attributes ([BsonId]) directly inside the Domain layer. Remove these attributes and configure the mappings in the Infrastructure layer (using BsonClassMap) to restore strict Clean Architecture.
+
 
 
