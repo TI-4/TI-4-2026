@@ -45,9 +45,11 @@ public class LostObjectHandler : ILostObjectHandler
 
         return lostObject.ObjectId ?? string.Empty;
     }
-    public async Task<ErrorOr<LostObjectResponse>> GetByIdAsync(string id) {
+    public async Task<ErrorOr<LostObjectResponse>> GetByIdAsync(string id)
+    {
         var lostObject = await _lostObjectRepository.GetByIdAsync(id);
-        if (lostObject is null) {
+        if (lostObject is null)
+        {
             return Error.NotFound(
                 code: "LostObject.NotFound",
                 description: $"LostObject with ID '{id}'"
@@ -65,8 +67,41 @@ public class LostObjectHandler : ILostObjectHandler
                 lostObject.StructureRefId // -> findname structure
             );
         }
-        catch (ArgumentException ex){
+        catch (ArgumentException ex)
+        {
             return Error.NotFound(code: "LostObject.NotFound", description: $"Error response: '{ex}'");
+        }
+        return response;
+    }
+    public async Task<ErrorOr<LostObjectList>> FilterStatusAsync(int status){
+        if (status > 3){
+            return Error.Failure(
+                code: "ListObject.Failure",
+                description: $"Status invalido {status}"
+            );
+        }
+
+        Objectenum estadoEnum = (Objectenum)status;
+        string estadoString = estadoEnum.ToString();
+        var ListObjects = await _lostObjectRepository.FilterStatusAsync(estadoString);
+
+        if (ListObjects is []){
+            return Error.Failure(
+                code: "ListObject.Failure",
+                description: $"ListObjects is []"
+            );
+        }
+        LostObjectList response;
+        try
+        {
+            response = new LostObjectList(
+                ListObjects,
+                ListObjects.Count
+            );
+        }
+        catch (ArgumentException ex)
+        {
+            return Error.NotFound(code: "ListLostObject.NotFound", description: $"Error response: '{ex}'");
         }
         return response;
     }

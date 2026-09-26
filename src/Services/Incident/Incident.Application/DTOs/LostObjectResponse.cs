@@ -10,3 +10,8 @@ public record LostObjectResponse(
     string PhotoUrl,
     Guid StructureId // -> FindName
 );
+
+public record LostObjectList(
+    List<LostObject> Items,
+    int TotalCount
+);

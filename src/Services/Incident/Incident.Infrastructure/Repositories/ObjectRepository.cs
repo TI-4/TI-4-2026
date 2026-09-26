@@ -12,7 +12,12 @@ public class ObjectRepository : MongoRepository<LostObject>, ILostObjectReposito
         : base(context, "lost_objects")
     { }
 
-    public override async Task CreateAsync(LostObject entity){
+    public override async Task CreateAsync(LostObject entity)
+    {
         await base.CreateAsync(entity);
+    }
+
+    public async Task<List<LostObject>> FilterStatusAsync(string status){
+        return await _collection.Find(x => x.Status.ToString() == status).ToListAsync();
     }
 }
