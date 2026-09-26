@@ -130,3 +130,57 @@
 .animate-float-up-down {
   animation: float-up-down 3s ease-in-out infinite;
 }
+
+@keyframes shake-and-pulse-red {
+  0%, 100% { transform: translateX(0); border-color: inherit; }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); border-color: var(--color-page-red); }
+  20%, 40%, 60%, 80% { transform: translateX(3px); border-color: var(--color-page-red); }
+}
+
+.animate-shake-error {
+  animation: shake-and-pulse-red 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes slide-out-left {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-100%); opacity: 0; }
+}
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slide-out-right {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+@keyframes slide-in-left {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-out-up {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-100%); opacity: 0; }
+}
+@keyframes slide-in-down {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slide-out-down {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100%); opacity: 0; }
+}
+@keyframes slide-in-up {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-out-left { animation: slide-out-left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.animate-slide-in-right { animation: slide-in-right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.animate-slide-out-right { animation: slide-out-right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.animate-slide-in-left { animation: slide-in-left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+.animate-slide-out-up { animation: slide-out-up 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.animate-slide-in-down { animation: slide-in-down 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.animate-slide-out-down { animation: slide-out-down 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.animate-slide-in-up { animation: slide-in-up 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }

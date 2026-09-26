@@ -19,6 +19,7 @@
 | `LoadingSpinner` | Componente visual animado para indicar carga. | `size` (sm/md/lg/xl), `color`, `text`, `className` |
 | `ModalOverlay` | Envoltorio con animaciones y fondo oscuro para pop-ups. | `isOpen`, `onClose`, `children` |
 | `NavButton` | Enlace de navegación para rutas del React Router. | `to`, `icon`, `label`, `size`, `width` |
+| `NumberSelect` | Selector numérico con botones de incremento/decremento. | `initialValue`, `multiplier`, `isFloat`, `min`, `max`, `variant` |
 | `Panel` | Contenedor reutilizable con estilos estandarizados de tarjeta. | `children`, `color`, `withUctBorder`, `onClose` |
 | `PhotoFrame` | Contenedor con borde para mostrar imágenes o miniaturas. | `src`, `alt`, `className` |
 | `SearchInput` | Campo de texto avanzado con menú desplegable de sugerencias. | `label`, `placeholder`, `value`, `onChange`, `icon`, `options` |
@@ -135,3 +136,52 @@ Sigue estos 3 pasos para crear un panel flotante nuevo:
      Abrir Panel
    </button>
    ```
+
+## Configuración de Docker 
+
+El Frontend se despliega Dockerizado. Para mantener la imagen Docker inmutable y evitar problemas, la comunicación con el API Gateway se realiza a través de un proxy inverso.
+
+* **Nginx Reverse Proxy:** 
+  El archivo `nginx.conf` en este directorio configura a Nginx (el servidor que sirve el frontend dentro de Docker) para interceptar cualquier petición HTTP que comience con `/api/` y redirigirla internamente al contenedor `api-gateway` (puerto `8080`) en la misma red de Docker.
+* **Peticiones Relativas:**
+  El cliente HTTP del frontend (`httpClient.ts`) realiza peticiones a rutas relativas (ej. `httpClient.post('/api/identity/login')`). Esto permite que el navegador haga la petición al mismo dominio y puerto del frontend, delegando en Nginx el enrutamiento.
+* **Desarrollo Local (Sin Docker):** 
+  Para el desarrollo puramente local (ejecutando `npm run dev` sin Docker), Nginx no está presente. Para evitar errores y simular el comportamiento exacto de producción, se ha configurado un proxy interno en `vite.config.ts`:
+
+  ```typescript
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    }
+  }
+  ```
+  Con esta configuración, el servidor de desarrollo de Vite actúa como Nginx, interceptando cualquier petición de React que comience con `/api/` y la redirige al API Gateway local (`http://localhost:5000`). 
+
+## Arquitectura de Peticiones y Ciclo de Vida
+
+El ciclo de vida de una petición HTTP típica es el siguiente:
+
+1. **Capa de Presentación (React + TanStack Query):**
+   El componente de la interfaz de usuario invoca un hook que encapsula a TanStack Query. Esta herramienta asume la responsabilidad del manejo del estado de la petición, previniendo dependencias directas de red en la UI.
+2. **Capa de Infraestructura (Servicios y Axios):**
+   El servicio correspondiente (como `authService`) utiliza el cliente HTTP (configurado con `axios`) para serializar el payload y emitir una petición asíncrona hacia una ruta relativa.
+3. **Inverse Proxy (Nginx):**
+   La petición es interceptada por el servidor Nginx que orquesta el frontend. Mediante las reglas de enrutamiento definidas en `nginx.conf`, cualquier tráfico con el prefijo `/api/` es delegado internamente a través de la red de Docker hacia el contenedor del API Gateway.
+4. **Enrutamiento Central (API Gateway - YARP):**
+   El API Gateway recibe la petición, resuelve la regla de ruteo configurada y balancea o redirige el tráfico hacia el microservicio correspondiente.
+5. **Microservicios del Backend:**
+   El controlador del microservicio objetivo valida la solicitud y delega la lógica de negocio a los Casos de Uso.
+6. **Retorno y Actualización de Estado:**
+   La respuesta transita la misma ruta en sentido inverso. El servicio resuelve la promesa, TanStack Query actualiza su estado reactivo de forma automática, y la vista del frontend refleja los cambios correspondientes.
+
+## Construcción de la Imagen 
+
+El proceso del archivo `Dockerfile` del frontend se divide en dos fases:
+
+1. **Fase de Compilación:**
+   Utiliza una imagen base de Node.js como entorno de construcción. En esta etapa se instalan todas las dependencias y se ejecuta el compilador de Vite. El resultado es una carpeta que contiene únicamente los recursos estáticos optimizados.
+2. **Fase de Producción:**
+   Inicia un entorno completamente nuevo basado en Nginx (`nginx:alpine`). Se copia el archivo de configuración `nginx.conf` y se trasladan **únicamente los archivos compilados** de la fase anterior. El entorno de Node.js y el código fuente original son descartados, evitando problmeas de seguridad.
