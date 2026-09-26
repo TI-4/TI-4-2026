@@ -23,6 +23,13 @@ builder.Services.AddScoped<StructureHandler>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<CampusDbContext>();
+    await context.Database.MigrateAsync();
+}
+
 app.MapControllers();
 
 app.Run();
+

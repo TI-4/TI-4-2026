@@ -1,8 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 
-ENV ASPNETCORE_HTTP_PORTS=80
-EXPOSE 80
+EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
@@ -26,4 +25,5 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 USER $APP_UID
 ENTRYPOINT ["dotnet", "Schedule.API.dll"]
+
 
