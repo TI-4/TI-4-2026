@@ -37,6 +37,9 @@ export const LoginView = () => {
   const mockLoginAs = useAuthState((state) => state.mockLoginAs);
   const logout = useAuthState((state) => state.logout);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (backgroundData.length === 0) return;
@@ -63,10 +66,30 @@ export const LoginView = () => {
     navigate('/map');
   };
 
-  // Fake login
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleLogin('MEMBER');
+    setError(null);
+    try {
+      await httpClient.post('/api/identity/login', {
+        email,
+        password
+      });
+
+      // Assume successful login returns token and user info
+      // Since we don't have the full auth flow implemented yet, we map to mock
+      handleLogin('MEMBER');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      if (err.response?.status === 502) {
+        setError('El Gateway no conecta con Identity (502). Falta cambiar :80 a :8080 en appsettings.json');
+      } else if (err.response?.status === 401) {
+        setError('Credenciales inválidas');
+      } else if (typeof err.response?.data === 'string' && err.response.data.trim()) {
+        setError(err.response.data);
+      } else {
+        setError(err.response?.data?.title || err.response?.data?.message || 'Error al procesar la solicitud');
+      }
+    }
   };
 
   return (
@@ -154,16 +177,26 @@ export const LoginView = () => {
           {/* Form */}
           <form onSubmit={onSubmit} className="flex flex-col gap-6">
             <Input
-              label="Usuario"
+              label="Email"
               labelColor="text-gray-700"
-              placeholder="Ej. juan.perez"
+              placeholder="Ej. juan.perez@uct.cl"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               label="Contraseña"
               labelColor="text-gray-700"
               type="password"
               placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
+
+            {error && (
+              <div className="text-red-600 text-sm font-medium bg-red-50 p-3 rounded-lg border border-red-200">
+                {error}
+              </div>
+            )}
 
             <Button type="submit" variant="solid" color="blue" size="lg" className="w-full mt-4">
               Iniciar Sesión
