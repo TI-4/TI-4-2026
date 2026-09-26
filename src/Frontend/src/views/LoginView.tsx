@@ -4,7 +4,7 @@ import { useAuthState } from '../states/authState';
 import type { Role } from '../constants/role';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import httpClient from '../api/httpClient';
+import { useLogin } from '../hooks/useLogin';
 import logoUrl from '../assets/svg/logo.svg';
 import LocationIcon from '../assets/svg/icons/icon_location.svg?react';
 
@@ -15,21 +15,20 @@ import bg4 from '../assets/images/uct_login_image_4.jpg';
 import bg5 from '../assets/images/uct_login_image_5.jpg';
 import bg6 from '../assets/images/uct_login_image_6.jpg';
 import bg7 from '../assets/images/uct_login_image_7.jpg';
+import bg8 from '../assets/images/uct_login_image_8.jpg';
+import bg9 from '../assets/images/uct_login_image_9.jpg';
+import type { LoginBackgroundData } from '../interfaces/LoginBackgroundData';
 
-interface BackgroundData {
-  img: string;
-  campus: string;
-  location: string;
-}
-
-const backgroundData: BackgroundData[] = [
-  { img: bg1, campus: 'Campus San Juan Pablo II', location: 'Edificio Central' },
-  { img: bg2, campus: 'Campus San Francisco', location: 'Patio Interior' },
-  { img: bg3, campus: 'Campus Menchaca Lira', location: 'Facultad de Artes' },
-  { img: bg4, campus: 'Campus San Juan Pablo II', location: 'Áreas Verdes' },
-  { img: bg5, campus: 'Campus Norte', location: 'Laboratorios' },
-  { img: bg6, campus: 'Campus Menchaca Lira', location: 'Auditorio' },
-  { img: bg7, campus: 'Clínica Veterinaria Mayor', location: 'Entrada Principal' },
+const backgroundData: LoginBackgroundData[] = [
+  { img: bg1, campus: 'Campus San Francisco', location: 'Edificio Central' },
+  { img: bg2, campus: 'Campus Monseñor Alejandro Menchaca Lira', location: 'Casona Malmus' },
+  { img: bg3, campus: 'Campus Monseñor Alejandro Menchaca Lira', location: 'Sala de Estudio' },
+  { img: bg4, campus: 'Campus Monseñor Alejandro Menchaca Lira', location: 'Entrada' },
+  { img: bg5, campus: 'Campus San Juan Pablo II', location: 'Laguna' },
+  { img: bg6, campus: 'Campus San Juan Pablo II', location: 'Auditorio' },
+  { img: bg7, campus: 'Campus Doctor Luis Rivas del Canto', location: 'Veterinaria' },
+  { img: bg8, campus: 'Campus Nuestra Señora de Lourdes', location: 'Sala Principal' },
+  { img: bg9, campus: 'Campus San Juan Pablo II', location: 'Edificio 8' },
 ];
 
 export const LoginView = () => {
@@ -39,7 +38,8 @@ export const LoginView = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+
+  const { mutateAsync: login, isPending: isLoading, error, reset: resetError } = useLogin();
 
   useEffect(() => {
     if (backgroundData.length === 0) return;
@@ -68,27 +68,13 @@ export const LoginView = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    try {
-      await httpClient.post('/api/identity/login', {
-        email,
-        password
-      });
+    resetError();
 
-      // Assume successful login returns token and user info
-      // Since we don't have the full auth flow implemented yet, we map to mock
+    try {
+      await login({ email, password });
       handleLogin('MEMBER');
-    } catch (err: any) {
-      console.error('Login error:', err);
-      if (err.response?.status === 502) {
-        setError('El Gateway no conecta con Identity (502). Falta cambiar :80 a :8080 en appsettings.json');
-      } else if (err.response?.status === 401) {
-        setError('Credenciales inválidas');
-      } else if (typeof err.response?.data === 'string' && err.response.data.trim()) {
-        setError(err.response.data);
-      } else {
-        setError(err.response?.data?.title || err.response?.data?.message || 'Error al procesar la solicitud');
-      }
+    } catch (err) {
+      // El error se maneja automáticamente en la variable 'error' de TanStack Query
     }
   };
 
@@ -126,7 +112,7 @@ export const LoginView = () => {
           >
             {/* Panning image */}
             <div
-              className={`absolute inset-0 w-full h-full bg-cover bg-left scale-[1.05] ${innerTransition} ${innerPosition}`}
+              className={`absolute -inset-8 w-[calc(100%+4rem)] h-[calc(100%+4rem)] bg-cover bg-center scale-[1.25] ${innerTransition} ${innerPosition}`}
               style={{ backgroundImage: `url(${data.img})` }}
             />
           </div>
@@ -194,14 +180,31 @@ export const LoginView = () => {
 
             {error && (
               <div className="text-red-600 text-sm font-medium bg-red-50 p-3 rounded-lg border border-red-200">
-                {error}
+                {error.message}
               </div>
             )}
 
-            <Button type="submit" variant="solid" color="blue" size="lg" className="w-full mt-4">
-              Iniciar Sesión
+            <Button type="submit" variant="solid" color="blue" size="lg" className="w-full mt-2" disabled={isLoading}>
+              {isLoading ? 'Cargando...' : 'Iniciar Sesión'}
             </Button>
           </form>
+
+          <div className="flex items-center my-4">
+            <div className="flex-grow border-t border-gray-200"></div>
+            <span className="px-3 text-xs text-gray-400 font-medium">O bien</span>
+            <div className="flex-grow border-t border-gray-200"></div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            color="gray"
+            size="lg"
+            className="w-full"
+            onClick={handleGuest}
+          >
+            Continuar como invitado
+          </Button>
 
         </div>
       </div>
@@ -241,27 +244,6 @@ export const LoginView = () => {
 
           <Button onClick={() => handleLogin('ADMIN')} color="purple" size="sm" className="!w-full !px-2">
             Admin
-          </Button>
-
-          <div className="w-full h-px bg-gray-200 my-1"></div>
-          <p className="text-[10px] text-gray-400 font-bold w-full text-center">TEST HTTP CLIENT</p>
-
-          <div className="flex gap-2 w-full">
-            <Button onClick={() => httpClient.get('https://dummyjson.com/http/200')} color="green" size="sm" className="!w-full !px-1 !text-xs">
-              200
-            </Button>
-            <Button onClick={() => httpClient.get('https://dummyjson.com/http/401')} color="red" size="sm" className="!w-full !px-1 !text-xs">
-              401
-            </Button>
-            <Button onClick={() => httpClient.get('https://dummyjson.com/http/403')} color="yellow" size="sm" className="!w-full !px-1 !text-xs">
-              403
-            </Button>
-          </div>
-          <Button onClick={() => {
-            console.log("Intentando conectar al API Gateway en:", httpClient.defaults.baseURL);
-            httpClient.get('/ping-de-prueba');
-          }} color="purple" size="sm" className="!w-full mt-2">
-            Testear .env Gateway
           </Button>
         </div>
       </div>
