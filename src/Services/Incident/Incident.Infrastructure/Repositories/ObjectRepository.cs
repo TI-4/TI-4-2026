@@ -25,9 +25,10 @@ public class ObjectRepository : MongoRepository<LostObject>, ILostObjectReposito
     {
         lostObject.Status = (Objectenum)status;
 
-        var filter = Builders<LostObject>.Filter.Eq(x => x.ObjectId, lostObject.ObjectId);
+        var filter = Builders<LostObject>.Filter.Eq(x => x.Id, lostObject.Id);
         var result = await _collection.ReplaceOneAsync(filter, lostObject);
 
         return result.ModifiedCount > 0;
     }
 }
+

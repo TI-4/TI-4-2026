@@ -36,7 +36,7 @@ public class LostObjectsController : ControllerBase
         var result = await _lostObjectHandler.GetByIdAsync(id);
 
         return result.Match(
-            lostObject => Ok(lostObject),
+            success => (IActionResult)NoContent(),
             errors =>
             {
                 var firstError = errors.First();
@@ -55,7 +55,7 @@ public class LostObjectsController : ControllerBase
     {
         var result = await _lostObjectHandler.FilterStatusAsync(num_status);
         return result.Match(
-            lostObject => Ok(lostObject),
+            success => (IActionResult)NoContent(),
             errors =>
             {
                 var firstError = errors.First();
@@ -74,7 +74,7 @@ public class LostObjectsController : ControllerBase
     {
         var result = await _lostObjectHandler.UpdateStatusAsync(id.ToString(), status);
         return result.Match(
-            lostObject => Ok(lostObject),
+            success => (IActionResult)NoContent(),
             errors =>
             {
                 var firstError = errors.First();
@@ -88,3 +88,4 @@ public class LostObjectsController : ControllerBase
         );
     }
 }
+
