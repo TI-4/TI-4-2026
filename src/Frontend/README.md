@@ -137,7 +137,7 @@ Sigue estos 3 pasos para crear un panel flotante nuevo:
    </button>
    ```
 
-## Configuración de Docker (Frontend & API Gateway)
+## Configuración de Docker 
 
 El Frontend se despliega Dockerizado. Para mantener la imagen Docker inmutable y evitar problemas, la comunicación con el API Gateway se realiza a través de un proxy inverso.
 
@@ -160,7 +160,7 @@ El Frontend se despliega Dockerizado. Para mantener la imagen Docker inmutable y
   ```
   Con esta configuración, el servidor de desarrollo de Vite actúa como Nginx, interceptando cualquier petición de React que comience con `/api/` y la redirige al API Gateway local (`http://localhost:5000`). 
 
-## Arquitectura de Peticiones y Ciclo de Vida (End-to-End)
+## Arquitectura de Peticiones y Ciclo de Vida
 
 El ciclo de vida de una petición HTTP típica es el siguiente:
 
@@ -177,7 +177,7 @@ El ciclo de vida de una petición HTTP típica es el siguiente:
 6. **Retorno y Actualización de Estado:**
    La respuesta transita la misma ruta en sentido inverso. El servicio resuelve la promesa, TanStack Query actualiza su estado reactivo de forma automática, y la vista del frontend refleja los cambios correspondientes.
 
-## Construcción de la Imagen (Multi-stage Build)
+## Construcción de la Imagen 
 
 El proceso del archivo `Dockerfile` del frontend se divide en dos fases:
 
