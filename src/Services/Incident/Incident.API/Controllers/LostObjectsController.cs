@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-
+using ErrorOr;
 namespace Incident.API.Controllers;
 
 [ApiController]
@@ -32,7 +32,38 @@ public class LostObjectsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
-        return Ok();
-    }
-}
+        var result = await _lostObjectHandler.GetByIdAsync(id);
 
+        return result.Match(
+            ticket => Ok(ticket),
+            errors =>
+            {
+                var firstError = errors.First();
+                var statusCode = firstError.Type switch
+                {
+                    ErrorType.NotFound => StatusCodes.Status404NotFound,
+                    _ => StatusCodes.Status400BadRequest
+                };
+                return Problem(statusCode: statusCode, title: firstError.Description);
+            }
+        );
+    }
+    [HttpGet("status/{num_status}")]
+    public async Task<IActionResult> FilterStatus(int num_status){
+        var result = await _lostObjectHandler.FilterStatusAsync(num_status);
+        return result.Match(
+            ticket => Ok(ticket),
+            errors =>
+            {
+                var firstError = errors.First();
+                var statusCode = firstError.Type switch
+                {
+                    ErrorType.NotFound => StatusCodes.Status404NotFound,
+                    _ => StatusCodes.Status400BadRequest
+                };
+                return Problem(statusCode: statusCode, title: firstError.Description);
+            }
+        );
+    }
+
+}

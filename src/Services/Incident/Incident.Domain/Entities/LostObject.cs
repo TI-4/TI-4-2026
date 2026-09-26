@@ -10,6 +10,10 @@ public class LostObject
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; init; }
 
+    [BsonElement("structure_id")]
+    [BsonRepresentation(BsonType.String)]
+    public required Guid StructureRefId { get; init; }
+
     [BsonElement("title")]
     public required string Title { get; init; }
 
@@ -22,8 +26,5 @@ public class LostObject
 
     [BsonElement("photo_url")]
     public string? PhotoUrl { get; init; }
-
-    [BsonElement("structure_id")]
-    [BsonRepresentation(BsonType.String)]
-    public required Guid StructureRefId { get; init; }
 }
+

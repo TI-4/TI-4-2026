@@ -4,6 +4,7 @@ using Incident.Domain.Entities;
 using Incident.Domain.Repositories;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace Incident.Application.Handlers;
 
@@ -45,5 +46,49 @@ public class LostObjectHandler : ILostObjectHandler
 
         return lostObject.Id ?? string.Empty;
     }
-}
 
+    public async Task<ErrorOr<LostObjectResponse>> GetByIdAsync(string id)
+    {
+        var lostObject = await _lostObjectRepository.GetByIdAsync(id);
+        if (lostObject is null)
+        {
+            return Error.NotFound(
+                code: "LostObject.NotFound",
+                description: "LostObject with ID '{id}' not found."
+            );
+        }
+
+        return new LostObjectResponse(
+            lostObject.Title,
+            lostObject.Description,
+            Enum.GetName(typeof(Objectenum), lostObject.Status)!,
+            lostObject.PhotoUrl!,
+            lostObject.StructureRefId
+        );
+    }
+
+    public async Task<ErrorOr<LostObjectList>> FilterStatusAsync(int status)
+    {
+        if (!Enum.IsDefined(typeof(Objectenum), status))
+        {
+            return Error.Validation(
+                code: "LostObject.Validation",
+                description: "Invalid status '{status}'"
+            );
+        }
+
+        Objectenum estadoEnum = (Objectenum)status;
+        string estadoString = estadoEnum.ToString();
+        var lostObjects = await _lostObjectRepository.FilterStatusAsync(estadoString);
+
+        var mappedList = lostObjects.Select(lo => new LostObjectResponse(
+            lo.Title,
+            lo.Description,
+            Enum.GetName(typeof(Objectenum), lo.Status)!,
+            lo.PhotoUrl!,
+            lo.StructureRefId
+        )).ToList();
+
+        return new LostObjectList(mappedList, mappedList.Count);
+    }
+}
