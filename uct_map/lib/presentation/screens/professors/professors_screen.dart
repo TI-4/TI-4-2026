@@ -43,9 +43,12 @@ class _ProfessorsScreenState extends State<ProfessorsScreen> {
   }
 
   List<Professor> get _filteredProfessors {
-    if (_searchQuery.trim().isEmpty) return _professors;
+    final base = _professors.isNotEmpty
+        ? _professors
+        : ScheduleRemoteDataSource.fallbackProfessors;
+    if (_searchQuery.trim().isEmpty) return base;
     final q = _searchQuery.toLowerCase();
-    return _professors.where((p) {
+    return base.where((p) {
       return p.name.toLowerCase().contains(q) ||
           p.department.toLowerCase().contains(q) ||
           p.office.toLowerCase().contains(q);

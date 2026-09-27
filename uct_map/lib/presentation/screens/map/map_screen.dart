@@ -36,8 +36,9 @@ class _MapScreenState extends State<MapScreen> {
       if (mounted) {
         setState(() {
           _campuses = list;
-          if (list.isNotEmpty) {
-            _selectedCampus = list.first;
+          final shown = _visibleCampuses;
+          if (shown.isNotEmpty) {
+            _selectedCampus = shown.first;
           }
           _loading = false;
         });
@@ -58,6 +59,11 @@ class _MapScreenState extends State<MapScreen> {
       }
     } catch (_) {}
   }
+
+  // Campus visibles: los del backend o ejemplo si viene vacío o falla.
+  List<Campus> get _visibleCampuses => _campuses.isNotEmpty
+      ? _campuses
+      : CampusRemoteDataSource.fallbackCampuses;
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +140,7 @@ class _MapScreenState extends State<MapScreen> {
                   IconButton(
                     icon: const Icon(Icons.keyboard_arrow_down),
                     tooltip: 'Cambiar Campus',
-                    onPressed: _campuses.isEmpty ? null : () => _showCampusSelector(context),
+                    onPressed: _visibleCampuses.isEmpty ? null : () => _showCampusSelector(context),
                   ),
                 ],
               ),
@@ -199,7 +205,7 @@ class _MapScreenState extends State<MapScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              ..._campuses.map((campus) {
+              ..._visibleCampuses.map((campus) {
                 final isSelected = campus.id == _selectedCampus?.id;
                 return ListTile(
                   leading: Icon(
