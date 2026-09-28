@@ -7,16 +7,25 @@ import 'package:http/http.dart' as http;
 import '../../core/network/api_config.dart';
 import '../../core/network/api_endpoints.dart';
 import '../../core/network/api_exception.dart';
+
 import '../../domain/entities/building.dart';
 import '../../domain/entities/campus.dart';
+import '../../domain/entities/category.dart';
 import '../../domain/entities/room.dart';
+import '../../domain/entities/structure.dart';
 import '../../domain/repositories/campus_repository.dart';
+
+import '../models/building_model.dart';
+import '../models/campus_model.dart';
+import '../models/category_model.dart';
+import '../models/room_model.dart';
+import '../models/structure_model.dart';
 
 /// Datasource remoto para consumir /api/campus a través del API Gateway.
 class CampusRemoteDataSource implements CampusRepository {
   CampusRemoteDataSource({http.Client? client, ApiConfig? config})
-      : _client = client ?? http.Client(),
-        _config = config ?? ApiConfig();
+    : _client = client ?? http.Client(),
+      _config = config ?? ApiConfig();
 
   final http.Client _client;
   final ApiConfig _config;
@@ -31,14 +40,17 @@ class CampusRemoteDataSource implements CampusRepository {
         if (decoded is List) {
           return decoded
               .whereType<Map<String, dynamic>>()
-              .map((c) => Campus.fromJson(c))
+              .map((c) => CampusModel.fromJson(c))
               .toList();
         }
       }
       if (res.statusCode == 401) {
         throw const UnauthorizedException();
       }
-      throw ApiException('Error al obtener campus (${res.statusCode})', res.statusCode);
+      throw ApiException(
+        'Error al obtener campus (${res.statusCode})',
+        res.statusCode,
+      );
     } on SocketException {
       return _fallbackCampuses;
     } on http.ClientException {
@@ -58,14 +70,17 @@ class CampusRemoteDataSource implements CampusRepository {
         if (decoded is List) {
           return decoded
               .whereType<Map<String, dynamic>>()
-              .map((b) => Building.fromJson(b))
+              .map((b) => BuildingModel.fromJson(b))
               .toList();
         }
       }
       if (res.statusCode == 401) {
         throw const UnauthorizedException();
       }
-      throw ApiException('Error al obtener edificios (${res.statusCode})', res.statusCode);
+      throw ApiException(
+        'Error al obtener edificios (${res.statusCode})',
+        res.statusCode,
+      );
     } on SocketException {
       return [];
     } on http.ClientException {
@@ -85,14 +100,87 @@ class CampusRemoteDataSource implements CampusRepository {
         if (decoded is List) {
           return decoded
               .whereType<Map<String, dynamic>>()
-              .map((r) => Room.fromJson(r))
+              .map((r) => RoomModel.fromJson(r))
               .toList();
         }
       }
       if (res.statusCode == 401) {
         throw const UnauthorizedException();
       }
-      throw ApiException('Error al obtener salas (${res.statusCode})', res.statusCode);
+      throw ApiException(
+        'Error al obtener salas (${res.statusCode})',
+        res.statusCode,
+      );
+    } on SocketException {
+      return [];
+    } on http.ClientException {
+      return [];
+    } on TimeoutException {
+      return [];
+    }
+  }
+
+  @override
+  Future<List<Structure>> getStructures(String campusId) async {
+    final uri = _config.uri(ApiEndpoints.campusStructures(campusId));
+
+    try {
+      final res = await _client.get(uri).timeout(_config.timeout);
+
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body);
+
+        if (decoded is List) {
+          return decoded
+              .whereType<Map<String, dynamic>>()
+              .map((json) => StructureModel.fromJson(json))
+              .toList();
+        }
+      }
+
+      if (res.statusCode == 401) {
+        throw const UnauthorizedException();
+      }
+
+      throw ApiException(
+        'Error al obtener estructuras (${res.statusCode})',
+        res.statusCode,
+      );
+    } on SocketException {
+      return [];
+    } on http.ClientException {
+      return [];
+    } on TimeoutException {
+      return [];
+    }
+  }
+
+  @override
+  Future<List<Category>> getCategories() async {
+    final uri = _config.uri(ApiEndpoints.campusCategories);
+
+    try {
+      final res = await _client.get(uri).timeout(_config.timeout);
+
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body);
+
+        if (decoded is List) {
+          return decoded
+              .whereType<Map<String, dynamic>>()
+              .map((json) => CategoryModel.fromJson(json))
+              .toList();
+        }
+      }
+
+      if (res.statusCode == 401) {
+        throw const UnauthorizedException();
+      }
+
+      throw ApiException(
+        'Error al obtener categorías (${res.statusCode})',
+        res.statusCode,
+      );
     } on SocketException {
       return [];
     } on http.ClientException {

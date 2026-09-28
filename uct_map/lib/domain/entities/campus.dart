@@ -1,6 +1,7 @@
 import 'building.dart';
+import 'structure.dart';
 
-/// Entidad Campus universitario (ms.svg - Campus Service / PostgreSQL).
+/// Entidad Campus universitario.
 class Campus {
   final String id;
   final String name;
@@ -8,6 +9,7 @@ class Campus {
   final double latitude;
   final double longitude;
   final List<Building> buildings;
+  final List<Structure> structures;
 
   const Campus({
     required this.id,
@@ -16,37 +18,60 @@ class Campus {
     required this.latitude,
     required this.longitude,
     this.buildings = const [],
+    this.structures = const [],
   });
 
   factory Campus.fromJson(Map<String, dynamic> json) {
-    final coords = json['coordinates'] ?? json['Coordinates'] ?? {};
-    final lat = (coords['latitude'] ?? coords['Latitude'] ?? json['latitude'] ?? 0.0).toDouble();
-    final lng = (coords['longitude'] ?? coords['Longitude'] ?? json['longitude'] ?? 0.0).toDouble();
+    final coords =
+        json['coordinates'] ?? json['Coordinates'] ?? json['coordenadas'] ?? {};
 
-    final rawBuildings = json['buildings'] ?? json['Buildings'] as List<dynamic>? ?? [];
-    final buildingsList = rawBuildings
+    final rawBuildings =
+        (json['buildings'] ?? json['Buildings'] ?? json['edificios'] ?? [])
+            as List<dynamic>;
+
+    final rawStructures =
+        (json['structures'] ?? json['Structures'] ?? json['estructuras'] ?? [])
+            as List<dynamic>;
+
+    final buildings = rawBuildings
         .whereType<Map<String, dynamic>>()
-        .map((b) => Building.fromJson(b))
+        .map((building) => Building.fromJson(building))
+        .toList();
+
+    final structures = rawStructures
+        .whereType<Map<String, dynamic>>()
+        .map((structure) => Structure.fromJson(structure))
         .toList();
 
     return Campus(
-      id: (json['id'] ?? json['Id'] ?? '').toString(),
-      name: (json['name'] ?? json['Name'] ?? '').toString(),
-      address: (json['address'] ?? json['Address'] ?? '').toString(),
-      latitude: lat,
-      longitude: lng,
-      buildings: buildingsList,
+      id: (json['id_campus'] ?? json['id'] ?? json['Id'] ?? '').toString(),
+      name: (json['nombre'] ?? json['name'] ?? json['Name'] ?? '').toString(),
+      address: (json['direccion'] ?? json['address'] ?? json['Address'] ?? '')
+          .toString(),
+      latitude:
+          (coords['latitud'] ?? coords['latitude'] ?? coords['Latitude'] ?? 0.0)
+              .toDouble(),
+      longitude:
+          (coords['longitud'] ??
+                  coords['longitude'] ??
+                  coords['Longitude'] ??
+                  0.0)
+              .toDouble(),
+      buildings: buildings,
+      structures: structures,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'address': address,
-        'coordinates': {
-          'latitude': latitude,
-          'longitude': longitude,
-        },
-        'buildings': buildings.map((b) => b.toJson()).toList(),
-      };
+    'id': id,
+    'name': name,
+    'address': address,
+    'coordinates': {'latitude': latitude, 'longitude': longitude},
+    'buildings': buildings.map((building) {
+      return building.toJson();
+    }).toList(),
+    'structures': structures.map((structure) {
+      return structure.toJson();
+    }).toList(),
+  };
 }
