@@ -1,6 +1,6 @@
 import 'room.dart';
 
-/// Entidad Edificio dentro de un Campus (ms.svg - Campus Service).
+/// Entidad Edificio dentro de un Campus.
 class Building {
   final String id;
   final String campusId;
@@ -21,36 +21,47 @@ class Building {
   });
 
   factory Building.fromJson(Map<String, dynamic> json) {
-    final coords = json['coordinates'] ?? json['Coordinates'] ?? {};
-    final lat = (coords['latitude'] ?? coords['Latitude'] ?? json['latitude'] ?? 0.0).toDouble();
-    final lng = (coords['longitude'] ?? coords['Longitude'] ?? json['longitude'] ?? 0.0).toDouble();
+    final coords =
+        json['coordinates'] ?? json['Coordinates'] ?? json['coordenadas'] ?? {};
 
-    final rawRooms = json['rooms'] ?? json['Rooms'] as List<dynamic>? ?? [];
-    final roomsList = rawRooms
+    final rawRooms = (json['rooms'] ?? json['Rooms'] ?? []) as List<dynamic>;
+
+    final rooms = rawRooms
         .whereType<Map<String, dynamic>>()
-        .map((r) => Room.fromJson(r))
+        .map((room) => Room.fromJson(room))
         .toList();
 
     return Building(
-      id: (json['id'] ?? json['Id'] ?? '').toString(),
-      campusId: (json['campusId'] ?? json['CampusId'] ?? '').toString(),
-      name: (json['name'] ?? json['Name'] ?? '').toString(),
-      floorsCount: (json['floorsCount'] ?? json['FloorsCount'] ?? 1) as int,
-      latitude: lat,
-      longitude: lng,
-      rooms: roomsList,
+      id: (json['id_edificio'] ?? json['id'] ?? json['Id'] ?? '').toString(),
+      campusId:
+          (json['id_campus'] ?? json['campusId'] ?? json['CampusId'] ?? '')
+              .toString(),
+      name: (json['nombre'] ?? json['name'] ?? json['Name'] ?? '').toString(),
+      floorsCount:
+          (json['cant_pisos'] ??
+                  json['floorsCount'] ??
+                  json['FloorsCount'] ??
+                  1)
+              as int,
+      latitude:
+          (coords['latitud'] ?? coords['latitude'] ?? coords['Latitude'] ?? 0.0)
+              .toDouble(),
+      longitude:
+          (coords['longitud'] ??
+                  coords['longitude'] ??
+                  coords['Longitude'] ??
+                  0.0)
+              .toDouble(),
+      rooms: rooms,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'campusId': campusId,
-        'name': name,
-        'floorsCount': floorsCount,
-        'coordinates': {
-          'latitude': latitude,
-          'longitude': longitude,
-        },
-        'rooms': rooms.map((r) => r.toJson()).toList(),
-      };
+    'id': id,
+    'campusId': campusId,
+    'name': name,
+    'floorsCount': floorsCount,
+    'coordinates': {'latitude': latitude, 'longitude': longitude},
+    'rooms': rooms.map((room) => room.toJson()).toList(),
+  };
 }
