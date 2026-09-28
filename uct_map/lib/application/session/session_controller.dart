@@ -25,15 +25,6 @@ class SessionController extends ChangeNotifier {
     return value;
   }
 
-  void signInDemo(String email) {
-    _session = AuthSession(
-      user: User.fromLogin(userId: 'local', email: email.trim()),
-      loginAt: DateTime.now(),
-      token: 'demo-local-token',
-    );
-    notifyListeners();
-  }
-
   Future<void> signInReal(AuthLoginResult result) async {
     final claims = parseJwt(result.token);
     _session = AuthSession(
@@ -81,9 +72,9 @@ class SessionController extends ChangeNotifier {
     }
   }
 
-  void signOut() {
+  Future<void> signOut() async {
     _session = null;
-    _storage.clear();
+    await _storage.clear();
     notifyListeners();
   }
 }

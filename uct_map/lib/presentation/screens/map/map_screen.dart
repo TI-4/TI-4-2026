@@ -104,6 +104,11 @@ class _MapScreenState extends State<MapScreen> {
     _mapController.move(LatLng(campus.latitude, campus.longitude), 16);
   }
 
+  // Campus visibles: los del backend o ejemplo si viene vacío o falla.
+  List<Campus> get _visibleCampuses => _campuses.isNotEmpty
+      ? _campuses
+      : CampusRemoteDataSource.fallbackCampuses;
+
   @override
   Widget build(BuildContext context) {
     final campus = _selectedCampus;
@@ -284,7 +289,7 @@ class _MapScreenState extends State<MapScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              ..._campuses.map((campus) {
+              ..._visibleCampuses.map((campus) {
                 final isSelected = campus.id == _selectedCampus?.id;
 
                 return ListTile(

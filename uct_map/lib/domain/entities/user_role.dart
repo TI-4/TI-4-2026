@@ -13,11 +13,13 @@ enum UserRole {
     }
     final v = value.toString().trim().toLowerCase();
     final n = v.replaceAll(RegExp(r'[\s_\-]+'), '');
-    if (n.contains('estudiante')) return UserRole.estudiante;
-    if (n.contains('docente') || n.contains('profesor')) return UserRole.profesor;
+    if (n.contains('estudiante') || n.contains('student')) return UserRole.estudiante;
+    if (n.contains('docente') || n.contains('profesor') || n.contains('teacher')) {
+      return UserRole.profesor;
+    }
     if (n.contains('admin')) return UserRole.administrador;
-    if (n.contains('objeto')) return UserRole.funcionarioObjetos;
-    if (n.contains('queja')) return UserRole.funcionarioQuejas;
+    if (n.contains('objeto') || n.contains('object')) return UserRole.funcionarioObjetos;
+    if (n.contains('queja') || n.contains('complaint')) return UserRole.funcionarioQuejas;
     if (n.contains('invitado')) return UserRole.invitado;
     return UserRole.desconocido;
   }

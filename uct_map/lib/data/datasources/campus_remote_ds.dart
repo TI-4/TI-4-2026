@@ -52,11 +52,11 @@ class CampusRemoteDataSource implements CampusRepository {
         res.statusCode,
       );
     } on SocketException {
-      return _fallbackCampuses;
+      return fallbackCampuses;
     } on http.ClientException {
-      return _fallbackCampuses;
+      return fallbackCampuses;
     } on TimeoutException {
-      return _fallbackCampuses;
+      return fallbackCampuses;
     }
   }
 
@@ -190,7 +190,8 @@ class CampusRemoteDataSource implements CampusRepository {
     }
   }
 
-  static const List<Campus> _fallbackCampuses = [
+  // Campus de ejemplo para ver la funcionalidad sin red o con servicios apagados.
+  static const List<Campus> fallbackCampuses = [
     Campus(
       id: 'campus-sjpii',
       name: 'Campus San Juan Pablo II',
