@@ -40,7 +40,7 @@ export const BuildingDetailCard = ({
   onReportProblem,
 }: BuildingDetailCardProps) => {
   return (
-    <Panel withUctBorder color="white" outerClassName="rounded-3xl max-w-sm w-full" innerClassName="p-5 flex flex-col gap-4">
+    <Panel withUctBorder color="white" outerClassName="rounded-3xl w-full h-full" innerClassName="p-5 flex flex-col gap-4 h-full">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3">
           <BuildingIcon className="w-8 h-8 text-gray-800" />
@@ -74,11 +74,11 @@ export const BuildingDetailCard = ({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+      <div className="flex flex-col gap-2 flex-1 min-h-0">
+        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider shrink-0">
           SALAS
         </span>
-        <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
+        <div className="flex flex-col gap-2 flex-1 overflow-y-auto pr-1">
           {rooms.map((room, idx) => (
             <RoomInfoCard
               key={idx}

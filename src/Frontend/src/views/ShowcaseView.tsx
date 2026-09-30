@@ -6,7 +6,7 @@ import { NavButton } from '../components/ui/NavButton';
 import { CheckboxItem } from '../components/ui/CheckboxItem';
 import { Tag } from '../components/ui/Tag';
 import { Panel } from '../components/layout/Panel';
-import { MapMarker } from '../modules/map/MapMarker';
+import { MapMarker } from '../components/ui/MapMarker';
 import { IconText } from '../components/ui/IconText';
 import { PhotoFrame } from '../components/media/PhotoFrame';
 import { Avatar } from '../components/media/Avatar';

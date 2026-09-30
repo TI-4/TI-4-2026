@@ -9,7 +9,7 @@ using System;
 namespace Campus.API.Endpoints;
 
 [ApiController]
-[Route("api/structures")]
+[Route("api/campus/structures")]
 public class StructureController : ControllerBase
 {
     private readonly StructureHandler _handler;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthState } from '../../states/authState';
-import type { Role } from '../../constants/role';
+
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { useLogin } from '../../hooks/useLogin';
@@ -28,14 +28,14 @@ export const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
       realLogin(response.token || '', {
         id: response.userId,
         email: response.email,
-        name: 'Usuario Estudiante', // Por ahora el backend no devuelve el nombre en el login
+        name: 'Usuario Estudiante',
         role: 'MEMBER',
         registeredAt: new Date().toISOString()
       });
       
       navigate('/map');
     } catch (err) {
-      // El error se maneja automáticamente en la variable 'error'
+      
     }
   };
 

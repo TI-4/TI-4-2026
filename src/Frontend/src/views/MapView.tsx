@@ -4,7 +4,6 @@ import WorldMap from '../assets/svg/maps/world.svg?react';
 import { Select } from '../components/ui/Select';
 import { SearchInput } from '../components/ui/SearchInput';
 import { SquareButton } from '../components/ui/SquareButton';
-import { HeatmapSpot } from '../modules/map/HeatmapSpot';
 
 import SearchIcon from '../assets/svg/icons/icon_search.svg?react';
 import BuildingIcon from '../assets/svg/icons/icon_building.svg?react';
@@ -15,11 +14,18 @@ import PencilIcon from '../assets/svg/icons/icon_pencil.svg?react';
 import { RoleGuard } from '../router/RoleGuard';
 import { MapEditorPanel } from '../modules/admin/MapEditorPanel';
 import { BuildingFormModal } from '../modules/admin/BuildingFormModal';
+import { useBuildingLocations } from '../hooks/useCampus';
+import { MapMarker } from '../components/ui/MapMarker';
+import { ActiveBuildingCard } from '../modules/map/ActiveBuildingCard';
+import type { BuildingLocationDto } from '../interfaces/campus/BuildingLocationDto';
 
 export const MapView = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [isEditorOpen, setIsEditorOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [selectedBuilding, setSelectedBuilding] = React.useState<BuildingLocationDto | null>(null);
+
+  const { data: buildings } = useBuildingLocations();
 
   const mapSearchOptions = [
     { value: 'biblioteca', label: 'Biblioteca Central' },
@@ -75,7 +81,7 @@ export const MapView = () => {
         centerOnInit={true}
         wheel={{ step: 0.1 }}
       >
-        {({ zoomIn, zoomOut, resetTransform }) => (
+        {({ zoomIn, zoomOut, resetTransform, zoomToElement }) => (
           <React.Fragment>
             <div className="absolute bottom-6 right-6 z-20 flex items-end gap-6">
 
@@ -124,15 +130,46 @@ export const MapView = () => {
                 className="pointer-events-auto"
               />
 
-              {/* Mock Heatmap */}
-              <HeatmapSpot x="30%" y="40%" intensity={20} />
-              <HeatmapSpot x="45%" y="60%" intensity={55} />
-              <HeatmapSpot x="60%" y="30%" intensity={85} />
-              <HeatmapSpot x="75%" y="70%" intensity={100} />
+              {buildings?.map(building => (
+                <div 
+                  key={building.id}
+                  id={`building-${building.id}`}
+                  style={{ 
+                    position: 'absolute', 
+                    left: `${building.location.longitude}%`, 
+                    top: `${building.location.latitude}%`,
+                    transform: 'translate(-50%, -100%)',
+                    zIndex: selectedBuilding?.id === building.id ? 20 : 10
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedBuilding(building);
+                    zoomToElement(`building-${building.id}`, 3, 500);
+                  }}
+                >
+                  <MapMarker 
+                    icon={<BuildingIcon className="w-5 h-5" />} 
+                    color={selectedBuilding?.id === building.id ? 'green' : 'blue'}
+                    isActive={selectedBuilding?.id === building.id}
+                  />
+                </div>
+              ))}
+
+              {/* Mock Heatmap removed */}
             </TransformComponent>
           </React.Fragment>
         )}
       </TransformWrapper>
+
+      {/* Building Details Slide-in Panel */}
+      <div className={`absolute top-24 bottom-6 left-6 w-96 transition-transform duration-500 z-40 ${
+        selectedBuilding ? 'translate-x-0' : '-translate-x-[150%]'
+      }`}>
+        <ActiveBuildingCard 
+          building={selectedBuilding} 
+          onClose={() => setSelectedBuilding(null)} 
+        />
+      </div>
 
       {/* Edit modal */}
       {isModalOpen && <BuildingFormModal onClose={() => setIsModalOpen(false)} />}
