@@ -1,0 +1,108 @@
+import { useState } from 'react';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { useRegister } from '../../hooks/useRegister';
+
+interface RegisterFormProps {
+  onSwitchToLogin: () => void;
+}
+
+export const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
+  const [registerName, setRegisterName] = useState('');
+  const [registerEmail, setRegisterEmail] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
+  const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
+
+  const { mutateAsync: register, isPending: isRegisterLoading, error: registerError, reset: resetRegisterError } = useRegister();
+
+  const onRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    resetRegisterError();
+
+    if (registerPassword !== registerConfirmPassword) {
+      alert("Las contraseñas no coinciden");
+      return;
+    }
+
+    try {
+      await register({
+        name: registerName,
+        email: registerEmail,
+        password: registerPassword
+      });
+
+      setRegisterName('');
+      setRegisterEmail('');
+      setRegisterPassword('');
+      setRegisterConfirmPassword('');
+      
+      alert("¡Cuenta creada con éxito! Ahora inicia sesión.");
+      onSwitchToLogin();
+    } catch (err) {
+      // El error se maneja automáticamente en la variable 'registerError'
+    }
+  };
+
+  return (
+    <>
+      <div className="flex flex-col gap-2 mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 tracking-tight">Crear Cuenta</h1>
+        <p className="text-gray-500 font-medium">Únete para comenzar.</p>
+      </div>
+
+      <form onSubmit={onRegisterSubmit} className="flex flex-col gap-5">
+        <Input
+          label="Nombre Completo"
+          labelColor="text-gray-700"
+          placeholder="Ej. Juan Pérez"
+          value={registerName}
+          onChange={(e: any) => setRegisterName(e.target.value)}
+        />
+        <Input
+          label="Email"
+          labelColor="text-gray-700"
+          placeholder="usuario@uct.cl"
+          value={registerEmail}
+          onChange={(e: any) => setRegisterEmail(e.target.value)}
+        />
+        <Input
+          label="Contraseña"
+          labelColor="text-gray-700"
+          type="password"
+          placeholder="••••••••"
+          value={registerPassword}
+          onChange={(e: any) => setRegisterPassword(e.target.value)}
+        />
+        <Input
+          label="Confirmar Contraseña"
+          labelColor="text-gray-700"
+          type="password"
+          placeholder="••••••••"
+          value={registerConfirmPassword}
+          onChange={(e: any) => setRegisterConfirmPassword(e.target.value)}
+        />
+
+        {registerError && (
+          <div className="text-red-600 text-sm font-medium bg-red-50 p-2.5 rounded-lg border border-red-200">
+            {registerError.message}
+          </div>
+        )}
+
+        <Button type="submit" variant="solid" color="blue" size="lg" className="w-full mt-1" disabled={isRegisterLoading}>
+          {isRegisterLoading ? 'Creando cuenta...' : 'Registrarse'}
+        </Button>
+      </form>
+
+      <div className="mt-5 text-center text-xl font-bold text-gray-600">
+        ¿Ya tienes cuenta?{' '}
+        <button
+          type="button"
+          onClick={onSwitchToLogin}
+          className="text-blue-600 hover:underline"
+        >
+          Inicia sesión
+        </button>
+      </div>
+    </>
+  );
+};

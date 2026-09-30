@@ -12,7 +12,7 @@ using ErrorOr;
 namespace Campus.API.Endpoints;
 
 [ApiController]
-[Route("api/rooms")]
+[Route("api/campus/rooms")]
 public class RoomController : ControllerBase
 {
     private readonly RoomHandler _handler;
@@ -36,7 +36,7 @@ public class RoomController : ControllerBase
         return Ok(rooms);
     }
 
-    [HttpGet("/api/buildings/{buildingId:guid}/rooms")]
+    [HttpGet("/api/campus/buildings/{buildingId:guid}/rooms")]
     public async Task<ActionResult<IEnumerable<RoomDto>>> GetByBuilding(Guid buildingId, CancellationToken cancellationToken)
     {
         var rooms = await _handler.GetRoomsByBuildingAsync(buildingId, cancellationToken);

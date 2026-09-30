@@ -9,7 +9,7 @@ using System;
 namespace Campus.API.Endpoints;
 
 [ApiController]
-[Route("api/categories")]
+[Route("api/campus/categories")]
 public class CategoryController : ControllerBase
 {
     private readonly CategoryHandler _handler;

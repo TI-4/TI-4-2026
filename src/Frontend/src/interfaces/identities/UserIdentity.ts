@@ -1,4 +1,4 @@
-export type Role = 'ADMIN';
+import type { Role } from '../../constants/role';
 
 export interface UserIdentity {
   id: string;

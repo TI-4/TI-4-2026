@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthState } from '../states/authState';
 import type { Role } from '../constants/role';
 import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { useLogin } from '../hooks/useLogin';
+import { LoginForm } from '../modules/auth/LoginForm';
+import { RegisterForm } from '../modules/auth/RegisterForm';
 import logoUrl from '../assets/svg/logo.svg';
 import LocationIcon from '../assets/svg/icons/icon_location.svg?react';
 
@@ -36,10 +36,7 @@ export const LoginView = () => {
   const mockLoginAs = useAuthState((state) => state.mockLoginAs);
   const logout = useAuthState((state) => state.logout);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const { mutateAsync: login, isPending: isLoading, error, reset: resetError } = useLogin();
+  const [isRegistering, setIsRegistering] = useState(false);
 
   useEffect(() => {
     if (backgroundData.length === 0) return;
@@ -64,18 +61,6 @@ export const LoginView = () => {
   const handleGuest = () => {
     logout();
     navigate('/map');
-  };
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    resetError();
-
-    try {
-      await login({ email, password });
-      handleLogin('MEMBER');
-    } catch (err) {
-      // El error se maneja automáticamente en la variable 'error' de TanStack Query
-    }
   };
 
   return (
@@ -142,8 +127,9 @@ export const LoginView = () => {
       })}
 
       {/* Left panel */}
-      <div className="w-full max-w-lg h-[calc(100vh-4rem)] my-8 ml-8 bg-gradient-to-b from-page-blue from-50% to-page-yellow to-50% p-1.5 rounded-[34px] shadow-2xl relative z-10">
-        <div className="w-full h-full bg-white rounded-[28px] p-12 flex flex-col justify-center">
+      <div className="w-full max-w-lg min-h-[calc(100vh-4rem)] my-8 ml-8 bg-gradient-to-b from-page-blue from-50% to-page-yellow to-50% p-1.5 rounded-[34px] shadow-2xl relative z-10 flex flex-col">
+        <div className="w-full flex-1 bg-white rounded-[28px] p-12 flex flex-col overflow-x-hidden">
+          <div className="flex-grow flex flex-col justify-center">
 
           {/* Header */}
           <div className="flex items-center mb-10">
@@ -154,57 +140,42 @@ export const LoginView = () => {
             </div>
           </div>
 
-          {/* Heading */}
-          <div className="flex flex-col gap-2 mb-10">
-            <h1 className="text-3xl font-bold text-gray-800 tracking-tight">Iniciar Sesión</h1>
-            <p className="text-gray-500 font-medium">Ingresa tus credenciales institucionales para continuar.</p>
+          {/* Dynamic Form Area with Animations */}
+          <div className="grid overflow-visible w-full">
+            {/* Login View */}
+            <div
+              className={`col-start-1 row-start-1 w-full transition-all duration-500 ease-in-out ${isRegistering ? '-translate-x-8 opacity-0 pointer-events-none' : 'translate-x-0 opacity-100'}`}
+            >
+              <LoginForm onSwitchToRegister={() => setIsRegistering(true)} />
+            </div>
+
+            {/* Register View */}
+            <div
+              className={`col-start-1 row-start-1 w-full transition-all duration-500 ease-in-out ${isRegistering ? 'translate-x-0 opacity-100' : 'translate-x-8 opacity-0 pointer-events-none'}`}
+            >
+              <RegisterForm onSwitchToLogin={() => setIsRegistering(false)} />
+            </div>
+          </div>
           </div>
 
-          {/* Form */}
-          <form onSubmit={onSubmit} className="flex flex-col gap-6">
-            <Input
-              label="Email"
-              labelColor="text-gray-700"
-              placeholder="Ej. juan.perez@uct.cl"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              label="Contraseña"
-              labelColor="text-gray-700"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+          <div className="mt-auto pt-6">
+            <div className="flex items-center mb-6">
+              <div className="flex-grow border-t border-gray-200"></div>
+              <span className="px-3 text-xs text-gray-400 font-medium">O bien</span>
+              <div className="flex-grow border-t border-gray-200"></div>
+            </div>
 
-            {error && (
-              <div className="text-red-600 text-sm font-medium bg-red-50 p-3 rounded-lg border border-red-200">
-                {error.message}
-              </div>
-            )}
-
-            <Button type="submit" variant="solid" color="blue" size="lg" className="w-full mt-2" disabled={isLoading}>
-              {isLoading ? 'Cargando...' : 'Iniciar Sesión'}
+            <Button
+              type="button"
+              variant="outline"
+              color="gray"
+              size="lg"
+              className="w-full"
+              onClick={handleGuest}
+            >
+              Continuar como invitado
             </Button>
-          </form>
-
-          <div className="flex items-center my-4">
-            <div className="flex-grow border-t border-gray-200"></div>
-            <span className="px-3 text-xs text-gray-400 font-medium">O bien</span>
-            <div className="flex-grow border-t border-gray-200"></div>
           </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            color="gray"
-            size="lg"
-            className="w-full"
-            onClick={handleGuest}
-          >
-            Continuar como invitado
-          </Button>
 
         </div>
       </div>

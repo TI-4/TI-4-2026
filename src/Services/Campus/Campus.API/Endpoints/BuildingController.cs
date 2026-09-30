@@ -12,7 +12,7 @@ using ErrorOr;
 namespace Campus.API.Endpoints;
 
 [ApiController]
-[Route("api/buildings")]
+[Route("api/campus/buildings")]
 public class BuildingController : ControllerBase
 {
     private readonly BuildingHandler _handler;
