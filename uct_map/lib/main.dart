@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
+import 'core/navigation/app_routes.dart';
 import 'domain/repositories/auth_repository.dart';
-import 'presentation/navigation/main_navigation_screen.dart';
-import 'presentation/screens/professors/professors_screen.dart';
-import 'presentation/screens/reports/reports_screen.dart';
-import 'presentation/screens/login/login_page.dart';
-import 'presentation/screens/lost_found/lost_found_screen.dart';
 
 void main() {
   runApp(const UctMapApp());
@@ -33,14 +29,11 @@ class UctMapApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const MainNavigationScreen(),
-        '/professors': (context) => const ProfessorsScreen(),
-        '/reports': (context) => const ReportsScreen(),
-        '/lost-found': (context) => const LostFoundScreen(),
-        '/login': (context) => LoginPage(authRepository: authRepository),
-      },
+      initialRoute: AppRoutes.initial,
+      onGenerateRoute: (settings) => AppRoutes.onGenerateRoute(
+        settings,
+        authRepository: authRepository,
+      ),
     );
   }
 }

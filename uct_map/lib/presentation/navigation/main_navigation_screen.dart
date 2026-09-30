@@ -10,15 +10,18 @@ import '../widgets/uct_logo.dart';
 import '../widgets/custom_drawer.dart';
 
 class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
+  final int initialIndex;
+
+  const MainNavigationScreen({super.key, this.initialIndex = 0});
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex;
   final _session = SessionController();
+  bool _didReadInitialArgs = false;
 
   static const _protectedTabs = [2, 3];
 
@@ -29,6 +32,24 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     'Reportes de Incidencias',
     'Mi Perfil',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_didReadInitialArgs) {
+      _didReadInitialArgs = true;
+      final args = ModalRoute.of(context)?.settings.arguments;
+      if (args is int && args >= 0 && args < _titles.length) {
+        _currentIndex = args;
+      }
+    }
+  }
 
   void _onTabTapped(int index) {
     setState(() {
@@ -69,8 +90,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       SearchScreen(
         onExploreMap: () => _onTabTapped(0),
       ),
-      _protected(2, const LostFoundScreen(), 'Objetos perdidos'),
-      _protected(3, const ReportsScreen(), 'Reportes de incidencias'),
+      _protected(2, LostFoundScreen(onNavigateToTab: _onTabTapped), 'Objetos perdidos'),
+      _protected(3, ReportsScreen(onNavigateToTab: _onTabTapped), 'Reportes de incidencias'),
       ProfileScreen(
         session: _session,
         onNavigateToTab: _onTabTapped,

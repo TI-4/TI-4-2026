@@ -448,8 +448,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 : null,
             badgeColor: AppColors.uctBlue.withValues(alpha: 0.08),
             badgeTextColor: AppColors.uctBlue,
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => SavedPlacesScreen(
@@ -457,6 +457,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               );
+              if (result is int && widget.onNavigateToTab != null) {
+                widget.onNavigateToTab!(result);
+              }
             },
           ),
 
@@ -473,8 +476,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 : null,
             badgeColor: const Color(0xFFE0F2FE),
             badgeTextColor: const Color(0xFF0369A1),
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => MyReportsScreen(
@@ -482,6 +485,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               );
+              if (result is int && widget.onNavigateToTab != null) {
+                widget.onNavigateToTab!(result);
+              }
             },
           ),
 
@@ -498,8 +504,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 : null,
             badgeColor: const Color(0xFFDCFCE7),
             badgeTextColor: const Color(0xFF15803D),
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => MyLostItemsScreen(
@@ -507,6 +513,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               );
+              if (result is int && widget.onNavigateToTab != null) {
+                widget.onNavigateToTab!(result);
+              }
             },
           ),
 

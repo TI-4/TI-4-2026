@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
+import '../../core/navigation/app_routes.dart';
 import 'uct_logo.dart';
 
 class CustomDrawer extends StatelessWidget {
   final int currentIndex;
-  final Function(int) onSelectTab;
+  final Function(int)? onSelectTab;
 
   const CustomDrawer({
     super.key,
     required this.currentIndex,
-    required this.onSelectTab,
+    this.onSelectTab,
   });
+
+  void _navigateToTab(BuildContext context, int index) {
+    Navigator.pop(context);
+    if (onSelectTab != null) {
+      onSelectTab!(index);
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.initial,
+        (route) => false,
+        arguments: index,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -31,68 +48,125 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+              color: theme.colorScheme.primary,
             ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.dashboard_outlined),
+            title: const Text('Inicio y Accesos Rápidos'),
+            onTap: () async {
+              Navigator.pop(context);
+              final result = await Navigator.pushNamed(context, AppRoutes.home);
+              if (result is int && context.mounted) {
+                if (onSelectTab != null) {
+                  onSelectTab!(result);
+                } else {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.initial,
+                    (route) => false,
+                    arguments: result,
+                  );
+                }
+              }
+            },
           ),
           ListTile(
             leading: const Icon(Icons.map_outlined),
             title: const Text('Mapa del Campus'),
             selected: currentIndex == 0,
-            onTap: () {
-              Navigator.pop(context);
-              onSelectTab(0);
-            },
+            onTap: () => _navigateToTab(context, 0),
           ),
           ListTile(
             leading: const Icon(Icons.search),
             title: const Text('Búsqueda de Espacios'),
             selected: currentIndex == 1,
-            onTap: () {
-              Navigator.pop(context);
-              onSelectTab(1);
-            },
+            onTap: () => _navigateToTab(context, 1),
           ),
           ListTile(
             leading: const Icon(Icons.inventory_2_outlined),
             title: const Text('Objetos Perdidos'),
             selected: currentIndex == 2,
-            onTap: () {
-              Navigator.pop(context);
-              onSelectTab(2);
-            },
+            onTap: () => _navigateToTab(context, 2),
           ),
           ListTile(
             leading: const Icon(Icons.report_problem_outlined),
             title: const Text('Reportes de Incidencias'),
             selected: currentIndex == 3,
-            onTap: () {
-              Navigator.pop(context);
-              onSelectTab(3);
-            },
+            onTap: () => _navigateToTab(context, 3),
           ),
           ListTile(
             leading: const Icon(Icons.person_outline),
             title: const Text('Mi Perfil'),
             selected: currentIndex == 4,
-            onTap: () {
-              Navigator.pop(context);
-              onSelectTab(4);
-            },
+            onTap: () => _navigateToTab(context, 4),
           ),
           const Divider(),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Text(
-              'Otros Servicios',
-              style: TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
+              'Servicios y Accesos Directos',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           ListTile(
             leading: const Icon(Icons.school_outlined),
             title: const Text('Directorio de Profesores'),
+            onTap: () async {
+              Navigator.pop(context);
+              final result =
+                  await Navigator.pushNamed(context, AppRoutes.professors);
+              if (result == 0 && context.mounted) {
+                _navigateToTab(context, 0);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.bookmark_outline),
+            title: const Text('Lugares Guardados'),
+            onTap: () async {
+              Navigator.pop(context);
+              final result =
+                  await Navigator.pushNamed(context, AppRoutes.savedPlaces);
+              if (result == 0 && context.mounted) {
+                _navigateToTab(context, 0);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.assignment_outlined),
+            title: const Text('Mis Reportes'),
+            onTap: () async {
+              Navigator.pop(context);
+              final result =
+                  await Navigator.pushNamed(context, AppRoutes.myReports);
+              if (result == 3 && context.mounted) {
+                _navigateToTab(context, 3);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.find_in_page_outlined),
+            title: const Text('Objetos Reportados'),
+            onTap: () async {
+              Navigator.pop(context);
+              final result =
+                  await Navigator.pushNamed(context, AppRoutes.myLostItems);
+              if (result == 2 && context.mounted) {
+                _navigateToTab(context, 2);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings_outlined),
+            title: const Text('Configuración'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/professors');
+              Navigator.pushNamed(context, AppRoutes.profileSettings);
             },
           ),
         ],

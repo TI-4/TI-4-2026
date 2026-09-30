@@ -5,7 +5,14 @@ import 'report_detail_screen.dart';
 
 // Pantalla de Reportes de Incidencias con filtros, mapa de calor y tarjetas.
 class ReportsScreen extends StatefulWidget {
-  const ReportsScreen({super.key});
+  final bool showAppBar;
+  final Function(int)? onNavigateToTab;
+
+  const ReportsScreen({
+    super.key,
+    this.showAppBar = false,
+    this.onNavigateToTab,
+  });
 
   @override
   State<ReportsScreen> createState() => _ReportsScreenState();
@@ -70,6 +77,21 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final reports = _filteredReports;
 
     return Scaffold(
+      appBar: widget.showAppBar
+          ? AppBar(
+              backgroundColor: AppColors.uctBlue,
+              foregroundColor: Colors.white,
+              title: const Text(
+                'Reportes de Incidencias',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              centerTitle: true,
+            )
+          : null,
       body: Column(
         children: [
           // ===== Barra de filtros =====
@@ -240,6 +262,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           statusColor: _statusColor(reports[i].currentStatus),
                           statusIcon: _statusIcon(reports[i].currentStatus),
                           timeAgo: _timeAgo(reports[i].reportedAt),
+                          onNavigateToTab: widget.onNavigateToTab,
                         ),
                   ),
           ),
@@ -270,12 +293,14 @@ class _ReportCard extends StatelessWidget {
   final Color statusColor;
   final IconData statusIcon;
   final String timeAgo;
+  final Function(int)? onNavigateToTab;
 
   const _ReportCard({
     required this.report,
     required this.statusColor,
     required this.statusIcon,
     required this.timeAgo,
+    this.onNavigateToTab,
   });
 
   @override
@@ -411,8 +436,10 @@ class _ReportCard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            ReportDetailScreen(report: report),
+                        builder: (_) => ReportDetailScreen(
+                          report: report,
+                          onNavigateToTab: onNavigateToTab,
+                        ),
                       ),
                     );
                   },

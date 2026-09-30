@@ -1,10 +1,17 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/lost_item.dart';
 import 'lost_item_detail_screen.dart';
 
 class LostFoundScreen extends StatefulWidget {
-  const LostFoundScreen({super.key});
+  final bool showAppBar;
+  final Function(int)? onNavigateToTab;
+
+  const LostFoundScreen({
+    super.key,
+    this.showAppBar = false,
+    this.onNavigateToTab,
+  });
 
   @override
   State<LostFoundScreen> createState() => _LostFoundScreenState();
@@ -111,6 +118,21 @@ class _LostFoundScreenState extends State<LostFoundScreen> {
     final items = _filtered;
 
     return Scaffold(
+      appBar: widget.showAppBar
+          ? AppBar(
+              backgroundColor: AppColors.uctBlue,
+              foregroundColor: Colors.white,
+              title: const Text(
+                'Objetos Perdidos',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              centerTitle: true,
+            )
+          : null,
       body: Column(
         children: [
           // ===== Barra de filtros =====
@@ -309,6 +331,7 @@ class _LostFoundScreenState extends State<LostFoundScreen> {
                       categoryIcon: _categoryIcon(items[i].category),
                       categoryColor: _categoryColor(items[i].category),
                       timeAgo: _timeAgo(items[i].reportedAt),
+                      onNavigateToTab: widget.onNavigateToTab,
                     ),
                   ),
           ),
@@ -341,6 +364,7 @@ class _LostItemCard extends StatelessWidget {
   final IconData categoryIcon;
   final Color categoryColor;
   final String timeAgo;
+  final Function(int)? onNavigateToTab;
 
   const _LostItemCard({
     required this.item,
@@ -348,6 +372,7 @@ class _LostItemCard extends StatelessWidget {
     required this.categoryIcon,
     required this.categoryColor,
     required this.timeAgo,
+    this.onNavigateToTab,
   });
 
   @override
@@ -478,8 +503,10 @@ class _LostItemCard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              LostItemDetailScreen(item: item),
+                          builder: (_) => LostItemDetailScreen(
+                            item: item,
+                            onNavigateToTab: onNavigateToTab,
+                          ),
                         ),
                       );
                     },
