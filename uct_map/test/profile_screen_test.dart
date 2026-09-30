@@ -15,14 +15,14 @@ void main() {
     );
   }
 
-  testWidgets('ProfileScreen muestra avatar con lápiz, rol de Estudiante y los 5 botones', (tester) async {
+  testWidgets('ProfileScreen muestra avatar con lápiz y los 5 botones, sin rol sin sesión', (tester) async {
     await tester.pumpWidget(createWidgetUnderTest());
 
     // 1. Verificar lápiz de edición sobre el avatar
     expect(find.byIcon(Icons.edit), findsOneWidget);
 
-    // 2. Verificar rol Estudiante
-    expect(find.text('Estudiante'), findsOneWidget);
+    // 2. Sin sesión no hay rol asignado: no se muestra ningún pill de rol
+    expect(find.text('Estudiante'), findsNothing);
 
     // 3. Verificar los 5 botones principales según el diseño Figma
     expect(find.text('Mis favoritos o guardados'), findsOneWidget);

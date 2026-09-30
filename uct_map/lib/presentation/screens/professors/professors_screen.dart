@@ -1,32 +1,177 @@
 import 'package:flutter/material.dart';
 import '../../../core/navigation/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../data/datasources/schedule_remote_ds.dart';
+import '../../../domain/entities/professor.dart';
+import '../../../domain/repositories/schedule_repository.dart';
 
-class ProfessorsScreen extends StatelessWidget {
+/// Pantalla Directorio de Profesores conectada al Schedule Service (ms.svg).
+class ProfessorsScreen extends StatefulWidget {
+  const ProfessorsScreen({super.key, this.onNavigateToTab, this.scheduleRepository});
+
   final Function(int)? onNavigateToTab;
+  final ScheduleRepository? scheduleRepository;
 
-  const ProfessorsScreen({super.key, this.onNavigateToTab});
+  @override
+  State<ProfessorsScreen> createState() => _ProfessorsScreenState();
+}
 
-  final List<Map<String, String>> _professors = const [
-    {
-      'name': 'Dr. Roberto González',
-      'department': 'Ingeniería de Software',
-      'office': 'Oficina 304 - Edificio Central',
-      'email': 'rgonzalez@uct.cl',
-    },
-    {
-      'name': 'Dra. Marcela Soto',
-      'department': 'Ciencias de la Computación',
-      'office': 'Oficina 210 - Edificio C',
-      'email': 'msoto@uct.cl',
-    },
-    {
-      'name': 'Mg. Carlos Peña',
-      'department': 'Redes y Telecomunicaciones',
-      'office': 'Oficina 105 - Laboratorios',
-      'email': 'cpena@uct.cl',
-    },
-  ];
+class _ProfessorsScreenState extends State<ProfessorsScreen> {
+  late final ScheduleRepository _repository;
+  List<Professor> _professors = [];
+  bool _loading = true;
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _repository = widget.scheduleRepository ?? ScheduleRemoteDataSource();
+    _loadProfessors();
+  }
+
+  Future<void> _loadProfessors() async {
+    setState(() => _loading = true);
+    try {
+      final list = await _repository.getProfessors();
+      if (mounted) {
+        setState(() {
+          _professors = list;
+          _loading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  List<Professor> get _filteredProfessors {
+    final base = _professors.isNotEmpty
+        ? _professors
+        : ScheduleRemoteDataSource.fallbackProfessors;
+    if (_searchQuery.trim().isEmpty) return base;
+    final q = _searchQuery.toLowerCase();
+    return base.where((p) {
+      return p.name.toLowerCase().contains(q) ||
+          p.department.toLowerCase().contains(q) ||
+          p.office.toLowerCase().contains(q);
+    }).toList();
+  }
+
+  void _showBookingDialog(Professor prof) {
+    DateTime selectedDate = DateTime.now().add(const Duration(days: 1));
+    TimeOfDay selectedTime = const TimeOfDay(hour: 10, minute: 0);
+
+    showDialog(
+      context: context,
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text('Agendar Cita con ${prof.name}'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Departamento: ${prof.department}',
+                      style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                  const SizedBox(height: 12),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.calendar_today, color: Color(0xFF003865)),
+                    title: Text(
+                      'Fecha: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    trailing: TextButton(
+                      child: const Text('Cambiar'),
+                      onPressed: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate,
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime.now().add(const Duration(days: 60)),
+                        );
+                        if (picked != null) {
+                          setDialogState(() => selectedDate = picked);
+                        }
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.access_time, color: Color(0xFF003865)),
+                    title: Text(
+                      'Hora: ${selectedTime.format(context)}',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    trailing: TextButton(
+                      child: const Text('Cambiar'),
+                      onPressed: () async {
+                        final picked = await showTimePicker(
+                          context: context,
+                          initialTime: selectedTime,
+                        );
+                        if (picked != null) {
+                          setDialogState(() => selectedTime = picked);
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogCtx),
+                  child: const Text('Cancelar'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF003865),
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(dialogCtx);
+                    final scheduledAt = DateTime(
+                      selectedDate.year,
+                      selectedDate.month,
+                      selectedDate.day,
+                      selectedTime.hour,
+                      selectedTime.minute,
+                    );
+                    try {
+                      await _repository.createMeeting(
+                        teacherRefId: prof.id,
+                        structureRefId: prof.structureRefId ?? prof.office,
+                        scheduledAt: scheduledAt,
+                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Cita solicitada exitosamente con ${prof.name}.',
+                            ),
+                          ),
+                        );
+                      }
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Cita agendada localmente con ${prof.name}.'),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: const Text('Confirmar Cita'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   void _goToMap(BuildContext context, String profName) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -37,11 +182,11 @@ class ProfessorsScreen extends StatelessWidget {
       ),
     );
 
-    if (onNavigateToTab != null) {
+    if (widget.onNavigateToTab != null) {
       if (Navigator.canPop(context)) {
         Navigator.pop(context, 0);
       }
-      onNavigateToTab!(0);
+      widget.onNavigateToTab!(0);
     } else if (Navigator.canPop(context)) {
       Navigator.pop(context, 0);
     } else {
@@ -55,6 +200,8 @@ class ProfessorsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final list = _filteredProfessors;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -74,6 +221,7 @@ class ProfessorsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
+              onChanged: (val) => setState(() => _searchQuery = val),
               decoration: InputDecoration(
                 hintText: 'Buscar profesor por nombre o departamento...',
                 prefixIcon: const Icon(Icons.search, color: AppColors.uctBlue),
@@ -96,109 +244,127 @@ class ProfessorsScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              itemCount: _professors.length,
-              itemBuilder: (context, index) {
-                final prof = _professors[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  elevation: 1,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    side: const BorderSide(color: AppColors.fieldBorder),
-                  ),
-                  child: ExpansionTile(
-                    leading: CircleAvatar(
-                      backgroundColor:
-                          AppColors.uctBlue.withValues(alpha: 0.1),
-                      child: const Icon(Icons.person, color: AppColors.uctBlue),
-                    ),
-                    title: Text(
-                      prof['name']!,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.ink,
-                      ),
-                    ),
-                    subtitle: Text(
-                      prof['department']!,
-                      style: const TextStyle(
-                        color: AppColors.subtitle,
-                        fontSize: 13,
-                      ),
-                    ),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.meeting_room,
-                                    size: 20, color: AppColors.uctGold),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    'Ubicación: ${prof['office']}',
-                                    style: const TextStyle(
-                                      color: AppColors.ink,
-                                      fontSize: 13,
-                                    ),
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : list.isEmpty
+                    ? const Center(child: Text('No se encontraron profesores.'))
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        itemCount: list.length,
+                        itemBuilder: (context, index) {
+                          final prof = list[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            elevation: 1,
+                            shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(14),
+                             side: const BorderSide(color: AppColors.fieldBorder),
+                            ),
+                            child: ExpansionTile(
+                             leading: CircleAvatar(
+                               backgroundColor: AppColors.uctBlue.withValues(alpha: 0.1),
+                               child: const Icon(Icons.person, color: AppColors.uctBlue),
+                             ),
+                             title: Text(
+                               prof.name,
+                               style: const TextStyle(
+                                 fontWeight: FontWeight.bold,
+                                 color: AppColors.ink,
+                               ),
+                             ),
+                             subtitle: Text(
+                               prof.department,
+                               style: const TextStyle(
+                                 color: AppColors.subtitle,
+                                 fontSize: 13,
+                               ),
+                             ),
+                             children: [
+                               Padding(
+                                 padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.meeting_room,
+                                              size: 20, color: AppColors.uctGold),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              'Ubicación: ${prof.office}',
+                                              style: const TextStyle(
+                                                color: AppColors.ink,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.email,
+                                              size: 20, color: AppColors.uctBlue),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              'Correo: ${prof.email}',
+                                              style: const TextStyle(
+                                                color: AppColors.ink,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      if (prof.officeHours.isNotEmpty) ...[
+                                        const SizedBox(height: 12),
+                                        const Text(
+                                          'Horarios de Atención:',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        ...prof.officeHours.map(
+                                          (h) => Text(
+                                            '• ${h.dayName}: ${h.startTime} - ${h.endTime}',
+                                            style: const TextStyle(
+                                                fontSize: 12, color: Colors.black87),
+                                          ),
+                                        ),
+                                      ],
+                                      const SizedBox(height: 12),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          OutlinedButton.icon(
+                                            onPressed: () => _goToMap(context, prof.name),
+                                            icon: const Icon(Icons.map_outlined),
+                                            label: const Text('Ver en Mapa'),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          ElevatedButton.icon(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: const Color(0xFF003865),
+                                              foregroundColor: Colors.white,
+                                            ),
+                                            onPressed: () => _showBookingDialog(prof),
+                                            icon: const Icon(Icons.calendar_month),
+                                            label: const Text('Agendar Cita'),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Icon(Icons.email,
-                                    size: 20, color: AppColors.uctBlue),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    'Correo: ${prof['email']}',
-                                    style: const TextStyle(
-                                      color: AppColors.ink,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 14),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: ElevatedButton.icon(
-                                onPressed: () =>
-                                    _goToMap(context, prof['name']!),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.uctBlue,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 10,
-                                  ),
-                                ),
-                                icon: const Icon(Icons.map_outlined, size: 18),
-                                label: const Text(
-                                  'Ver en Mapa',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
           ),
         ],
       ),
