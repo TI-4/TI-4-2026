@@ -18,6 +18,7 @@ class CategoryModel extends Category {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {'id': id, 'name': name, 'icon': icon, 'description': description};
   }

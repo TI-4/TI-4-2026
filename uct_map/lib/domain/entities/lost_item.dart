@@ -110,10 +110,10 @@ class LostItem {
         ? (DateTime.tryParse(rawAt) ?? DateTime.now())
         : DateTime.now();
 
-    final rawHistory = json['statusHistory'] ?? json['StatusHistory'] as List<dynamic>? ?? [];
+    final rawHistory = (json['statusHistory'] ?? json['StatusHistory']) as List<dynamic>? ?? [];
     final historyList = rawHistory
         .whereType<Map<String, dynamic>>()
-        .map((e) => LostItemStatusEvent.fromJson(e))
+        .map<LostItemStatusEvent>((e) => LostItemStatusEvent.fromJson(e))
         .toList();
 
     return LostItem(

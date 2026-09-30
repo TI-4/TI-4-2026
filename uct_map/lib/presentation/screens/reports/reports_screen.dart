@@ -275,15 +275,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
           const Divider(height: 1, color: AppColors.fieldBorder),
           // ===== Lista de reportes =====
           Expanded(
-            child: reports.isEmpty
-                ? const Center(
-                    child: Text(
-                      'No hay reportes para este campus.',
-                      style:
-                          TextStyle(color: AppColors.subtitle, fontSize: 14),
-                    ),
-                  )
-                : ListView.builder(
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : reports.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No hay reportes para este campus.',
+                          style:
+                              TextStyle(color: AppColors.subtitle, fontSize: 14),
+                        ),
+                      )
+                    : ListView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 90),
                     itemCount: reports.length,
                     itemBuilder: (ctx, i) =>

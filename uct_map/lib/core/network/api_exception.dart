@@ -30,8 +30,7 @@ class NotFoundException extends ApiException {
 
 /// Error de conectividad de red o timeout.
 class NetworkException extends ApiException {
-  const NetworkException([String message = 'Sin conexión con el servidor. Revisa tu red.'])
-      : super(message);
+  const NetworkException([super.message = 'Sin conexión con el servidor. Revisa tu red.']);
 }
 
 /// Error 500+ Internal Server Error.

@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:uct_map/core/network/api_config.dart';
 import 'package:uct_map/data/datasources/schedule_remote_ds.dart';
-import 'package:uct_map/domain/entities/office_hour.dart';
 import 'package:uct_map/domain/entities/professor.dart';
 import 'package:uct_map/domain/entities/schedule_meeting.dart';
 

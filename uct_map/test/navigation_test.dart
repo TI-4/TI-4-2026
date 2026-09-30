@@ -223,6 +223,7 @@ void main() {
           ),
         ),
       ));
+      await tester.pumpAndSettle();
 
       // Expandir el primer profesor
       await tester.tap(find.text('Dr. Roberto González'));
