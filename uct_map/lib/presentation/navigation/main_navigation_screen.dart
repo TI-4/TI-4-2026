@@ -29,7 +29,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   bool _didReadInitialArgs = false;
   late final AuthenticatedClient _apiClient;
 
-  static const _protectedTabs = [2, 3];
+  static const _protectedTabs = [2, 3, 4];
 
   final List<String> _titles = const [
     'Mapa del Campus',
@@ -137,15 +137,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             incidentRepository: IncidentRemoteDataSource(client: _apiClient),
           ),
           'Reportes de incidencias'),
-      ProfileScreen(
-        session: _session,
-        onNavigateToTab: _onTabTapped,
-        onLogout: () {
-          _session.signOut().then((_) {
-            if (mounted) setState(() {});
-          });
-        },
-      ),
+      _protected(
+          4,
+          ProfileScreen(
+            session: _session,
+            onNavigateToTab: _onTabTapped,
+            onLogout: () {
+              _session.signOut().then((_) {
+                if (mounted) setState(() {});
+              });
+            },
+          ),
+          'Perfil del usuario'),
     ];
 
     return Scaffold(
