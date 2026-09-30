@@ -4,9 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:uct_map/core/network/api_config.dart';
 import 'package:uct_map/data/datasources/campus_remote_ds.dart';
-import 'package:uct_map/domain/entities/building.dart';
 import 'package:uct_map/domain/entities/campus.dart';
-import 'package:uct_map/domain/entities/room.dart';
 
 void main() {
   group('Campus Service Domain & Datasource Tests', () {

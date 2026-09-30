@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'core/config/env_config.dart';
 import 'core/navigation/app_routes.dart';
 import 'domain/repositories/auth_repository.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EnvConfig.init();
   runApp(const UctMapApp());
 }
 

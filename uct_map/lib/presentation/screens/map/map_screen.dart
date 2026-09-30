@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../core/config/env_config.dart';
 import '../../../data/datasources/campus_remote_ds.dart';
 import '../../../data/repositories/campus_repository_impl.dart';
 import '../../../domain/entities/building.dart';
@@ -125,7 +126,7 @@ class _MapScreenState extends State<MapScreen> {
           options: MapOptions(initialCenter: fallbackCenter, initialZoom: 16),
           children: [
             TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              urlTemplate: EnvConfig.mapTileUrl,
               userAgentPackageName: 'cl.cl.uct.uct_map',
             ),
 

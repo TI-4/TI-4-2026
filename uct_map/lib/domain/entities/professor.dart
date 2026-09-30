@@ -21,10 +21,10 @@ class Professor {
   });
 
   factory Professor.fromJson(Map<String, dynamic> json) {
-    final rawHours = json['officeHours'] ?? json['OfficeHours'] as List<dynamic>? ?? [];
+    final rawHours = (json['officeHours'] ?? json['OfficeHours']) as List<dynamic>? ?? [];
     final hoursList = rawHours
         .whereType<Map<String, dynamic>>()
-        .map((h) => OfficeHour.fromJson(h))
+        .map<OfficeHour>((h) => OfficeHour.fromJson(h))
         .toList();
 
     return Professor(

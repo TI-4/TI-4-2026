@@ -102,10 +102,10 @@ class Report {
         ? (DateTime.tryParse(rawAt) ?? DateTime.now())
         : DateTime.now();
 
-    final rawHistory = json['statusHistory'] ?? json['StatusHistory'] as List<dynamic>? ?? [];
+    final rawHistory = (json['statusHistory'] ?? json['StatusHistory']) as List<dynamic>? ?? [];
     final historyList = rawHistory
         .whereType<Map<String, dynamic>>()
-        .map((e) => ReportStatusEvent.fromJson(e))
+        .map<ReportStatusEvent>((e) => ReportStatusEvent.fromJson(e))
         .toList();
 
     return Report(

@@ -336,23 +336,25 @@ class _LostFoundScreenState extends State<LostFoundScreen> {
 
           // ===== Lista de objetos =====
           Expanded(
-            child: items.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.inventory_2_outlined,
-                            size: 60, color: Colors.grey.shade400),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'No hay objetos con estos filtros.',
-                          style: TextStyle(
-                              color: AppColors.subtitle, fontSize: 14),
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : items.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.inventory_2_outlined,
+                                size: 60, color: Colors.grey.shade400),
+                            const SizedBox(height: 12),
+                            const Text(
+                              'No hay objetos con estos filtros.',
+                              style: TextStyle(
+                                  color: AppColors.subtitle, fontSize: 14),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
+                      )
+                    : ListView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 90),
                     itemCount: items.length,
                     itemBuilder: (ctx, i) => _LostItemCard(
