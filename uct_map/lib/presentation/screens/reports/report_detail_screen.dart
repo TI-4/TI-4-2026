@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/navigation/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/report.dart';
 
@@ -6,8 +7,13 @@ import '../../../domain/entities/report.dart';
 // el historial de estados con estilo de lista de tareas (timeline).
 class ReportDetailScreen extends StatelessWidget {
   final Report report;
+  final Function(int)? onNavigateToTab;
 
-  const ReportDetailScreen({super.key, required this.report});
+  const ReportDetailScreen({
+    super.key,
+    required this.report,
+    this.onNavigateToTab,
+  });
 
   static const List<ReportStatus> _allStatuses = [
     ReportStatus.reportado,
@@ -52,6 +58,26 @@ class ReportDetailScreen extends StatelessWidget {
     return '${dt.day} ${months[dt.month - 1]} ${dt.year} - $h:$m';
   }
 
+  void _goToMap(BuildContext context) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Ubicando "${report.location}" en el mapa...'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+    if (onNavigateToTab != null) {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context, 0);
+      }
+      onNavigateToTab!(0);
+    } else if (Navigator.canPop(context)) {
+      Navigator.pop(context, 0);
+    } else {
+      Navigator.pushReplacementNamed(context, AppRoutes.initial, arguments: 0);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final int currentIndex = _allStatuses.indexOf(report.currentStatus);
@@ -65,6 +91,13 @@ class ReportDetailScreen extends StatelessWidget {
           'Detalle del Reporte',
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.map_outlined),
+            tooltip: 'Ver ubicación en mapa',
+            onPressed: () => _goToMap(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -151,6 +184,30 @@ class ReportDetailScreen extends StatelessWidget {
                             color: Colors.white70, fontSize: 13),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _goToMap(context),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: AppColors.uctYellow, width: 1.2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                      icon: const Icon(Icons.map_outlined, size: 16, color: AppColors.uctYellow),
+                      label: const Text(
+                        'Ver ubicación en el Mapa',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

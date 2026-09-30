@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-
+import '../../../core/navigation/app_routes.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../data/datasources/schedule_remote_ds.dart';
 import '../../../domain/entities/professor.dart';
 import '../../../domain/repositories/schedule_repository.dart';
 
 /// Pantalla Directorio de Profesores conectada al Schedule Service (ms.svg).
 class ProfessorsScreen extends StatefulWidget {
-  const ProfessorsScreen({super.key, this.scheduleRepository});
+  const ProfessorsScreen({super.key, this.onNavigateToTab, this.scheduleRepository});
 
+  final Function(int)? onNavigateToTab;
   final ScheduleRepository? scheduleRepository;
 
   @override
@@ -171,13 +173,47 @@ class _ProfessorsScreenState extends State<ProfessorsScreen> {
     );
   }
 
+  void _goToMap(BuildContext context, String profName) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Ubicando oficina de $profName en el mapa...'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+
+    if (widget.onNavigateToTab != null) {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context, 0);
+      }
+      widget.onNavigateToTab!(0);
+    } else if (Navigator.canPop(context)) {
+      Navigator.pop(context, 0);
+    } else {
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.initial,
+        arguments: 0,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final list = _filteredProfessors;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Directorio de Profesores'),
+        title: const Text(
+          'Directorio de Profesores',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: AppColors.uctBlue,
+        foregroundColor: Colors.white,
         centerTitle: true,
       ),
       body: Column(
@@ -188,12 +224,22 @@ class _ProfessorsScreenState extends State<ProfessorsScreen> {
               onChanged: (val) => setState(() => _searchQuery = val),
               decoration: InputDecoration(
                 hintText: 'Buscar profesor por nombre o departamento...',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search, color: AppColors.uctBlue),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.fieldBorder),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.fieldBorder),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      const BorderSide(color: AppColors.uctBlue, width: 2),
                 ),
                 filled: true,
-                fillColor: Colors.grey.shade100,
+                fillColor: Colors.grey.shade50,
               ),
             ),
           ),
@@ -209,36 +255,67 @@ class _ProfessorsScreenState extends State<ProfessorsScreen> {
                           final prof = list[index];
                           return Card(
                             margin: const EdgeInsets.only(bottom: 12),
+                            elevation: 1,
+                            shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(14),
+                             side: const BorderSide(color: AppColors.fieldBorder),
+                            ),
                             child: ExpansionTile(
-                              leading: const CircleAvatar(
-                                child: Icon(Icons.person),
-                              ),
-                              title: Text(
-                                prof.name,
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(prof.department),
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                             leading: CircleAvatar(
+                               backgroundColor: AppColors.uctBlue.withValues(alpha: 0.1),
+                               child: const Icon(Icons.person, color: AppColors.uctBlue),
+                             ),
+                             title: Text(
+                               prof.name,
+                               style: const TextStyle(
+                                 fontWeight: FontWeight.bold,
+                                 color: AppColors.ink,
+                               ),
+                             ),
+                             subtitle: Text(
+                               prof.department,
+                               style: const TextStyle(
+                                 color: AppColors.subtitle,
+                                 fontSize: 13,
+                               ),
+                             ),
+                             children: [
+                               Padding(
+                                 padding: const EdgeInsets.all(16.0),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
                                           const Icon(Icons.meeting_room,
-                                              size: 20, color: Colors.blueGrey),
+                                              size: 20, color: AppColors.uctGold),
                                           const SizedBox(width: 8),
-                                          Text('Ubicación: ${prof.office}'),
+                                          Expanded(
+                                            child: Text(
+                                              'Ubicación: ${prof.office}',
+                                              style: const TextStyle(
+                                                color: AppColors.ink,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       const SizedBox(height: 8),
                                       Row(
                                         children: [
                                           const Icon(Icons.email,
-                                              size: 20, color: Colors.blueGrey),
+                                              size: 20, color: AppColors.uctBlue),
                                           const SizedBox(width: 8),
-                                          Text('Correo: ${prof.email}'),
+                                          Expanded(
+                                            child: Text(
+                                              'Correo: ${prof.email}',
+                                              style: const TextStyle(
+                                                color: AppColors.ink,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       if (prof.officeHours.isNotEmpty) ...[
@@ -264,14 +341,7 @@ class _ProfessorsScreenState extends State<ProfessorsScreen> {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
                                           OutlinedButton.icon(
-                                            onPressed: () {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      'Ubicando oficina de ${prof.name} en el mapa...'),
-                                                ),
-                                              );
-                                            },
+                                            onPressed: () => _goToMap(context, prof.name),
                                             icon: const Icon(Icons.map_outlined),
                                             label: const Text('Ver en Mapa'),
                                           ),

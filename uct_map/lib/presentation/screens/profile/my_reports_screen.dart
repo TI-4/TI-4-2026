@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/navigation/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/report.dart';
 import '../reports/report_detail_screen.dart';
@@ -253,9 +254,19 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
           child: ElevatedButton.icon(
             onPressed: () {
-              Navigator.pop(context);
               if (widget.onNavigateToTab != null) {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context, 3);
+                }
                 widget.onNavigateToTab!(3); // Navega a la pestaña de reportes
+              } else if (Navigator.canPop(context)) {
+                Navigator.pop(context, 3);
+              } else {
+                Navigator.pushReplacementNamed(
+                  context,
+                  AppRoutes.initial,
+                  arguments: 3,
+                );
               }
             },
             icon: const Icon(Icons.add_circle_outline),
@@ -344,7 +355,10 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => ReportDetailScreen(report: report),
+            builder: (_) => ReportDetailScreen(
+              report: report,
+              onNavigateToTab: widget.onNavigateToTab,
+            ),
           ),
         );
       },

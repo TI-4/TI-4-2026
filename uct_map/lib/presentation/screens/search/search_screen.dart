@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/navigation/app_routes.dart';
 
 class SearchScreen extends StatefulWidget {
   final VoidCallback onExploreMap;
@@ -200,8 +201,14 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/professors');
+                  onPressed: () async {
+                    final res = await Navigator.pushNamed(
+                      context,
+                      AppRoutes.professors,
+                    );
+                    if (res == 0 && mounted) {
+                      widget.onExploreMap();
+                    }
                   },
                   child: const Text('Ver todos'),
                 ),

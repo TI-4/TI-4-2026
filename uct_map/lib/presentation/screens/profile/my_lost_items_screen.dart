@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/navigation/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/lost_item.dart';
 import '../lost_found/lost_item_detail_screen.dart';
@@ -163,9 +164,19 @@ class _MyLostItemsScreenState extends State<MyLostItemsScreen>
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
           child: ElevatedButton.icon(
             onPressed: () {
-              Navigator.pop(context);
               if (widget.onNavigateToTab != null) {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context, 2);
+                }
                 widget.onNavigateToTab!(2); // Navega a la pestaña de objetos perdidos
+              } else if (Navigator.canPop(context)) {
+                Navigator.pop(context, 2);
+              } else {
+                Navigator.pushReplacementNamed(
+                  context,
+                  AppRoutes.initial,
+                  arguments: 2,
+                );
               }
             },
             icon: const Icon(Icons.search),
@@ -284,7 +295,10 @@ class _MyLostItemsScreenState extends State<MyLostItemsScreen>
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => LostItemDetailScreen(item: _myItems[0]),
+                          builder: (_) => LostItemDetailScreen(
+                            item: _myItems[0],
+                            onNavigateToTab: widget.onNavigateToTab,
+                          ),
                         ),
                       );
                     },
@@ -387,7 +401,10 @@ class _MyLostItemsScreenState extends State<MyLostItemsScreen>
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => LostItemDetailScreen(item: item),
+                builder: (_) => LostItemDetailScreen(
+                  item: item,
+                  onNavigateToTab: widget.onNavigateToTab,
+                ),
               ),
             );
           },

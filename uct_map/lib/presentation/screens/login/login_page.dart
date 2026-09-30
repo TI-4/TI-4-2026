@@ -86,6 +86,14 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Row(
                   children: [
+                    if (Navigator.canPop(context)) ...[
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back, color: AppColors.uctBlue),
+                        tooltip: 'Volver',
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const SizedBox(width: 4),
+                    ],
                     Container(
                       width: 36,
                       height: 36,

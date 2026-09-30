@@ -15,15 +15,18 @@ import '../widgets/uct_logo.dart';
 import '../widgets/custom_drawer.dart';
 
 class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
+  final int initialIndex;
+
+  const MainNavigationScreen({super.key, this.initialIndex = 0});
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex;
   final _session = SessionController();
+  bool _didReadInitialArgs = false;
   late final AuthenticatedClient _apiClient;
 
   static const _protectedTabs = [2, 3];
@@ -36,18 +39,31 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     'Mi Perfil',
   ];
 
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+    _apiClient = ApiClientProvider.create(_session);
+    _session.restore().then((_) {
+      if (mounted) setState(() {});
     });
   }
 
   @override
-  void initState() {
-    super.initState();
-    _apiClient = ApiClientProvider.create(_session);
-    _session.restore().then((_) {
-      if (mounted) setState(() {});
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_didReadInitialArgs) {
+      _didReadInitialArgs = true;
+      final args = ModalRoute.of(context)?.settings.arguments;
+      if (args is int && args >= 0 && args < _titles.length) {
+        _currentIndex = args;
+      }
+    }
+  }
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
     });
   }
 
@@ -109,12 +125,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       _protected(
           2,
           LostFoundScreen(
+            onNavigateToTab: _onTabTapped,
             incidentRepository: IncidentRemoteDataSource(client: _apiClient),
           ),
           'Objetos perdidos'),
       _protected(
           3,
           ReportsScreen(
+            onNavigateToTab: _onTabTapped,
             incidentRepository: IncidentRemoteDataSource(client: _apiClient),
           ),
           'Reportes de incidencias'),

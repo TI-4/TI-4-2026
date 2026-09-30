@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/navigation/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 
 class SavedPlaceItem {
@@ -364,16 +365,27 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
                 ),
                 OutlinedButton.icon(
                   onPressed: () {
-                    Navigator.pop(context);
-                    if (widget.onNavigateToTab != null) {
-                      widget.onNavigateToTab!(0); // Navega al mapa
-                    }
+                    ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Ubicando "${item.title}" en el mapa...'),
                         duration: const Duration(seconds: 2),
                       ),
                     );
+                    if (widget.onNavigateToTab != null) {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context, 0);
+                      }
+                      widget.onNavigateToTab!(0); // Navega al mapa
+                    } else if (Navigator.canPop(context)) {
+                      Navigator.pop(context, 0);
+                    } else {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        AppRoutes.initial,
+                        arguments: 0,
+                      );
+                    }
                   },
                   icon: const Icon(Icons.map_outlined, size: 16),
                   label: const Text('Ver en Mapa', style: TextStyle(fontSize: 12)),
