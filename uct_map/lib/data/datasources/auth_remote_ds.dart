@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
+import '../../core/network/api_client_provider.dart';
 import '../../core/network/api_config.dart';
 import '../../domain/repositories/auth_repository.dart';
 
@@ -11,7 +12,7 @@ import '../../domain/repositories/auth_repository.dart';
 /// {userId, email, token}. La contraseña solo viaja en el body del POST.
 class AuthRemoteDataSource implements AuthRepository {
   AuthRemoteDataSource({http.Client? client, ApiConfig? config})
-      : _client = client ?? http.Client(),
+      : _client = client ?? ApiClientProvider.defaultClient,
         _config = config ?? ApiConfig();
 
   final http.Client _client;

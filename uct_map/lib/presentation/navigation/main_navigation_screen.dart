@@ -43,7 +43,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
-    _apiClient = ApiClientProvider.create(_session);
+    ApiClientProvider.initialize(_session);
+    _apiClient = ApiClientProvider.defaultClient;
     _session.restore().then((_) {
       if (mounted) setState(() {});
     });

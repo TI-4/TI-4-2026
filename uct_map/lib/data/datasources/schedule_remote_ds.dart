@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
+import '../../core/network/api_client_provider.dart';
 import '../../core/network/api_config.dart';
 import '../../core/network/api_endpoints.dart';
 import '../../core/network/api_exception.dart';
@@ -15,7 +16,7 @@ import '../../domain/repositories/schedule_repository.dart';
 /// Datasource remoto para consumir /api/schedule a través del API Gateway.
 class ScheduleRemoteDataSource implements ScheduleRepository {
   ScheduleRemoteDataSource({http.Client? client, ApiConfig? config})
-      : _client = client ?? http.Client(),
+      : _client = client ?? ApiClientProvider.defaultClient,
         _config = config ?? ApiConfig();
 
   final http.Client _client;
@@ -35,10 +36,7 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
               .toList();
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException('Error al obtener profesores (${res.statusCode})', res.statusCode);
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return fallbackProfessors;
     } on http.ClientException {
@@ -62,10 +60,7 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
               .toList();
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException('Error al obtener horarios (${res.statusCode})', res.statusCode);
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return [];
     } on http.ClientException {
@@ -89,10 +84,7 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
               .toList();
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException('Error al obtener citas (${res.statusCode})', res.statusCode);
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return [];
     } on http.ClientException {
@@ -128,10 +120,7 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
           return ScheduleMeeting.fromJson(decoded);
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException('Error al agendar cita (${res.statusCode})', res.statusCode);
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       throw const NetworkException();
     } on TimeoutException {

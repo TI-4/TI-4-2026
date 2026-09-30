@@ -20,11 +20,12 @@ import '../models/campus_model.dart';
 import '../models/category_model.dart';
 import '../models/room_model.dart';
 import '../models/structure_model.dart';
+import '../../core/network/api_client_provider.dart';
 
 /// Datasource remoto para consumir /api/campus a través del API Gateway.
 class CampusRemoteDataSource implements CampusRepository {
   CampusRemoteDataSource({http.Client? client, ApiConfig? config})
-    : _client = client ?? http.Client(),
+    : _client = client ?? ApiClientProvider.defaultClient,
       _config = config ?? ApiConfig();
 
   final http.Client _client;
@@ -44,13 +45,7 @@ class CampusRemoteDataSource implements CampusRepository {
               .toList();
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException(
-        'Error al obtener campus (${res.statusCode})',
-        res.statusCode,
-      );
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return fallbackCampuses;
     } on http.ClientException {
@@ -74,13 +69,7 @@ class CampusRemoteDataSource implements CampusRepository {
               .toList();
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException(
-        'Error al obtener edificios (${res.statusCode})',
-        res.statusCode,
-      );
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return [];
     } on http.ClientException {
@@ -104,13 +93,7 @@ class CampusRemoteDataSource implements CampusRepository {
               .toList();
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException(
-        'Error al obtener salas (${res.statusCode})',
-        res.statusCode,
-      );
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return [];
     } on http.ClientException {
@@ -138,14 +121,7 @@ class CampusRemoteDataSource implements CampusRepository {
         }
       }
 
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-
-      throw ApiException(
-        'Error al obtener estructuras (${res.statusCode})',
-        res.statusCode,
-      );
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return [];
     } on http.ClientException {
@@ -173,14 +149,7 @@ class CampusRemoteDataSource implements CampusRepository {
         }
       }
 
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-
-      throw ApiException(
-        'Error al obtener categorías (${res.statusCode})',
-        res.statusCode,
-      );
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return [];
     } on http.ClientException {

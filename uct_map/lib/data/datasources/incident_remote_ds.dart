@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
+import '../../core/network/api_client_provider.dart';
 import '../../core/network/api_config.dart';
 import '../../core/network/api_endpoints.dart';
 import '../../core/network/api_exception.dart';
@@ -14,7 +15,7 @@ import '../../domain/repositories/incident_repository.dart';
 /// Datasource remoto para consumir /api/incident a través del API Gateway.
 class IncidentRemoteDataSource implements IncidentRepository {
   IncidentRemoteDataSource({http.Client? client, ApiConfig? config})
-      : _client = client ?? http.Client(),
+      : _client = client ?? ApiClientProvider.defaultClient,
         _config = config ?? ApiConfig();
 
   final http.Client _client;
@@ -38,10 +39,7 @@ class IncidentRemoteDataSource implements IncidentRepository {
               .toList();
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException('Error al obtener objetos perdidos (${res.statusCode})', res.statusCode);
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return _filterMockLostItems(campus, category);
     } on http.ClientException {
@@ -69,10 +67,7 @@ class IncidentRemoteDataSource implements IncidentRepository {
           return LostItem.fromJson(decoded);
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException('Error al reportar objeto (${res.statusCode})', res.statusCode);
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       // Fallback local: devolver el item como creado
       return item;
@@ -98,10 +93,7 @@ class IncidentRemoteDataSource implements IncidentRepository {
               .toList();
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException('Error al obtener reportes (${res.statusCode})', res.statusCode);
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return _filterMockReports(campus);
     } on http.ClientException {
@@ -129,10 +121,7 @@ class IncidentRemoteDataSource implements IncidentRepository {
           return Report.fromJson(decoded);
         }
       }
-      if (res.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      throw ApiException('Error al crear reporte (${res.statusCode})', res.statusCode);
+      throw ApiException.fromResponse(res.statusCode, res.body);
     } on SocketException {
       return report;
     } on TimeoutException {
