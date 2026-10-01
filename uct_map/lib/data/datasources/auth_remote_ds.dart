@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -36,13 +35,7 @@ class AuthRemoteDataSource implements AuthRepository {
     } on TimeoutException {
       throw const AuthFailure(
           'El servidor no responde. Revisa tu conexión e intenta de nuevo.');
-    } on SocketException {
-      throw const AuthFailure(
-          'Sin conexión con el servidor. Revisa tu conexión e intenta de nuevo.');
     } on http.ClientException {
-      throw const AuthFailure(
-          'Sin conexión con el servidor. Revisa tu conexión e intenta de nuevo.');
-    } on HttpException {
       throw const AuthFailure(
           'Sin conexión con el servidor. Revisa tu conexión e intenta de nuevo.');
     } on FormatException {

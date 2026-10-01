@@ -8,7 +8,6 @@ import '../screens/login/auth_required_view.dart';
 import '../../application/session/session_controller.dart';
 import '../../core/network/api_client_provider.dart';
 import '../../core/network/authenticated_client.dart';
-import '../../data/datasources/campus_remote_ds.dart';
 import '../../data/datasources/incident_remote_ds.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../widgets/uct_logo.dart';
@@ -117,9 +116,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final isSearchTab = _currentIndex == 1;
 
     final List<Widget> screens = [
-      MapScreen(
-        campusRepository: CampusRemoteDataSource(client: _apiClient),
-      ),
+      MapScreen(key: ValueKey(_session.isAuthenticated)),
       SearchScreen(
         onExploreMap: () => _onTabTapped(0),
       ),

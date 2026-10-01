@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -40,8 +39,6 @@ class IncidentRemoteDataSource implements IncidentRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return _filterMockLostItems(campus, category);
     } on http.ClientException {
       return _filterMockLostItems(campus, category);
     } on TimeoutException {
@@ -68,7 +65,7 @@ class IncidentRemoteDataSource implements IncidentRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
+    } on http.ClientException {
       // Fallback local: devolver el item como creado
       return item;
     } on TimeoutException {
@@ -94,8 +91,6 @@ class IncidentRemoteDataSource implements IncidentRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return _filterMockReports(campus);
     } on http.ClientException {
       return _filterMockReports(campus);
     } on TimeoutException {
@@ -122,7 +117,7 @@ class IncidentRemoteDataSource implements IncidentRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
+    } on http.ClientException {
       return report;
     } on TimeoutException {
       throw const NetworkException('Tiempo de espera agotado al crear reporte.');

@@ -3,23 +3,38 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/config/env_config.dart';
-import '../../../data/datasources/campus_remote_ds.dart';
-import '../../../data/repositories/campus_repository_impl.dart';
+import '../../../core/network/api_client_provider.dart';
+import '../../../data/models/building_model.dart';
+import '../../../data/models/campus_model.dart';
 import '../../../domain/entities/building.dart';
 import '../../../domain/entities/campus.dart';
-import '../../../domain/repositories/campus_repository.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key, this.campusRepository});
-
-  final CampusRepository? campusRepository;
+  const MapScreen({super.key});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
-  late final CampusRepository _repository;
+  // Rutas reales del microservicio de Campus (vía Gateway). Se consultan
+  // directo desde presentation para no tocar api_endpoints.dart.
+  static const String _campusesPath = '/api/campus/campuses';
+  static const String _buildingsPath = '/api/campus/buildings';
+
+  /// Lado (en grados) de la caja que delimita la zona navegable del campus
+  /// seleccionado. La camara puede moverse y hacer zoom, pero su centro no
+  /// puede salir de esta caja.
+  static const double _campusSpan = 0.006;
+
+  static const EdgeInsets _fitPadding = EdgeInsets.all(24);
+  static const Color _primaryColor = Color(0xFF003865);
+
+  /// Centro por defecto (Temuco) mientras no haya campus desde el backend.
+  static final LatLngBounds _defaultArea = _areaForPoint(
+    const LatLng(-38.7359, -72.5904),
+  );
+
   final MapController _mapController = MapController();
 
   List<Campus> _campuses = [];
@@ -28,61 +43,131 @@ class _MapScreenState extends State<MapScreen> {
 
   bool _loading = true;
 
+  /// El MapController lanza excepcion si se usa antes de que el mapa se haya
+  /// renderizado al menos una vez.
+  bool _mapReady = false;
+
+  /// Evita la recursión al corrigir la cámara desde [_onPositionChanged].
+  bool _clamping = false;
+
   @override
   void initState() {
     super.initState();
 
-    _repository =
-        widget.campusRepository ??
-        CampusRepositoryImpl(remoteDataSource: CampusRemoteDataSource());
-
     _loadCampuses();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      final campus = _selectedCampus;
+      if (campus != null) {
+        _fitCameraTo(campus);
+      }
+
+      setState(() => _mapReady = true);
+    });
+  }
+
+  // Caja de [span] grados alrededor de un punto.
+  static LatLngBounds _areaForPoint(LatLng point) => LatLngBounds(
+        LatLng(point.latitude - _campusSpan / 2, point.longitude - _campusSpan / 2),
+        LatLng(point.latitude + _campusSpan / 2, point.longitude + _campusSpan / 2),
+      );
+
+  // Zona navegable: la del campus seleccionado segun sus coordenadas en la BD.
+  LatLngBounds _areaFor(Campus campus) =>
+      _areaForPoint(LatLng(campus.latitude, campus.longitude));
+
+  // Mantiene el centro de la camara dentro del area del campus: se puede
+  // mover y hacer zoom, pero no salir de la zona.
+  //
+  // No se usa MapOptions.cameraConstraint porque flutter_map 8.3.2 valida esa
+  // restriccion en cada reconstruccion (MapControllerImpl.options) y lanza un
+  // assert si la camara queda fuera, algo que ocurre con cualquier setState
+  // mientras el usuario arrastra el mapa mas alla del limite.
+  void _onPositionChanged(MapCamera camera, bool hasGesture) {
+    if (_clamping) return;
+
+    final campus = _selectedCampus;
+    if (campus == null) return;
+
+    final area = _areaFor(campus);
+    final latitude =
+        camera.center.latitude.clamp(area.south, area.north).toDouble();
+    final longitude =
+        camera.center.longitude.clamp(area.west, area.east).toDouble();
+
+    if (latitude == camera.center.latitude &&
+        longitude == camera.center.longitude) {
+      return;
+    }
+
+    _clamping = true;
+    _mapController.move(LatLng(latitude, longitude), camera.zoom);
+    _clamping = false;
+  }
+
+  // Campus del microservicio (GET /api/campus/campuses).
+  Future<List<Campus>> _fetchCampuses() async {
+    final json = await ApiClientProvider.apiClient.getJson<List<dynamic>>(
+      _campusesPath,
+    );
+
+    return json
+        .whereType<Map<String, dynamic>>()
+        .map(CampusModel.fromJson)
+        .toList();
+  }
+
+  // Edificios de un campus (GET /api/campus/buildings?campusId=).
+  Future<List<Building>> _fetchBuildings(String campusId) async {
+    final json = await ApiClientProvider.apiClient.getJson<List<dynamic>>(
+      _buildingsPath,
+      queryParameters: {'campusId': campusId},
+    );
+
+    return json
+        .whereType<Map<String, dynamic>>()
+        .map(BuildingModel.fromJson)
+        .toList();
   }
 
   Future<void> _loadCampuses() async {
     setState(() => _loading = true);
 
+    List<Campus> campuses;
     try {
-      final campuses = await _repository.getCampuses();
-
-      if (!mounted) return;
-
-      setState(() {
-        _campuses = campuses;
-
-        if (campuses.isNotEmpty) {
-          _selectedCampus = campuses.first;
-        }
-
-        _loading = false;
-      });
-
-      if (_selectedCampus != null) {
-        await _loadBuildings(_selectedCampus!.id);
-      }
+      campuses = await _fetchCampuses();
     } catch (_) {
-      if (mounted) {
-        setState(() => _loading = false);
-      }
+      campuses = [];
+    }
+
+    if (!mounted) return;
+
+    final selected = campuses.isNotEmpty ? campuses.first : null;
+
+    setState(() {
+      _campuses = campuses;
+      _selectedCampus = selected;
+      _buildings = [];
+      _loading = false;
+    });
+
+    if (selected != null) {
+      _fitCameraTo(selected);
+      await _loadBuildings(selected.id);
     }
   }
 
   Future<void> _loadBuildings(String campusId) async {
     try {
-      final buildings = await _repository.getBuildings(campusId);
+      final buildings = await _fetchBuildings(campusId);
 
       if (!mounted) return;
 
       setState(() {
         _buildings = buildings;
       });
-
-      if (buildings.isNotEmpty) {
-        _mapController.move(
-          LatLng(buildings.first.latitude, buildings.first.longitude),
-          17,
-        );
-      }
     } catch (_) {
       if (mounted) {
         setState(() {
@@ -100,37 +185,57 @@ class _MapScreenState extends State<MapScreen> {
       _buildings = [];
     });
 
+    _fitCameraTo(campus);
     _loadBuildings(campus.id);
-
-    _mapController.move(LatLng(campus.latitude, campus.longitude), 16);
   }
 
-  // Campus visibles: los del backend o ejemplo si viene vacío o falla.
-  List<Campus> get _visibleCampuses => _campuses.isNotEmpty
-      ? _campuses
-      : CampusRemoteDataSource.fallbackCampuses;
+  // Encuadra la camara sobre la zona del campus.
+  void _fitToCampus(Campus? campus) {
+    if (campus == null || !_mapReady) return;
+
+    _fitCameraTo(campus);
+  }
+
+  void _fitCameraTo(Campus campus) {
+    _mapController.fitCamera(
+      CameraFit.bounds(bounds: _areaFor(campus), padding: _fitPadding),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final campus = _selectedCampus;
 
-    final fallbackCenter = LatLng(
-      campus?.latitude ?? -38.7359,
-      campus?.longitude ?? -72.5904,
-    );
-
     return Stack(
       children: [
         FlutterMap(
           mapController: _mapController,
-          options: MapOptions(initialCenter: fallbackCenter, initialZoom: 16),
+          options: MapOptions(
+            initialCenter: campus == null
+                ? _defaultArea.center
+                : LatLng(campus.latitude, campus.longitude),
+            initialZoom: 16,
+            maxZoom: 19,
+            onPositionChanged: _onPositionChanged,
+            initialCameraFit: CameraFit.bounds(
+              bounds: campus == null ? _defaultArea : _areaFor(campus),
+              padding: _fitPadding,
+            ),
+          ),
           children: [
             TileLayer(
               urlTemplate: EnvConfig.mapTileUrl,
               userAgentPackageName: 'cl.cl.uct.uct_map',
             ),
 
-            MarkerLayer(markers: _buildings.map(_buildingMarker).toList()),
+            MarkerLayer(
+              markers: [
+                if (campus != null) _campusMarker(campus),
+                ..._buildings.asMap().entries.map(
+                      (entry) => _buildingMarker(entry.key + 1, entry.value),
+                    ),
+              ],
+            ),
           ],
         ),
 
@@ -147,7 +252,7 @@ class _MapScreenState extends State<MapScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Row(
                 children: [
-                  const Icon(Icons.location_city, color: Color(0xFF003865)),
+                  const Icon(Icons.location_city, color: _primaryColor),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -192,7 +297,7 @@ class _MapScreenState extends State<MapScreen> {
               FloatingActionButton.small(
                 heroTag: 'map_layers',
                 backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF003865),
+                foregroundColor: _primaryColor,
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Selección de capas de mapa')),
@@ -204,15 +309,10 @@ class _MapScreenState extends State<MapScreen> {
               const SizedBox(height: 10),
               FloatingActionButton(
                 heroTag: 'map_gps',
-                backgroundColor: const Color(0xFF003865),
+                backgroundColor: _primaryColor,
                 foregroundColor: Colors.white,
                 onPressed: () {
-                  if (campus != null) {
-                    _mapController.move(
-                      LatLng(campus.latitude, campus.longitude),
-                      16,
-                    );
-                  }
+                  _fitToCampus(_selectedCampus);
                 },
                 tooltip: 'Centrar campus',
                 child: const Icon(Icons.my_location),
@@ -224,23 +324,110 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Marker _buildingMarker(Building building) {
+  Marker _campusMarker(Campus campus) {
     return Marker(
-      point: LatLng(building.latitude, building.longitude),
-      width: 50,
-      height: 60,
+      point: LatLng(campus.latitude, campus.longitude),
+      width: 56,
+      height: 56,
       child: GestureDetector(
-        onTap: () => _showBuildingInfo(building),
-        child: const Icon(
-          Icons.location_on,
-          size: 45,
-          color: Color(0xFF003865),
+        onTap: () => _showCampusInfo(campus),
+        child: const DecoratedBox(
+          decoration: BoxDecoration(
+            color: _primaryColor,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x33000000),
+                blurRadius: 6,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: Icon(Icons.school, color: Colors.white, size: 30),
+          ),
         ),
       ),
     );
   }
 
-  void _showBuildingInfo(Building building) {
+  Marker _buildingMarker(int number, Building building) {
+    return Marker(
+      point: LatLng(building.latitude, building.longitude),
+      width: 38,
+      height: 38,
+      child: GestureDetector(
+        onTap: () => _showBuildingInfo(number, building),
+        child: Container(
+          width: 38,
+          height: 38,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(color: _primaryColor, width: 2),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x33000000),
+                blurRadius: 4,
+                offset: Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Text(
+            '$number',
+            style: const TextStyle(
+              color: _primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showCampusInfo(Campus campus) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.school, color: _primaryColor),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      campus.name,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(campus.address),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showBuildingInfo(int number, Building building) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -254,7 +441,7 @@ class _MapScreenState extends State<MapScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                building.name,
+                '$number. ${building.name}',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -264,6 +451,13 @@ class _MapScreenState extends State<MapScreen> {
               Text('${building.floorsCount} pisos'),
               const SizedBox(height: 4),
               Text('${building.rooms.length} salas'),
+              const SizedBox(height: 12),
+              const Text(
+                'Id',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 2),
+              SelectableText(building.id),
               const SizedBox(height: 16),
             ],
           ),
@@ -290,13 +484,13 @@ class _MapScreenState extends State<MapScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              ..._visibleCampuses.map((campus) {
+              ..._campuses.map((campus) {
                 final isSelected = campus.id == _selectedCampus?.id;
 
                 return ListTile(
                   leading: Icon(
                     isSelected ? Icons.location_on : Icons.location_on_outlined,
-                    color: isSelected ? const Color(0xFF003865) : null,
+                    color: isSelected ? _primaryColor : null,
                   ),
                   title: Text(
                     campus.name,

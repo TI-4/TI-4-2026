@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -46,8 +45,6 @@ class ApiClient {
           .timeout(timeout ?? _config.timeout);
       _checkResponse(res);
       return res;
-    } on SocketException {
-      throw const NetworkException();
     } on http.ClientException {
       throw const NetworkException();
     } on TimeoutException {
@@ -97,8 +94,6 @@ class ApiClient {
           .timeout(timeout ?? _config.timeout);
       _checkResponse(res);
       return res;
-    } on SocketException {
-      throw const NetworkException();
     } on http.ClientException {
       throw const NetworkException();
     } on TimeoutException {
@@ -150,8 +145,6 @@ class ApiClient {
           .timeout(timeout ?? _config.timeout);
       _checkResponse(res);
       return res;
-    } on SocketException {
-      throw const NetworkException();
     } on http.ClientException {
       throw const NetworkException();
     } on TimeoutException {
@@ -180,8 +173,6 @@ class ApiClient {
           .timeout(timeout ?? _config.timeout);
       _checkResponse(res);
       return res;
-    } on SocketException {
-      throw const NetworkException();
     } on http.ClientException {
       throw const NetworkException();
     } on TimeoutException {
@@ -210,8 +201,6 @@ class ApiClient {
           .timeout(timeout ?? _config.timeout);
       _checkResponse(res);
       return res;
-    } on SocketException {
-      throw const NetworkException();
     } on http.ClientException {
       throw const NetworkException();
     } on TimeoutException {

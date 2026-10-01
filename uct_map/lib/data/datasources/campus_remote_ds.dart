@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -46,8 +45,6 @@ class CampusRemoteDataSource implements CampusRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return fallbackCampuses;
     } on http.ClientException {
       return fallbackCampuses;
     } on TimeoutException {
@@ -70,8 +67,6 @@ class CampusRemoteDataSource implements CampusRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return [];
     } on http.ClientException {
       return [];
     } on TimeoutException {
@@ -94,8 +89,6 @@ class CampusRemoteDataSource implements CampusRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return [];
     } on http.ClientException {
       return [];
     } on TimeoutException {
@@ -122,8 +115,6 @@ class CampusRemoteDataSource implements CampusRepository {
       }
 
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return [];
     } on http.ClientException {
       return [];
     } on TimeoutException {
@@ -150,8 +141,6 @@ class CampusRemoteDataSource implements CampusRepository {
       }
 
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return [];
     } on http.ClientException {
       return [];
     } on TimeoutException {

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -37,8 +36,6 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return fallbackProfessors;
     } on http.ClientException {
       return fallbackProfessors;
     } on TimeoutException {
@@ -61,8 +58,6 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return [];
     } on http.ClientException {
       return [];
     } on TimeoutException {
@@ -85,8 +80,6 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
-      return [];
     } on http.ClientException {
       return [];
     } on TimeoutException {
@@ -121,7 +114,7 @@ class ScheduleRemoteDataSource implements ScheduleRepository {
         }
       }
       throw ApiException.fromResponse(res.statusCode, res.body);
-    } on SocketException {
+    } on http.ClientException {
       throw const NetworkException();
     } on TimeoutException {
       throw const NetworkException('Tiempo de espera agotado al agendar cita.');
