@@ -1,7 +1,7 @@
 using Incident.Application.Handlers;
-using Incident.Domain.Repositories;
+using Incident.Domain.Interfaces;
 using Incident.Infrastructure.Persistence;
-using Incident.Infrastructure.Repositories;
+using Incident.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Campus.Infraestructure.Persistence;
+using Campus.Infrastructure.Persistence;
 using Campus.Domain.Interfaces;
-using Campus.Application.UseCases;
+using Campus.Application.Handlers;
 
 
 var builder = WebApplication.CreateBuilder(args);

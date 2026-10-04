@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Schedule.Application.DTOs;
-using Schedule.Application.UseCases;
+using Schedule.Application.Handlers;
 
 namespace Schedule.API.Controllers;
 
@@ -10,58 +10,30 @@ public class MeetingsController : ControllerBase
 {
     private readonly MeetingHandler _handler;
 
-    public MeetingsController(MeetingHandler handler)
-    {
-        _handler = handler;
-    }
+    public MeetingsController(MeetingHandler handler) { _handler = handler; }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<MeetingDto>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var dto = await _handler.GetByIdAsync(id, cancellationToken);
-
-        if (dto is null)
-        {
-            return NotFound(new { message = $"Meeting '{id}' was not found." });
-        }
-
-        return Ok(dto);
+        var result = await _handler.GetByIdAsync(id, cancellationToken);
+        if (result.IsError) return NotFound(new { message = result.FirstError.Description });
+        return Ok(result.Value);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MeetingDto>>> GetByTeacher(
-        [FromQuery] Guid teacherId,
-        [FromQuery] DateTime from,
-        [FromQuery] DateTime to,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<MeetingDto>>> GetByTeacher([FromQuery] Guid teacherId, [FromQuery] DateTime from, [FromQuery] DateTime to, CancellationToken cancellationToken)
     {
-        if (teacherId == Guid.Empty)
-        {
-            return BadRequest(new { message = "The 'teacherId' query parameter is required." });
-        }
-
-        var (dtos, error) = await _handler.GetByTeacherAsync(teacherId, from, to, cancellationToken);
-
-        if (error is not null)
-        {
-            return BadRequest(new { message = error });
-        }
-
-        return Ok(dtos);
+        if (teacherId == Guid.Empty) return BadRequest(new { message = "The 'teacherId' query parameter is required." });
+        var result = await _handler.GetByTeacherAsync(teacherId, from, to, cancellationToken);
+        if (result.IsError) return BadRequest(new { message = result.FirstError.Description });
+        return Ok(result.Value);
     }
 
     [HttpPost]
-    public async Task<ActionResult<MeetingDto>> Create(
-        [FromBody] CreateMeetingRequest request,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<MeetingDto>> Create([FromBody] CreateMeetingRequest request, CancellationToken cancellationToken)
     {
-        var (dto, error) = await _handler.CreateAsync(request, cancellationToken);
-
-        if (error is not null)
-        {
-            return BadRequest(new { message = error });
-        }
-
-        return CreatedAtAction(nameof(GetById), new { id = dto!.Id }, dto);
+        var result = await _handler.CreateAsync(request, cancellationToken);
+        if (result.IsError) return BadRequest(new { message = result.FirstError.Description });
+        return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
     }
 }

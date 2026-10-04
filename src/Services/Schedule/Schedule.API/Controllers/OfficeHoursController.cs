@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Schedule.Application.DTOs;
-using Schedule.Application.UseCases;
+using Schedule.Application.Handlers;
 
 namespace Schedule.API.Controllers;
 
@@ -10,51 +10,30 @@ public class OfficeHoursController : ControllerBase
 {
     private readonly OfficeHourHandler _handler;
 
-    public OfficeHoursController(OfficeHourHandler handler)
-    {
-        _handler = handler;
-    }
+    public OfficeHoursController(OfficeHourHandler handler) { _handler = handler; }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<OfficeHourDto>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var dto = await _handler.GetByIdAsync(id, cancellationToken);
-
-        if (dto is null)
-        {
-            return NotFound(new { message = $"Office hour '{id}' was not found." });
-        }
-
-        return Ok(dto);
+        var result = await _handler.GetByIdAsync(id, cancellationToken);
+        if (result.IsError) return NotFound(new { message = result.FirstError.Description });
+        return Ok(result.Value);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OfficeHourDto>>> GetByTeacher(
-        [FromQuery] Guid teacherId,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<OfficeHourDto>>> GetByTeacher([FromQuery] Guid teacherId, CancellationToken cancellationToken)
     {
-        if (teacherId == Guid.Empty)
-        {
-            return BadRequest(new { message = "The 'teacherId' query parameter is required." });
-        }
-
-        var dtos = await _handler.GetByTeacherAsync(teacherId, cancellationToken);
-
-        return Ok(dtos);
+        if (teacherId == Guid.Empty) return BadRequest(new { message = "The 'teacherId' query parameter is required." });
+        var result = await _handler.GetByTeacherAsync(teacherId, cancellationToken);
+        if (result.IsError) return BadRequest(new { message = result.FirstError.Description });
+        return Ok(result.Value);
     }
 
     [HttpPost]
-    public async Task<ActionResult<OfficeHourDto>> Create(
-        [FromBody] CreateOfficeHourRequest request,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<OfficeHourDto>> Create([FromBody] CreateOfficeHourRequest request, CancellationToken cancellationToken)
     {
-        var (dto, error) = await _handler.CreateAsync(request, cancellationToken);
-
-        if (error is not null)
-        {
-            return BadRequest(new { message = error });
-        }
-
-        return CreatedAtAction(nameof(GetById), new { id = dto!.Id }, dto);
+        var result = await _handler.CreateAsync(request, cancellationToken);
+        if (result.IsError) return BadRequest(new { message = result.FirstError.Description });
+        return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
     }
 }

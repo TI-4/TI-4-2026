@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowMissingPrunePackageData>True</AllowMissingPrunePackageData>
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Campus.Infraestructure\Campus.Infraestructure.csproj" />
+    <ProjectReference Include="..\Campus.Infrastructure\Campus.Infrastructure.csproj" />
     <ProjectReference Include="..\Campus.Application\Campus.Application.csproj" />
   </ItemGroup>
 

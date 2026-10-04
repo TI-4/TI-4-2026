@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Schedule.Application.UseCases;
+using Schedule.Application.Handlers;
 using Schedule.Domain.Interfaces;
 using Schedule.Infrastructure.Persistence;
 using Schedule.Infrastructure.Persistence.Repositories;

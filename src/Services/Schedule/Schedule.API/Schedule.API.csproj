@@ -4,7 +4,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>fe7e7826-8146-4189-92a6-88ab973421ac</UserSecretsId>
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ErrorOr" Version="2.1.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Schedule.Application\Schedule.Application.csproj" />

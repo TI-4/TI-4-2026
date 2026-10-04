@@ -10,7 +10,7 @@ WORKDIR /src
 COPY ["src/Services/Campus/Campus.API/Campus.API.csproj", "Campus.API/"]
 COPY ["src/Services/Campus/Campus.Application/Campus.Application.csproj", "Campus.Application/"]
 COPY ["src/Services/Campus/Campus.Domain/Campus.Domain.csproj", "Campus.Domain/"]
-COPY ["src/Services/Campus/Campus.Infraestructure/Campus.Infraestructure.csproj", "Campus.Infraestructure/"]
+COPY ["src/Services/Campus/Campus.Infrastructure/Campus.Infrastructure.csproj", "Campus.Infrastructure/"]
 
 RUN dotnet restore "Campus.API/Campus.API.csproj"
 

@@ -1,7 +1,7 @@
 using ErrorOr;
 using Incident.Application.DTOs;
 using Incident.Domain.Entities;
-using Incident.Domain.Repositories;
+using Incident.Domain.Interfaces;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
@@ -22,16 +22,10 @@ public class LostObjectHandler : ILostObjectHandler
         if (!string.IsNullOrWhiteSpace(request.PhotoUrl))
         {
             if (!Uri.TryCreate(request.PhotoUrl, UriKind.Absolute, out var uriResult) ||
-                (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
-            {
-                return Error.Validation("LostObject.PhotoUrl", "Invalid Photo URL format.");
-            }
+                (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps)) return Error.Validation("LostObject.PhotoUrl", "Invalid Photo URL format.");
         }
 
-        if (request.StructureId == Guid.Empty)
-        {
-            return Error.Validation("LostObject.StructureId", "Structure ID is required.");
-        }
+        if (request.StructureId == Guid.Empty) return Error.Validation("LostObject.StructureId", "Structure ID is required.");
 
         var lostObject = new LostObject
         {
@@ -49,32 +43,23 @@ public class LostObjectHandler : ILostObjectHandler
 
     public async Task<ErrorOr<Success>> UpdateStatusAsync(string id, UpdateStatus status)
     {
-        if (!Enum.IsDefined(typeof(Objectenum), status.Status))
-        {
-            return Error.Validation(
+        if (!Enum.IsDefined(typeof(Objectenum), status.Status)) return Error.Validation(
                 code: "LostObject.Validation",
                 description: "Invalid status '{status.Status}'"
             );
-        }
 
         var lostObject = await _lostObjectRepository.GetByIdAsync(id);
-        if (lostObject is null)
-        {
-            return Error.NotFound(
+        if (lostObject is null) return Error.NotFound(
                 code: "LostObject.NotFound",
                 description: "LostObject with ID '{id}' was not found."
             );
-        }
 
         var response = await _lostObjectRepository.UpdateStatusAsync(lostObject, status.Status);
 
-        if (!response)
-        {
-            return Error.Failure(
+        if (!response) return Error.Failure(
                 code: "LostObject.UpdateFailed",
                 description: "Failed to update status for LostObject with ID '{id}'."
             );
-        }
 
         return Result.Success;
     }
@@ -82,13 +67,10 @@ public class LostObjectHandler : ILostObjectHandler
     public async Task<ErrorOr<LostObjectResponse>> GetByIdAsync(string id)
     {
         var lostObject = await _lostObjectRepository.GetByIdAsync(id);
-        if (lostObject is null)
-        {
-            return Error.NotFound(
+        if (lostObject is null) return Error.NotFound(
                 code: "LostObject.NotFound",
                 description: "LostObject with ID '{id}' not found."
             );
-        }
 
         return new LostObjectResponse(
             lostObject.Title,
@@ -101,13 +83,10 @@ public class LostObjectHandler : ILostObjectHandler
 
     public async Task<ErrorOr<LostObjectList>> FilterStatusAsync(int status)
     {
-        if (!Enum.IsDefined(typeof(Objectenum), status))
-        {
-            return Error.Validation(
+        if (!Enum.IsDefined(typeof(Objectenum), status)) return Error.Validation(
                 code: "LostObject.Validation",
                 description: "Invalid status '{status}'"
             );
-        }
 
         Objectenum estadoEnum = (Objectenum)status;
         string estadoString = estadoEnum.ToString();

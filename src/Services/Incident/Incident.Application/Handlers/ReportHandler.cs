@@ -1,7 +1,7 @@
 using ErrorOr;
 using Incident.Application.DTOs;
 using Incident.Domain.Entities;
-using Incident.Domain.Repositories;
+using Incident.Domain.Interfaces;
 using System.Threading.Tasks;
 using System;
 
@@ -18,15 +18,9 @@ public class ReportHandler : IReportHandler
 
     public async Task<ErrorOr<string>> CreateReportAsync(CreateReportRequest request)
     {
-        if (request.UserRefId == Guid.Empty)
-        {
-            return Error.Validation("Report.UserRefId", "User ID is required.");
-        }
+        if (request.UserRefId == Guid.Empty) return Error.Validation("Report.UserRefId", "User ID is required.");
 
-        if (request.StructureRefId == Guid.Empty)
-        {
-            return Error.Validation("Report.StructureRefId", "Structure ID is required.");
-        }
+        if (request.StructureRefId == Guid.Empty) return Error.Validation("Report.StructureRefId", "Structure ID is required.");
 
         var ticket = new Ticket
         {
@@ -45,13 +39,10 @@ public class ReportHandler : IReportHandler
     public async Task<ErrorOr<TicketResponse>> GetByIdAsync(string id)
     {
         var ticket = await _ticketRepository.GetByIdAsync(id);
-        if (ticket is null)
-        {
-            return Error.NotFound(
+        if (ticket is null) return Error.NotFound(
                 code: "Report.NotFound",
                 description: $"Report with ID '{id}'"
             );
-        }
 
         return new TicketResponse(
             ticket.Id!,
