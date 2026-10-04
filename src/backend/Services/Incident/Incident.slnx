@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Incident.API/Incident.API.csproj" />
+  <Project Path="Incident.Application/Incident.Application.csproj" />
+  <Project Path="Incident.Domain/Incident.Domain.csproj" />
+  <Project Path="Incident.Infrastructure/Incident.Infrastructure.csproj" />
+</Solution>

@@ -30,25 +30,25 @@ public class StructureController : ControllerBase
     public async Task<ActionResult<StructureDto>> GetById(Guid id, CancellationToken cancellationToken)
     {
         var dto = await _handler.GetByIdAsync(id, cancellationToken);
-        if (dto is null) return NotFound(new { message = $"Estructura con ID '{id}' no fue encontrada." });
+        if (dto is null) return NotFound(new { message = $"Structure with ID '{id}' was not found." });
         return Ok(dto);
     }
 
     [HttpPost]
     public async Task<ActionResult<StructureDto>> Create([FromBody] CreateStructureDto request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "El nombre es obligatorio." });
-        
+        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "Name is Required." });
+
         var (dto, error) = await _handler.CreateAsync(request, cancellationToken);
         if (error != null) return BadRequest(new { message = error });
-        
+
         return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateStructureDto request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "El nombre es obligatorio." });
+        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "Name is Required." });
 
         var (success, error) = await _handler.UpdateAsync(id, request, cancellationToken);
         if (error != null) return BadRequest(new { message = error });
@@ -61,7 +61,7 @@ public class StructureController : ControllerBase
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         var success = await _handler.DeleteAsync(id, cancellationToken);
-        if (!success) return NotFound(new { message = $"Estructura con ID '{id}' no fue encontrada." });
+        if (!success) return NotFound(new { message = $"Structure with ID '{id}' was not found." });
 
         return NoContent();
     }

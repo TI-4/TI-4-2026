@@ -30,15 +30,15 @@ public class CampusController : ControllerBase
     public async Task<ActionResult<CampusDto>> GetById(Guid id, CancellationToken cancellationToken)
     {
         var dto = await _handler.GetByIdAsync(id, cancellationToken);
-        if (dto is null) return NotFound(new { message = $"Campus con ID '{id}' no fue encontrado." });
+        if (dto is null) return NotFound(new { message = $"Campus with ID '{id}' was not found." });
         return Ok(dto);
     }
 
     [HttpPost]
     public async Task<ActionResult<CampusDto>> Create([FromBody] CreateCampusDto request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "El nombre es obligatorio." });
-        
+        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "Name is mandatory." });
+
         var responseDto = await _handler.CreateAsync(request, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = responseDto.Id }, responseDto);
     }
@@ -46,10 +46,10 @@ public class CampusController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCampusDto request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "El nombre es obligatorio." });
+        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "Name is mandatory." });
 
         var success = await _handler.UpdateAsync(id, request, cancellationToken);
-        if (!success) return NotFound(new { message = $"Campus con ID '{id}' no fue encontrado." });
+        if (!success) return NotFound(new { message = $"Campus with ID '{id}' was not found." });
 
         return NoContent();
     }
@@ -58,7 +58,7 @@ public class CampusController : ControllerBase
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         var success = await _handler.DeleteAsync(id, cancellationToken);
-        if (!success) return NotFound(new { message = $"Campus con ID '{id}' no fue encontrado." });
+        if (!success) return NotFound(new { message = $"Campus with ID '{id}' was not found." });
 
         return NoContent();
     }
