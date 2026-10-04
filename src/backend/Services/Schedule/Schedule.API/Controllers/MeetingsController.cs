@@ -1,0 +1,39 @@
+using Microsoft.AspNetCore.Mvc;
+using Schedule.Application.DTOs;
+using Schedule.Application.Handlers;
+
+namespace Schedule.API.Controllers;
+
+[ApiController]
+[Route("api/schedule/meetings")]
+public class MeetingsController : ControllerBase
+{
+    private readonly MeetingHandler _handler;
+
+    public MeetingsController(MeetingHandler handler) { _handler = handler; }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<MeetingDto>> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _handler.GetByIdAsync(id, cancellationToken);
+        if (result.IsError) return NotFound(new { message = result.FirstError.Description });
+        return Ok(result.Value);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<MeetingDto>>> GetByTeacher([FromQuery] Guid teacherId, [FromQuery] DateTime from, [FromQuery] DateTime to, CancellationToken cancellationToken)
+    {
+        if (teacherId == Guid.Empty) return BadRequest(new { message = "The 'teacherId' query parameter is required." });
+        var result = await _handler.GetByTeacherAsync(teacherId, from, to, cancellationToken);
+        if (result.IsError) return BadRequest(new { message = result.FirstError.Description });
+        return Ok(result.Value);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<MeetingDto>> Create([FromBody] CreateMeetingRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _handler.CreateAsync(request, cancellationToken);
+        if (result.IsError) return BadRequest(new { message = result.FirstError.Description });
+        return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
+    }
+}
