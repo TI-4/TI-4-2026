@@ -26,7 +26,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<CampusDbContext>();
-    await context.Database.MigrateAsync();
+    await CampusDbContextSeed.SeedAsync(context);
 }
 
 app.MapControllers();
