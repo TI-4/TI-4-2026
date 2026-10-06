@@ -69,7 +69,7 @@ public class LostObjectsController : ControllerBase
         );
     }
 
-    [HttpPatch("{id}/status")]
+    [HttpPatch("{id}/lost/status")]
     public async Task<IActionResult> UpdateStatus(string id, [FromBody] UpdateStatus status)
     {
         var result = await _lostObjectHandler.UpdateStatusAsync(id.ToString(), status);
@@ -88,4 +88,3 @@ public class LostObjectsController : ControllerBase
         );
     }
 }
-

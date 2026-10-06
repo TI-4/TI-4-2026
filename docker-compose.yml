@@ -64,7 +64,7 @@ services:
   incident-api:
       build:
         context: .
-        dockerfile: src/backend/Services/Incident/Incident.API/Dockerfile
+        dockerfile: src/backend/Services/Incident/Dockerfile
       container_name: uct_incident_api
       ports:
         - "5003:8080"

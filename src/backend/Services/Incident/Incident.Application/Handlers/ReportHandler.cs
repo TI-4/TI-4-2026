@@ -55,6 +55,26 @@ public class ReportHandler : IReportHandler
             ticket.LostObjectId
         );
     }
+    public async Task<ErrorOr<Success>> UpdateStatusTicketAsync(string id, UpdateStatusReport status)
+    {
+        if (!Enum.IsDefined(typeof(Tickets), status.Status)) return Error.Validation(
+                code: "Ticket.Validation",
+                description: $"Invalid status '{status.Status}'"
+            );
+
+        var ticket = await _ticketRepository.GetByIdAsync(id);
+        if (ticket is null) return Error.NotFound(
+                code: "Ticket.NotFound",
+                description: $"Ticket with ID '{id}' was not found."
+            );
+
+        var response = await _ticketRepository.UpdateStatusAsync(ticket, status.Status);
+
+        if (!response) return Error.Failure(
+                code: "Ticket.UpdateFailed",
+                description: $"Failed to update status for Ticket with ID '{id}'."
+            );
+
+        return Result.Success;
+    }
 }
-
-

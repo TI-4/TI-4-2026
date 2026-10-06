@@ -48,5 +48,23 @@ public class ReportsController : ControllerBase
 
         );
     }
-}
 
+    [HttpPatch("{id}/report/status")]
+    public async Task<IActionResult> UpdateStatus(string id, [FromBody] UpdateStatusReport status)
+    {
+        var result = await _reportHandler.UpdateStatusTicketAsync(id.ToString(), status);
+        return result.Match(
+            success => (IActionResult)NoContent(),
+            errors =>
+            {
+                var firstError = errors.First();
+                var statusCode = firstError.Type switch
+                {
+                    ErrorType.NotFound => StatusCodes.Status404NotFound,
+                    _ => StatusCodes.Status400BadRequest
+                };
+                return Problem(statusCode: statusCode, title: firstError.Description);
+            }
+        );
+    }
+}
