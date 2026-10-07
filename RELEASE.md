@@ -8,6 +8,7 @@ Before deploying this project to a production environment, ensure the following 
 - [ ] **JWT Secrets**: The JWT Secret Key (`JwtConfig__Key`) is currently hardcoded. Move this to a secure environment variable or a Secret Manager (like Azure Key Vault).
 
 ### Docker & Containers
+- [ ] **Environment Variables**: Ensure `ASPNETCORE_ENVIRONMENT` is removed or explicitly set to `Production` in the production deployment configs. Currently, it is hardcoded to `Development` in `docker-compose.yml` to allow local Swagger testing, which must not be exposed in production.
 - [ ] **Prebuilt Images**: Do not build images on the fly in production (`build: .` in compose). Images should be pre-built via CI/CD and pulled from a registry like [Docker Hub](https://hub.docker.com/).
 - [ ] **Multi-stage Builds**: Ensure all API `Dockerfile`s use multi-stage layered builds to keep production image sizes small and secure.
 - [x] **Non-Root Execution**: Do not run containers as root. Add `USER app` (or equivalent non-root user) to all Dockerfiles to prevent privilege escalation attacks.
