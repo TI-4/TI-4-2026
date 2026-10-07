@@ -5,10 +5,11 @@ on:
     branches: [ "main", "taller-2" ]
     paths:
       - 'src/backend/**'
+      - '.github/workflows/**'
   pull_request:
     branches: [ "main", "taller-2" ]
-    paths:
-      - 'src/backend/**'
+
+  workflow_dispatch:
 
 jobs:
   build-and-test:
