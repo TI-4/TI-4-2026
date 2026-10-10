@@ -1,6 +1,7 @@
 namespace Incident.Domain.Entities;
 
-public enum Objectenum {
+public enum Objectenum
+{
     Pending = 0,
     In_Process = 1,
     Resolved = 2,
