@@ -12,10 +12,25 @@ public class TicketRepository : MongoRepository<Ticket>, ITicketRepository
     { }
     public async Task<bool> UpdateStatusAsync(Ticket ticket, int status)
     {
-        ticket.TicketType = (Tickets)status;
-
         var filter = Builders<Ticket>.Filter.Eq(x => x.Id, ticket.Id);
-        var result = await _collection.ReplaceOneAsync(filter, ticket);
+
+        var update = Builders<Ticket>.Update.Set(t => t.TicketType, (Tickets)status);
+
+        var result = await _collection.UpdateOneAsync(filter, update);
+
+        return result.ModifiedCount > 0;
+    }
+    public async Task<bool> UpdateStatusComplainAsync(Ticket ticket, int? status)
+    {
+        var filter = Builders<Ticket>.Filter.Eq(t => t.Id, ticket.Id);
+
+        var update = Builders<Ticket>.Update
+            .Set(t => t.ComplaintDetails!.Status, (Complainenum)status!);
+
+        var result = await _collection.UpdateOneAsync(
+            filter,
+            update
+        );
 
         return result.ModifiedCount > 0;
     }

@@ -42,4 +42,3 @@ public class Ticket
     [BsonElement("complaint_details")]
     public ComplaintDetails? ComplaintDetails { get; init; }
 }
-

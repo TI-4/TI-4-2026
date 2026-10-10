@@ -1,4 +1,6 @@
 using System;
+using Incident.Domain.Entities;
+using MongoDB.Bson;
 
 namespace Incident.Application.DTOs;
 
@@ -7,6 +9,11 @@ public record CreateReportRequest(
         Guid StructureRefId,
         int TicketType,
         bool IsActive,
-        DateTime ReportedAt);
+        DateTime ReportedAt,
+        ObjectId? LostObjectId = null,
+        ComplaintDetails? Complaint = null);
 
-public record UpdateStatusReport(int Status);
+public record UpdateStatusReport(
+    int Status,
+    int? ComplainStatus = null
+);

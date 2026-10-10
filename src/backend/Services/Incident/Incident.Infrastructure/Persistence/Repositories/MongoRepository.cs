@@ -30,7 +30,7 @@ public class MongoRepository<T> : IRepository<T> where T : class
     public async Task UpdateAsync(string id, T entity)
     {
         var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
-        await _collection.ReplaceOneAsync(filter, entity);
+        var result = await _collection.ReplaceOneAsync(filter, entity);
     }
 
     public async Task<bool> DeleteAsync(string id)

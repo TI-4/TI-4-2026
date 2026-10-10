@@ -28,7 +28,8 @@ public class ReportHandler : IReportHandler
             StructureRefId = request.StructureRefId,
             TicketType = (Tickets)request.TicketType,
             IsActive = request.IsActive,
-            ReportedAt = request.ReportedAt
+            ReportedAt = request.ReportedAt,
+            ComplaintDetails = request.Complaint
         };
 
         await _ticketRepository.CreateAsync(ticket);
@@ -55,11 +56,11 @@ public class ReportHandler : IReportHandler
             ticket.LostObjectId
         );
     }
-    public async Task<ErrorOr<Success>> UpdateStatusTicketAsync(string id, UpdateStatusReport status)
+    public async Task<ErrorOr<Success>> UpdateStatusTicketAsync(string id, UpdateStatusReport Update)
     {
-        if (!Enum.IsDefined(typeof(Tickets), status.Status)) return Error.Validation(
+        if (!Enum.IsDefined(typeof(Tickets), Update.Status)) return Error.Validation(
                 code: "Ticket.Validation",
-                description: $"Invalid status '{status.Status}'"
+                description: $"Invalid status '{Update.Status}'"
             );
 
         var ticket = await _ticketRepository.GetByIdAsync(id);
@@ -68,13 +69,33 @@ public class ReportHandler : IReportHandler
                 description: $"Ticket with ID '{id}' was not found."
             );
 
-        var response = await _ticketRepository.UpdateStatusAsync(ticket, status.Status);
-
-        if (!response) return Error.Failure(
+        var response = await _ticketRepository.UpdateStatusAsync(ticket, Update.Status);
+        bool complainUpdate = false;
+        if (Update.ComplainStatus is not null && ticket.ComplaintDetails is not null)
+        {
+            var responseComplaint = await UpdateStatusComplainAsync(Update.ComplainStatus, ticket);
+            complainUpdate = true;
+        }
+        ;
+        if (!response && !complainUpdate) return Error.Failure(
                 code: "Ticket.UpdateFailed",
                 description: $"Failed to update status for Ticket with ID '{id}'."
             );
 
+        return Result.Success;
+    }
+    public async Task<ErrorOr<Success>> UpdateStatusComplainAsync(int? status, Ticket ticket)
+    {
+        if (!Enum.IsDefined(typeof(Complainenum), status!)) return Error.Validation(
+                code: "Ticket.Validation",
+                description: $"Invalid status '{status}'"
+        );
+        var response = await _ticketRepository.UpdateStatusComplainAsync(ticket, status);
+
+        if (!response) return Error.Failure(
+                code: "Ticket.UpdateFailed",
+                description: $"Failed to update status for Ticket complain with ID '{ticket.Id}'."
+            );
         return Result.Success;
     }
 }
