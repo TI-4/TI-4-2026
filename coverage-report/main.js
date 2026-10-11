@@ -306,7 +306,7 @@ var assemblies = [
       { "name": "Incident.Application.DTOs.UpdateStatus", "rp": "Incident.Application_UpdateStatus.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 15, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Incident.Application.DTOs.UpdateStatusReport", "rp": "Incident.Application_UpdateStatusReport.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 19, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Incident.Application.Handlers.LostObjectHandler", "rp": "Incident.Application_LostObjectHandler.html", "cl": 70, "ucl": 0, "cal": 70, "tl": 105, "cb": 21, "tb": 22, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "Incident.Application.Handlers.ReportHandler", "rp": "Incident.Application_ReportHandler.html", "cl": 66, "ucl": 13, "cal": 79, "tl": 101, "cb": 28, "tb": 34, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "Incident.Application.Handlers.ReportHandler", "rp": "Incident.Application_ReportHandler.html", "cl": 82, "ucl": 20, "cal": 102, "tl": 122, "cb": 46, "tb": 60, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
   {
     "name": "Incident.Domain",
@@ -321,7 +321,7 @@ var assemblies = [
     "classes": [
       { "name": "Incident.Infrastructure.DependencyInjection", "rp": "Incident.Infrastructure_DependencyInjection.html", "cl": 16, "ucl": 6, "cal": 22, "tl": 42, "cb": 4, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Incident.Infrastructure.Persistence.MongoDbContext", "rp": "Incident.Infrastructure_MongoDbContext.html", "cl": 5, "ucl": 1, "cal": 6, "tl": 24, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "Incident.Infrastructure.Persistence.Repositories.MongoRepository\u003CT\u003E", "rp": "Incident.Infrastructure_MongoRepository_1.html", "cl": 20, "ucl": 0, "cal": 20, "tl": 42, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "Incident.Infrastructure.Persistence.Repositories.MongoRepository\u003CT\u003E", "rp": "Incident.Infrastructure_MongoRepository_1.html", "cl": 24, "ucl": 0, "cal": 24, "tl": 42, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Incident.Infrastructure.Persistence.Repositories.ObjectRepository", "rp": "Incident.Infrastructure_ObjectRepository.html", "cl": 14, "ucl": 0, "cal": 14, "tl": 34, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "Incident.Infrastructure.Persistence.Repositories.TicketRepository", "rp": "Incident.Infrastructure_TicketRepository.html", "cl": 10, "ucl": 10, "cal": 20, "tl": 37, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},

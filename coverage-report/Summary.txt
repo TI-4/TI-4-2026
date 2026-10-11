@@ -1,23 +1,23 @@
 Summary
-  Generated on: 10-10-2026 - 7:06:37 p. m.
-  Coverage date: 09-10-2026 - 10:36:27 p. m. - 10-10-2026 - 7:06:12 p. m.
-  Parser: MultiReport (11x Cobertura)
+  Generated on: 10-10-2026 - 10:19:29 p. m.
+  Coverage date: 09-10-2026 - 10:36:27 p. m. - 10-10-2026 - 10:19:20 p. m.
+  Parser: MultiReport (16x Cobertura)
   Assemblies: 4
   Classes: 22
   Files: 19
-  Line coverage: 90.6%
-  Covered lines: 397
-  Uncovered lines: 41
-  Coverable lines: 438
-  Total lines: 793
-  Branch coverage: 90.5% (67 of 74)
-  Covered branches: 67
-  Total branches: 74
-  Method coverage: 94.3% (100 of 106)
-  Full method coverage: 89.6% (95 of 106)
-  Covered methods: 100
-  Fully covered methods: 95
-  Total methods: 106
+  Line coverage: 89.6%
+  Covered lines: 417
+  Uncovered lines: 48
+  Coverable lines: 465
+  Total lines: 814
+  Branch coverage: 85% (85 of 100)
+  Covered branches: 85
+  Total branches: 100
+  Method coverage: 94.8% (110 of 116)
+  Full method coverage: 87.9% (102 of 116)
+  Covered methods: 110
+  Fully covered methods: 102
+  Total methods: 116
 
 Incident.API                                                            94.2%
   Incident.API.Controllers.HealthController                               60%
@@ -25,7 +25,7 @@ Incident.API                                                            94.2%
   Incident.API.Controllers.ReportsController                             100%
   Program                                                                100%
 
-Incident.Application                                                    91.6%
+Incident.Application                                                    89.3%
   Incident.Application.DTOs.CreateLostObjectRequest                      100%
   Incident.Application.DTOs.CreateReportRequest                          100%
   Incident.Application.DTOs.LostObjectList                               100%
@@ -34,7 +34,7 @@ Incident.Application                                                    91.6%
   Incident.Application.DTOs.UpdateStatus                                 100%
   Incident.Application.DTOs.UpdateStatusReport                           100%
   Incident.Application.Handlers.LostObjectHandler                        100%
-  Incident.Application.Handlers.ReportHandler                           83.5%
+  Incident.Application.Handlers.ReportHandler                           80.3%
 
 Incident.Domain                                                          100%
   Incident.Domain.Entities.ComplaintDetails                              100%
@@ -42,7 +42,7 @@ Incident.Domain                                                          100%
   Incident.Domain.Entities.LostObject                                    100%
   Incident.Domain.Entities.Ticket                                        100%
 
-Incident.Infrastructure                                                 79.2%
+Incident.Infrastructure                                                 80.2%
   Incident.Infrastructure.DependencyInjection                           72.7%
   Incident.Infrastructure.Persistence.MongoDbContext                    83.3%
   Incident.Infrastructure.Persistence.Repositories.MongoRepository<T>    100%
