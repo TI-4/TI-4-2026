@@ -1,6 +1,7 @@
 namespace Incident.Domain.Entities;
 
-public enum Objectenum {
+public enum Objectenum
+{
     Pending = 0,
     In_Process = 1,
     Resolved = 2,
@@ -9,16 +10,16 @@ public enum Objectenum {
 
 public enum Complainenum
 {
-    Pending,
-    In_Process,
-    Resolved,
-    Dismissed,
+    Claim = 0,
+    Found = 1,
+    Match = 2,
+    Pickup = 3
 }
 
 public enum Tickets
 {
-    Claim,
-    Found,
-    Match,
-    Pickup
+    Pending = 0,
+    In_Process = 1,
+    Resolved = 2,
+    Dismissed = 3,
 }

@@ -17,6 +17,8 @@ services:
   mongodb:
     image: mongo:6-jammy
     container_name: uct_mongodb
+    ports:
+      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
@@ -66,7 +68,7 @@ services:
   incident-api:
       build:
         context: .
-        dockerfile: src/backend/Services/Incident/Incident.API/Dockerfile
+        dockerfile: src/backend/Services/Incident/Dockerfile
       container_name: uct_incident_api
       ports:
         - "5003:8080"

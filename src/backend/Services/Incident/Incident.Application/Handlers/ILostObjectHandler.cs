@@ -12,4 +12,3 @@ public interface ILostObjectHandler
     Task<ErrorOr<LostObjectList>> FilterStatusAsync(int status);
     Task<ErrorOr<Success>> UpdateStatusAsync(string id, UpdateStatus status);
 }
-
