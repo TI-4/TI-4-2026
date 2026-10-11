@@ -11,11 +11,13 @@ public class ReportHandlerTests
 {
     private readonly ITicketRepository _repository;
     private readonly ReportHandler _handler;
+    private readonly ILostObjectRepository _lostObjectRepository;
 
     public ReportHandlerTests()
     {
         _repository = Substitute.For<ITicketRepository>();
-        _handler = new ReportHandler(_repository);
+        _lostObjectRepository = Substitute.For<ILostObjectRepository>();
+        _handler = new ReportHandler(_repository, _lostObjectRepository);
     }
 
     private static CreateReportRequest ValidRequest(

@@ -31,7 +31,8 @@ public class ReportHandler : IReportHandler
                 description: $"Invalid status '{request.TicketType}'"
             );
 
-        if (request.LostObjectId is not null){
+        if (request.LostObjectId is not null)
+        {
             Console.WriteLine(request.LostObjectId);
             var lostObject = await _lostobjectRepository.GetByIdAsync(request.LostObjectId);
             if (lostObject is null) return Error.NotFound(
