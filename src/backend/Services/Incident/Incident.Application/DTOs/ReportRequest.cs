@@ -10,7 +10,7 @@ public record CreateReportRequest(
         int TicketType,
         bool IsActive,
         DateTime ReportedAt,
-        ObjectId? LostObjectId = null,
+        string? LostObjectId = null,
         ComplaintDetails? Complaint = null);
 
 public record UpdateStatusReport(
