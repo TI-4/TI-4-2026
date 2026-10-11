@@ -206,17 +206,25 @@ El workflow se ejecuta automáticamente ante:
 | **5. Typecheck & Build** | Valida los tipos con el compilador de TypeScript (`tsc -b`) y empaqueta el frontend con Vite para verificar que la build de producción sea válida. |
 | **6. Resumen de Cobertura** | Lee el archivo `cobertura-coverage.xml` e inyecta la tabla resumen de cobertura con indicadores visuales en el Job Summary de GitHub. |
 
-### Comandos Locales de Testing y Calidad
+### Comandos 
 
 Para ejecutar las verificaciones en el entorno de desarrollo local:
 
 ```bash
 # Auditar calidad de código y buenas prácticas 
 npm run lint
+
 # Ejecutar la suite de pruebas unitarias
 npm test
+
 # Ejecutar pruebas y desplegar la tabla completa de cobertura en consola
 npm run coverage
+
+# Validar tests y compilación del frontend
+npm run validate
+
+# Desde la raíz del proyecto: validar tests, build y construcción de Docker
+make validate-frontend
 ```
 
 ### Arquitectura y Convención de Tests
