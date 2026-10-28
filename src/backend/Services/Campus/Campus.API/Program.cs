@@ -13,7 +13,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CampusDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("CampusDb")));
 
-// DI Registrations
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<CampusHandler>();
 builder.Services.AddScoped<BuildingHandler>();
@@ -27,7 +26,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<CampusDbContext>();
-    await context.Database.MigrateAsync();
+    await CampusDbContextSeed.SeedAsync(context);
 }
 
 if (app.Environment.IsDevelopment())
