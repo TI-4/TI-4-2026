@@ -45,20 +45,51 @@ public class CampusDbContextSeedTests : IAsyncLifetime
 
         await CampusDbContextSeed.SeedAsync(_dbContext);
 
-        var campusesCount = await _dbContext.Campuses.CountAsync();
-        var buildingsCount = await _dbContext.Buildings.CountAsync();
-        var categoriesCount = await _dbContext.Categories.CountAsync();
-        var roomsCount = await _dbContext.Rooms.CountAsync();
-        var structuresCount = await _dbContext.Structures.CountAsync();
+        var campuses = await _dbContext.Campuses.ToListAsync();
+        var buildings = await _dbContext.Buildings.ToListAsync();
+        var categoryGroups = await _dbContext.CategoryGroups.ToListAsync();
+        var categories = await _dbContext.Categories.ToListAsync();
+        var rooms = await _dbContext.Rooms.ToListAsync();
+        var structures = await _dbContext.Structures.ToListAsync();
 
-        Assert.Equal(2, campusesCount);
-        Assert.Equal(4, buildingsCount);
-        Assert.Equal(3, categoriesCount);
-        Assert.Equal(28, roomsCount);
-        Assert.Equal(2, structuresCount);
+        Assert.Equal(2, campuses.Count);
+        Assert.Equal(4, buildings.Count);
+        Assert.Equal(2, categoryGroups.Count);
+        Assert.Equal(3, categories.Count);
+        Assert.Equal(28, rooms.Count);
+        Assert.Equal(2, structures.Count);
+        
+        Assert.All(campuses, c =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(c.Name));
+            Assert.True(c.Zoom > 0);
+            Assert.True(c.Coordinates.Latitude != 0);
+            Assert.True(c.Coordinates.Longitude != 0);
+        });
+
+        Assert.All(buildings, b =>
+        {
+            Assert.Equal(3, b.FloorsCount);
+            Assert.NotNull(b.OpenTime);
+            Assert.NotNull(b.CloseTime);
+            Assert.False(string.IsNullOrWhiteSpace(b.Services));
+        });
+
+        Assert.All(rooms, r =>
+        {
+            Assert.True(r.Name.Length <= 20);
+            Assert.True(r.Floor >= 1 && r.Floor <= 3);
+            Assert.NotEqual(Guid.Empty, r.BuildingId);
+            Assert.NotEqual(Guid.Empty, r.CategoryId);
+        });
 
         await CampusDbContextSeed.SeedAsync(_dbContext);
 
         Assert.Equal(2, await _dbContext.Campuses.CountAsync());
+        Assert.Equal(4, await _dbContext.Buildings.CountAsync());
+        Assert.Equal(2, await _dbContext.CategoryGroups.CountAsync());
+        Assert.Equal(3, await _dbContext.Categories.CountAsync());
+        Assert.Equal(28, await _dbContext.Rooms.CountAsync());
+        Assert.Equal(2, await _dbContext.Structures.CountAsync());
     }
 }

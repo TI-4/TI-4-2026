@@ -26,8 +26,18 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<CampusDbContext>();
-    await CampusDbContextSeed.SeedAsync(context);
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var context = services.GetRequiredService<CampusDbContext>();
+        await CampusDbContextSeed.SeedAsync(context, logger);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Ocurrió un error al ejecutar el seeder de Campus.");
+        throw;
+    }
 }
 
 if (app.Environment.IsDevelopment())
