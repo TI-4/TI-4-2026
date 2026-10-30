@@ -39,6 +39,7 @@ public class CampusDbContextSeedTests : IAsyncLifetime
         _dbContext.Structures.RemoveRange(_dbContext.Structures);
         _dbContext.Buildings.RemoveRange(_dbContext.Buildings);
         _dbContext.Categories.RemoveRange(_dbContext.Categories);
+        _dbContext.CategoryGroups.RemoveRange(_dbContext.CategoryGroups);
         _dbContext.Campuses.RemoveRange(_dbContext.Campuses);
         await _dbContext.SaveChangesAsync();
 

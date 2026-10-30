@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Campus.Domain.Entities;
@@ -29,20 +30,24 @@ public static class CampusDbContextSeed
 
         await context.Campuses.AddRangeAsync(campusSanFrancisco, campusSanJuanPablo);
 
-        var catSalaClases = new Category("Sala de Clases", "book", "Sala de uso general para clases teóricas");
-        var catLaboratorio = new Category("Laboratorio", "computer", "Laboratorio de computación o ciencias");
-        var catEstudio = new Category("Sala de Estudio", "users", "Espacio para estudio grupal o individual");
+        var defaultCategoryGroup = new CategoryGroup("Académico");
+        await context.CategoryGroups.AddAsync(defaultCategoryGroup);
+
+        var catSalaClases = new Category("Sala de Clases", "book", "Sala de uso general para clases teóricas", defaultCategoryGroup);
+        var catLaboratorio = new Category("Laboratorio", "computer", "Laboratorio de computación o ciencias", defaultCategoryGroup);
+        var catEstudio = new Category("Sala de Estudio", "users", "Espacio para estudio grupal o individual", defaultCategoryGroup);
 
         await context.Categories.AddRangeAsync(catSalaClases, catLaboratorio, catEstudio);
 
-        var defaultSchedule = "08:00 - 20:00";
-        var defaultServices = new List<string> { "WIFI", "BAÑOS", "ACCESO UNIVERSAL" };
+        var defaultOpenTime = new TimeOnly(8, 0);
+        var defaultCloseTime = new TimeOnly(20, 0);
+        var defaultServices = "WIFI, BAÑOS, ACCESO UNIVERSAL";
 
-        var edificio16 = new Building("Edificio 16", 3, new Coordinate(-38.7336, -72.6021), campusSanFrancisco, defaultSchedule, defaultServices);
-        var edificio12 = new Building("Edificio 12", 3, new Coordinate(-38.7332, -72.6015), campusSanFrancisco, defaultSchedule, defaultServices);
+        var edificio16 = new Building("Edificio 16", 3, new Coordinate(-38.7336, -72.6021), campusSanFrancisco, defaultOpenTime, defaultCloseTime, defaultServices);
+        var edificio12 = new Building("Edificio 12", 3, new Coordinate(-38.7332, -72.6015), campusSanFrancisco, defaultOpenTime, defaultCloseTime, defaultServices);
 
-        var edificio8 = new Building("Edificio 8", 3, new Coordinate(-38.7115, -72.5850), campusSanJuanPablo, defaultSchedule, defaultServices);
-        var edificio7 = new Building("Edificio 7", 3, new Coordinate(-38.7120, -72.5860), campusSanJuanPablo, defaultSchedule, defaultServices);
+        var edificio8 = new Building("Edificio 8", 3, new Coordinate(-38.7115, -72.5850), campusSanJuanPablo, defaultOpenTime, defaultCloseTime, defaultServices);
+        var edificio7 = new Building("Edificio 7", 3, new Coordinate(-38.7120, -72.5860), campusSanJuanPablo, defaultOpenTime, defaultCloseTime, defaultServices);
 
         await context.Buildings.AddRangeAsync(edificio16, edificio12, edificio8, edificio7);
 
@@ -50,12 +55,12 @@ public static class CampusDbContextSeed
 
         void CreateRoomsForBuilding(Building building, string prefix)
         {
-            rooms.Add(new Room($"Laboratorio {prefix}-LAB", 1, $"{prefix}-LAB", building, catLaboratorio));
+            rooms.Add(new Room($"Laboratorio {prefix}-LAB", 1, building, catLaboratorio));
 
             for (int floor = 1; floor <= 3; floor++)
             {
-                rooms.Add(new Room($"Sala {prefix}-{floor}01", floor, $"{prefix}-{floor}01", building, catSalaClases));
-                rooms.Add(new Room($"Sala {prefix}-{floor}02", floor, $"{prefix}-{floor}02", building, catSalaClases));
+                rooms.Add(new Room($"Sala {prefix}-{floor}01", floor, building, catSalaClases));
+                rooms.Add(new Room($"Sala {prefix}-{floor}02", floor, building, catSalaClases));
             }
         }
 
