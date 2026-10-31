@@ -14,7 +14,6 @@ class BuildingModel extends Building {
   });
 
   factory BuildingModel.fromJson(Map<String, dynamic> json) {
-    final rawServices = json['services'] ?? json['Services'];
     return BuildingModel(
       id: (json['id'] ?? json['Id'] ?? '').toString(),
       campusId: (json['campusId'] ?? json['CampusId'] ?? '').toString(),
@@ -23,15 +22,7 @@ class BuildingModel extends Building {
       latitude: (json['latitude'] ?? json['Latitude'] ?? 0.0).toDouble(),
       longitude: (json['longitude'] ?? json['Longitude'] ?? 0.0).toDouble(),
       schedule: (json['schedule'] ?? json['Schedule'] ?? '').toString(),
-      services: rawServices is List
-          ? rawServices.map((e) => e.toString()).toList()
-          : rawServices is String && rawServices.trim().isNotEmpty
-          ? rawServices
-                .split(',')
-                .map((e) => e.trim())
-                .where((e) => e.isNotEmpty)
-                .toList()
-          : const [],
+      services: ((json['services'] ?? json['Services']) as List? ?? const []).map((e) => e.toString()).toList(),
     );
   }
 }

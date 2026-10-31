@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
+import 'package:uct_map/core/network/api_exception.dart';
 import 'package:uct_map/core/network/problem_details.dart';
 import 'package:uct_map/data/datasources/lost_objects_remote_ds.dart';
 import 'package:uct_map/data/models/lost_object_dto.dart';
@@ -444,7 +445,6 @@ void main() {
       expect(submitFinder, findsOneWidget);
 
       // Intentar enviar vacío
-      await tester.ensureVisible(submitFinder);
       await tester.tap(submitFinder);
       await tester.pumpAndSettle();
 
@@ -462,7 +462,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // Enviar formulario válido
-      await tester.ensureVisible(submitFinder);
       await tester.tap(submitFinder);
       await tester.pumpAndSettle();
 
