@@ -50,6 +50,27 @@ public class StructureEndpointsTests : ApiTestBase
     }
 
     [DockerFact]
+    public async Task Post_WhenCategoryIdIsNull_CreatesStructureAndReturns201()
+    {
+        var campusRes = await Http.PostAsync(CampusEndpoint, JsonBody(new CreateCampusDto("Campus No Cat", "Dir", 0, 0)));
+        var campus = await ReadJsonAsync<CampusDto>(campusRes);
+
+        var body = new CreateStructureDto(campus!.Id, null, "Punto Verde", -38.7, -72.5);
+        var response = await Http.PostAsync(Endpoint, JsonBody(body));
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var created = await ReadJsonAsync<StructureDto>(response);
+        Assert.NotNull(created);
+        Assert.Equal("Punto Verde", created.Name);
+        Assert.Null(created.CategoryId);
+
+        var getRes = await Http.GetAsync($"{Endpoint}/{created.Id}");
+        Assert.Equal(HttpStatusCode.OK, getRes.StatusCode);
+        var fetched = await ReadJsonAsync<StructureDto>(getRes);
+        Assert.Null(fetched!.CategoryId);
+    }
+
+    [DockerFact]
     public async Task GetAll_ReturnsListOfStructures()
     {
         var (campusId, categoryId) = await SetupDependenciesAsync();
@@ -86,12 +107,14 @@ public class StructureEndpointsTests : ApiTestBase
         var (campusId, categoryId) = await SetupDependenciesAsync();
         await Http.PostAsync(Endpoint, JsonBody(new CreateStructureDto(campusId, categoryId, "Estructura Mapa", -38.7, -72.5)));
 
-        var response = await Http.GetAsync($"{Endpoint}/locations");
+        var response = await Http.GetAsync($"{Endpoint}/locations?campusId={campusId}&categoryId={categoryId}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var list = await ReadJsonAsync<List<StructureLocationDto>>(response);
         Assert.NotNull(list);
-        Assert.NotEmpty(list);
+        var structure = Assert.Single(list);
+        Assert.Equal("Categoria For Structure", structure.Metadata.CategoryName);
+        Assert.Equal("icon", structure.Metadata.CategoryIcon);
     }
 
     [DockerFact]

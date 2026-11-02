@@ -11,7 +11,7 @@
         "type": "text/javascript",
         "exec": [
           "const reqName = pm.info.requestName || '';",
-          "const isSecurityNegativeTest = reqName.includes('Without Token') || reqName.includes('Malformed Token');",
+          "const isSecurityNegativeTest = reqName.includes('Without Token') || reqName.includes('Malformed Token') || reqName.includes('No Auth');",
           "if (!isSecurityNegativeTest && !pm.environment.get('jwt_token')) {",
           "    pm.sendRequest({",
           "        url: pm.environment.get('baseUrl') + '/api/identity/login',",
@@ -40,19 +40,27 @@
       "description": "Tests public routing, perimeter security, and token issuance.",
       "item": [
         {
-          "name": "01. Public Route - Check Identity Service (No Auth)",
+          "name": "01. Public Route - Register E2E User (No Auth)",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
               {
                 "key": "Accept",
                 "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{test_name}}\",\n  \"email\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\"\n}"
+            },
             "url": {
-              "raw": "{{baseUrl}}/api/identity",
+              "raw": "{{baseUrl}}/api/identity/register",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "identity"]
+              "path": ["api", "identity", "register"]
             }
           },
           "event": [
@@ -61,11 +69,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status code is 200 for public route\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test(\"Response is an array of users\", function () {",
-                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "pm.test(\"Status code is 201 or 400 for public register route\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 400]);",
                   "});"
                 ]
               }
@@ -96,6 +101,13 @@
                 "exec": [
                   "pm.test(\"Gateway rejects unauthenticated request with 401\", function () {",
                   "    pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test(\"Gateway returns standardized ProblemDetails JSON on 401\", function () {",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body.status).to.eql(401);",
+                  "    pm.expect(body.title).to.eql(\"Unauthorized\");",
+                  "    pm.expect(body.detail).to.be.a(\"string\");",
+                  "    pm.expect(body.instance).to.eql(\"/api/campus/campuses\");",
                   "});"
                 ]
               }
@@ -130,6 +142,46 @@
                 "exec": [
                   "pm.test(\"Gateway rejects malformed JWT with 401\", function () {",
                   "    pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test(\"Gateway returns standardized ProblemDetails JSON on malformed JWT\", function () {",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body.status).to.eql(401);",
+                  "    pm.expect(body.title).to.eql(\"Unauthorized\");",
+                  "    pm.expect(body.detail).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03b. Unknown Route - Unmapped Gateway Path (No Auth, Expect 404)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/unknown/resource",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "unknown", "resource"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Gateway returns 404 ProblemDetails for unmapped route\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body.status).to.eql(404);",
+                  "    pm.expect(body.title).to.eql(\"Not Found\");",
+                  "    pm.expect(body.instance).to.eql(\"/api/unknown/resource\");",
                   "});"
                 ]
               }
@@ -184,6 +236,16 @@
     {
       "name": "01. Identity Service",
       "description": "Endpoints corresponding to Identity and User Management.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{jwt_token}}",
+            "type": "string"
+          }
+        ]
+      },
       "item": [
         {
           "name": "Get All Users",

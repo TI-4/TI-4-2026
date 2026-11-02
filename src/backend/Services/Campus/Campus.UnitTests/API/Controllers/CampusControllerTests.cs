@@ -18,13 +18,13 @@ namespace Campus.UnitTests.API.Controllers;
 
 public class CampusControllerTests
 {
-    private readonly IGenericRepository<CampusEntity> _repository;
+    private readonly ICampusRepository _repository;
     private readonly CampusHandler _handler;
     private readonly CampusController _controller;
 
     public CampusControllerTests()
     {
-        _repository = Substitute.For<IGenericRepository<CampusEntity>>();
+        _repository = Substitute.For<ICampusRepository>();
         _handler = new CampusHandler(_repository);
         _controller = new CampusController(_handler);
     }
@@ -180,5 +180,108 @@ public class CampusControllerTests
         var result = await _controller.Delete(id, CancellationToken.None);
 
         Assert.IsType<NoContentResult>(result);
+    }
+
+    [Fact]
+    public async Task Create_WhenNameExceeds100Characters_ShouldReturnBadRequest()
+    {
+        var request = new CreateCampusDto(new string('C', 101), "Manuel Montt 056", -38.73, -72.60);
+
+        var result = await _controller.Create(request, CancellationToken.None);
+
+        Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task Create_WhenAddressIsEmpty_ShouldReturnBadRequest()
+    {
+        var request = new CreateCampusDto("Campus Norte", "", -38.73, -72.60);
+
+        var result = await _controller.Create(request, CancellationToken.None);
+
+        Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task Create_WhenAddressExceeds100Characters_ShouldReturnBadRequest()
+    {
+        var request = new CreateCampusDto("Campus Norte", new string('D', 101), -38.73, -72.60);
+
+        var result = await _controller.Create(request, CancellationToken.None);
+
+        Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task Create_WhenCoordinatesOutOfRange_ShouldReturnBadRequest()
+    {
+        var request = new CreateCampusDto("Campus Norte", "Dir", -95.0, -72.60);
+
+        var result = await _controller.Create(request, CancellationToken.None);
+
+        Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task Create_WhenCameraParametersOutOfRange_ShouldReturnBadRequest()
+    {
+        var request = new CreateCampusDto("Campus Norte", "Dir", -38.73, -72.60, Zoom: 30.0m);
+
+        var result = await _controller.Create(request, CancellationToken.None);
+
+        Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task Update_WhenNameExceeds100Characters_ShouldReturnBadRequest()
+    {
+        var request = new UpdateCampusDto(new string('C', 101), "Dir", -38.73, -72.60);
+
+        var result = await _controller.Update(Guid.NewGuid(), request, CancellationToken.None);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateLocation_WhenCoordinatesOutOfRange_ShouldReturnBadRequest()
+    {
+        var request = new UpdateLocationDto(-38.73, 200.0);
+
+        var result = await _controller.UpdateLocation(Guid.NewGuid(), request, CancellationToken.None);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetMap_WhenIdIsEmpty_ShouldReturnBadRequest()
+    {
+        var result = await _controller.GetMap(Guid.Empty, CancellationToken.None);
+
+        Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task GetMap_WhenNotFound_ShouldReturnNotFound()
+    {
+        var id = Guid.NewGuid();
+        _repository.GetByIdWithMapDataAsync(id, Arg.Any<CancellationToken>()).Returns((CampusEntity?)null);
+
+        var result = await _controller.GetMap(id, CancellationToken.None);
+
+        Assert.IsType<NotFoundObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task GetMap_WhenFound_ShouldReturnOkWithCampusMapDto()
+    {
+        var campus = new CampusEntity("Campus Central", "Dir 1", new Coordinate(-38.73, -72.60), 16m, 45m, -15m);
+        _repository.GetByIdWithMapDataAsync(campus.Id, Arg.Any<CancellationToken>()).Returns(campus);
+
+        var result = await _controller.GetMap(campus.Id, CancellationToken.None);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var dto = Assert.IsType<CampusMapDto>(okResult.Value);
+        Assert.Equal("Campus Central", dto.Name);
+        Assert.Equal(16m, dto.Camera.Zoom);
     }
 }

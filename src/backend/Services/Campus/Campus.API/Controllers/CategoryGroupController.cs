@@ -4,6 +4,7 @@ using Campus.Application.Handlers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace Campus.API.Controllers;
@@ -38,6 +39,7 @@ public class CategoryGroupController : ControllerBase
     public async Task<ActionResult<CategoryGroupDto>> Create([FromBody] CreateCategoryGroupDto request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "Name is mandatory." });
+        if (request.Name.Length > 100) return BadRequest(new { message = "Name cannot exceed 100 characters." });
 
         var dto = await _handler.CreateAsync(request, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
@@ -47,9 +49,21 @@ public class CategoryGroupController : ControllerBase
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCategoryGroupDto request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { message = "Name is mandatory." });
+        if (request.Name.Length > 100) return BadRequest(new { message = "Name cannot exceed 100 characters." });
 
         var success = await _handler.UpdateAsync(id, request, cancellationToken);
         if (!success) return NotFound(new { message = $"CategoryGroup with ID '{id}' was not found." });
+
+        return NoContent();
+    }
+
+    [HttpPut("reorder")]
+    public async Task<IActionResult> Reorder([FromBody] IEnumerable<ReorderItemDto> items, CancellationToken cancellationToken)
+    {
+        if (items is null || !items.Any()) return BadRequest(new { message = "The items list cannot be empty." });
+
+        var success = await _handler.ReorderAsync(items, cancellationToken);
+        if (!success) return BadRequest(new { message = "Failed to reorder category groups. Some items may not exist." });
 
         return NoContent();
     }

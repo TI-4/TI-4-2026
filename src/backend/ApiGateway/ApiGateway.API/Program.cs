@@ -1,3 +1,4 @@
+using ApiGateway.API.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,8 @@ builder.Services.AddAuthentication(options =>
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    }).AddJwtBearer(options => {
+    }).AddJwtBearer(options =>
+    {
         options.RequireHttpsMetadata = false;
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
@@ -44,6 +46,7 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 app.UseCors("AllowAll");
+app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapReverseProxy();
