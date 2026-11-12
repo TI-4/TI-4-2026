@@ -2,6 +2,7 @@ using MongoDB.Bson;
 using Incident.Domain.Entities;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+namespace Incident.Infrastructure.Persistence.Configurations;
 public class ComplainDetailsMap : BsonClassMap<ComplaintDetails> {
     public ComplainDetailsMap()
     {

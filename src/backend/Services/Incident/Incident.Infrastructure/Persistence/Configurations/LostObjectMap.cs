@@ -1,18 +1,21 @@
-using System;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Incident.Domain.Entities;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+using Incident.Domain.Entities;
+using MongoDB.Bson.Serialization.IdGenerators;
+namespace Incident.Infrastructure.Persistence.Configurations;
 public class LostObjectMap : BsonClassMap<LostObject> {
     public LostObjectMap()
     {
         AutoMap();
         MapIdMember(x => x.Id)
-                    .SetSerializer(
-                        new StringSerializer(BsonType.ObjectId)
-                    );
+            .SetSerializer(
+                new StringSerializer(BsonType.ObjectId)
+            )
+            .SetIdGenerator(StringObjectIdGenerator.Instance);
+
         MapMember(x => x.StructureRefId)
+                    .SetElementName("structure_id")
                     .SetSerializer(
                         new GuidSerializer(BsonType.String)
                     );
